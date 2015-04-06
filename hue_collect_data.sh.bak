@@ -1,0 +1,107 @@
+#!/bin/bash
+
+#NOTE: This script requires curl, strace and lsof to be installed. It must be run on the Hue server. 
+# Set USER to a user in Hue with Superuser access to get thread dumps.  Set PASSWORD to USER's 
+# password
+
+# Location for output files
+OUTPUT_DIR=/tmp/hue_collect_data
+
+# Please change USER to contain the user to login
+USER="cconner"
+
+# Please change PASSWORD to contain the password for the above user
+PASSWORD="Password1"
+
+# Set to true for more debug
+VERBOSE="false"
+
+#Please enter the Hue server port below
+HUE_PORT="8888"
+
+#Please set to https if Hue uses HTTPS instead of HTTP
+HUE_HTTP="http"
+
+HOSTNAME=$(hostname)
+HUE_SERVER=${HOSTNAME}
+HUE_REFERER_URL="${HUE_HTTP}://${HUE_SERVER}:${HUE_PORT}/"
+HUE_PASS_URL="${HUE_HTTP}://${HUE_SERVER}:${HUE_PORT}/accounts/login/"
+HUE_THREADS_URL="${HUE_HTTP}://${HUE_SERVER}:${HUE_PORT}/desktop/debug/threads"
+HUE_USAGE_FILE=${OUTPUT_DIR}/cpu_mem_usage
+PID=$(ps aux | grep [r]uncherrypyserver | awk '{print $6" "$2" "$3" "$12}' | awk '{print $2}')
+HUE_THREADS_FILE=${OUTPUT_DIR}/threads
+
+echo "Making ${OUTPUT_DIR} if it does not exist"
+mkdir -p ${OUTPUT_DIR}
+
+CURL=$(which curl)
+if [ ! -f ${CURL} ]
+then 
+   echo "curl not found, unable to collect thread dumps"
+else
+   COOKIE_JAR=${OUTPUT_DIR}/${USER}_cookie.jar
+   CURL_LOG=${OUTPUT_DIR}/curl.log
+   if  [[ ${VERBOSE} =~ .*true* ]]
+   then
+      CURL_COMMAND="${CURL} -v -k -c ${COOKIE_JAR} -b ${COOKIE_JAR} -s -f"
+#      CURL_COMMAND="${CURL} -v -k -c ${COOKIE_JAR} -b @${COOKIE_JAR} -s -f"
+   else
+      CURL_COMMAND="${CURL} -k -c ${COOKIE_JAR} -b ${COOKIE_JAR} -s -f"
+#      CURL_COMMAND="${CURL} -k -c ${COOKIE_JAR} -b @${COOKIE_JAR} -s -f"
+   fi
+   echo "Login to Hue to get Cookie:"
+   echo "${CURL_COMMAND} -X GET -L \"${HUE_PASS_URL}\" 2>&1 >> ${CURL_LOG}"
+   ${CURL_COMMAND} -X GET -L "${HUE_PASS_URL}" 2>&1 >> ${CURL_LOG}
+   CSRF_TOKEN=`grep ${HOSTNAME} ${COOKIE_JAR} | grep csrftoken | cut -f 7`
+   echo "${CURL_COMMAND} -H \"X-CSRFToken: ${CSRF_TOKEN}\" -X POST -F username=${USER} -F \"password=${PASSWORD}\" -L \"${HUE_PASS_URL}\" 2>&1 >> ${CURL_LOG}"
+   ${CURL_COMMAND} -H "X-CSRFToken: ${CSRF_TOKEN}" -X POST -F username=${USER} -F "password=${PASSWORD}" -L "${HUE_PASS_URL}" 2>&1 >> ${CURL_LOG}
+fi
+STRACE=$(which strace)
+if [ ! -f ${STRACE} ]
+then
+   echo "strace not found, unable to collect strace info"
+else
+   STRACE_COMMAND="${STRACE} -P ${PID}"
+fi
+HUE_STRACE_FILE=${OUTPUT_DIR}/strace
+LSOF=$(which lsof)
+if [ ! -f ${LSOF} ]
+then
+   echo "lsof not found, unable to determine number of connections"
+else
+   LSOF_COMMAND="${LSOF} -P -p ${PID}"
+fi
+HUE_LSOF_FILE=${OUTPUT_DIR}/lsof
+
+echo "Gathering info:"
+for x in {1..4}
+do
+   DATE=$(date '+%Y%m%d-%H%M%S')
+   echo "${DATE}"
+   echo "Getting a thread dump:"
+   echo "${CURL_COMMAND} -X GET -H \"X-CSRFToken: ${CSRF_TOKEN}\" -o ${HUE_THREADS_FILE} -L \"${HUE_THREADS_URL}\""
+   ${CURL_COMMAND} -X GET -H "X-CSRFToken: ${CSRF_TOKEN}" -o ${HUE_THREADS_FILE} -L "${HUE_THREADS_URL}"
+exit
+   echo "Getting CPU and Memory usage"
+   PS_COMMAND=$(ps aux | grep [r]uncherrypyserver | awk '{print $6" "$2" "$3" "$12}' | awk '{print $2}')
+   MEM=$(echo ${PS_COMMAND} | awk '{print $1}')
+   MEM_MB=$(expr ${MEM} / 1024)
+   PID=$(echo ${PS_COMMAND} | awk '{print $2}')
+   CPU=$(echo ${PS_COMMAND} | awk '{print $3}')
+   PROC=$(echo ${PS_COMMAND} | awk '{print $4}')
+   echo "PID CPU MEM MEM_MB"
+   echo "${PID} ${CPU} ${MEM} ${MEM_MB}"
+   echo "Getting strace"
+   ${STRACE_COMMAND}
+   echo "Getting open connections"
+   ${LSOF_COMMAND}
+
+   sleep 30
+done
+
+
+#If Hue is using any CPU when the hang occurs. If they are running Hue on linux and they have strace available, it would be helpful to know if Hue is making any system calls with strace -P $HUE_PID.
+#How many open connections are there. This can be found with lsof -p $HUE_PID -P.
+#The python stack trace either through http://$HUE_HOST:$HUE_PORT/desktop/debug/threads or pdbinject if that url hangs.
+echo "Collecting done, please zip ${OUTPUT_DIR} and upload to the ticket"
+#rm -f ${OUTPUT_DIR}/${USER}_cookie.txt
