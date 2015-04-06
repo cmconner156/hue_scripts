@@ -8,6 +8,10 @@
 # Location for output files
 OUTPUT_DIR=/tmp/hue_collect_data
 
+# Location of Hue logs
+
+HUE_LOG_DIR=/var/log/hue
+
 # Please change USER to contain the user to login
 HUE_USER="cconner"
 
@@ -94,6 +98,9 @@ do
 
    sleep ${RUN_WAIT}
 done
+
+mkdir ${OUTPUT_DIR}/logs
+cp -pr ${HUE_LOG_DIR}/* ${OUTPUT_DIR}/logs 
 
 echo "Collecting done, please zip ${OUTPUT_DIR} and upload to the ticket"
 }
