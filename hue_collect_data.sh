@@ -1,5 +1,4 @@
 #!/bin/bash
-
 #NOTE: This script requires curl, strace and lsof to be installed. It
 # must be run on the Hue server. Set HUE_USER to a user in Hue with 
 # Superuser access to get thread dumps.  Set HUE_PASSWORD to HUE_USER's 
@@ -13,10 +12,10 @@ OUTPUT_DIR=/tmp/hue_collect_data
 HUE_LOG_DIR=/var/log/hue
 
 # Please change USER to contain the user to login
-HUE_USER="cconner"
+HUE_USER="admin"
 
 # Please change PASSWORD to contain the password for the above user
-HUE_PASSWORD="password"
+HUE_PASSWORD="admin"
 
 # Set to true for more debug
 VERBOSE="false"
@@ -32,6 +31,12 @@ RUN_WAIT=30
 
 main()
 {
+
+if [[ ! ${USER} =~ .*root* ]]
+then
+   echo "Script must be run as root: exiting"
+   exit 1
+fi
 
 get_cm_process_dir
 
@@ -67,17 +72,14 @@ COOKIE_JAR=${OUTPUT_DIR}/${USER}_cookie.jar
 echo "Making ${OUTPUT_DIR} if it does not exist"
 mkdir -p ${OUTPUT_DIR}
 
+do_ps
+
 hue_login
 echo "Gathering info:"
 for (( x=1; x<=${RUNS}; x++ ))
 do
    DATE=$(date '+%Y%m%d-%H%M%S')
    echo "DATE: ${DATE}"
-   echo "Getting a thread dump:"
-   do_curl \
-	GET \
-	"${HUE_THREADS_URL}" \
-	-L -o ${HUE_THREADS_FILE}_${DATE}
 
    echo "Getting CPU and Memory usage"
    do_ps
@@ -91,10 +93,17 @@ do
         ${PID} \
         ${STRACE_WAIT} \
         -o ${HUE_STRACE_FILE}_${DATE} -T -t
+
    echo "Getting open connections"
    do_lsof \
         ${PID} \
         ${HUE_LSOF_FILE}_${DATE}
+
+   echo "Getting a thread dump:"
+   do_curl \
+	GET \
+	"${HUE_THREADS_URL}" \
+	-L -o ${HUE_THREADS_FILE}_${DATE}
 
    sleep ${RUN_WAIT}
 done
@@ -163,19 +172,12 @@ function do_strace()
    shift
    ARGS=$@
 
-   if [ -z ${LOG_FILE} ]
-   then
-      LOG_FILE=/tmp/lsof.log
-   fi
-
    STRACE=$(which strace)
    if [ ! -f ${STRACE} ]
    then
       echo "strace not found, unable to collect strace info"
    else
-      ${STRACE} -o ${LOG_FILE} -p ${SPID} ${ARGS} &
-      sleep ${WAIT}
-      kill $!
+      timeout ${WAIT}s ${STRACE} -p ${SPID} ${ARGS} &
    fi
 }
 
@@ -205,10 +207,17 @@ function do_ps()
 {
    PS_COMMAND=$(ps aux | grep [r]uncherrypyserver | awk '{print $6" "$2" "$3" "$12}')
    MEM=$(echo ${PS_COMMAND} | awk '{print $1}')
-   MEM_MB=$(expr ${MEM} / 1024)
    PID=$(echo ${PS_COMMAND} | awk '{print $2}')
    CPU=$(echo ${PS_COMMAND} | awk '{print $3}')
    PROC=$(echo ${PS_COMMAND} | awk '{print $4}')
+
+   if [[ ! ${PID} == ?(-)+([0-9]) ]]
+   then
+     echo "Unable to get PID from Process, either Hue is not running on this host or Hue is not using CherryPy server"
+     exit 1
+   fi
+
+   MEM_MB=$(expr ${MEM} / 1024)
 }
 
 function get_cm_process_dir()
