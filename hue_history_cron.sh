@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-#Cleans up old oozie workflow and beeswax savedqueries to 
+#Cleans up old oozie workflow and beeswax savedqueries to
 #prevent the DB from getting too large.
 PARCEL_DIR=/opt/cloudera/parcels/CDH
 LOG_FILE=/var/log/hue_history_cron.log
@@ -23,7 +23,13 @@ else
    HUE_CONF_DIR="/etc/hue/conf"
 fi
 
-COMMAND="${CDH_HOME}/lib/hue/build/env/bin/hue shell"
+if [ -d "${CDH_HOME}/lib/hue/build/env/bin" ]
+then
+   COMMAND="${CDH_HOME}/lib/hue/build/env/bin/hue shell"
+else
+   COMMAND="${CDH_HOME}/share/hue/build/env/bin/hue shell"
+fi
+
 export CDH_HOME HUE_CONF_DIR COMMAND
 
 ${COMMAND} <<EOF
