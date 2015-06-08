@@ -1,107 +1,244 @@
 #!/bin/bash
-
-#NOTE: This script requires curl, strace and lsof to be installed. It must be run on the Hue server. 
-# Set USER to a user in Hue with Superuser access to get thread dumps.  Set PASSWORD to USER's 
-# password
+#NOTE: This script requires curl, strace and lsof to be installed. It
+# must be run on the Hue server. Set HUE_USER to a user in Hue with 
+# Superuser access to get thread dumps.  Set HUE_PASSWORD to HUE_USER's 
+# password.
 
 # Location for output files
 OUTPUT_DIR=/tmp/hue_collect_data
 
+# Location of Hue logs
+
+HUE_LOG_DIR=/var/log/hue
+
 # Please change USER to contain the user to login
-USER="cconner"
+HUE_USER="admin"
 
 # Please change PASSWORD to contain the password for the above user
-PASSWORD="Password1"
+HUE_PASSWORD="admin"
 
 # Set to true for more debug
 VERBOSE="false"
 
-#Please enter the Hue server port below
-HUE_PORT="8888"
+#How many seconds of strace to capture on each run
+STRACE_WAIT=15
 
-#Please set to https if Hue uses HTTPS instead of HTTP
-HUE_HTTP="http"
+#Number of data gathering runs
+RUNS=4
 
+#Time to wait between each run
+RUN_WAIT=30
+
+main()
+{
+
+if [[ ! ${USER} =~ .*root* ]]
+then
+   echo "Script must be run as root: exiting"
+   exit 1
+fi
+
+get_cm_process_dir
+
+#This is necessary to handle AD auth, doesn't seem to hurt non-ad auth
+#if they have multiple ldap servers or for some reason the drop down
+#at login says something other than "LDAP", then this must match the drop
+#down
+HUE_AUTH_SERVER="LDAP"
+DATE=$(date '+%Y%m%d-%H%M')
+OUTPUT_DIR=${OUTPUT_DIR}/${DATE}
 HOSTNAME=$(hostname)
 HUE_SERVER=${HOSTNAME}
-HUE_REFERER_URL="${HUE_HTTP}://${HUE_SERVER}:${HUE_PORT}/"
+HUE_PORT=`grep http_port ${HUE_INI} | awk -F= '{print $2}'`
+if [[ -z ${HUE_PORT} ]]
+then
+   HUE_PORT=8888
+fi
+SSL_CERT=`grep ssl_certificate ${HUE_INI} | awk -F= '{print $2}'`
+if [[ ! -z ${SSL_CERT} ]]
+then
+   HUE_HTTP="https"
+else
+   HUE_HTTP="http"
+fi
 HUE_PASS_URL="${HUE_HTTP}://${HUE_SERVER}:${HUE_PORT}/accounts/login/"
 HUE_THREADS_URL="${HUE_HTTP}://${HUE_SERVER}:${HUE_PORT}/desktop/debug/threads"
 HUE_USAGE_FILE=${OUTPUT_DIR}/cpu_mem_usage
-PID=$(ps aux | grep [r]uncherrypyserver | awk '{print $6" "$2" "$3" "$12}' | awk '{print $2}')
 HUE_THREADS_FILE=${OUTPUT_DIR}/threads
+HUE_STRACE_FILE=${OUTPUT_DIR}/strace
+HUE_LSOF_FILE=${OUTPUT_DIR}/lsof
+COOKIE_JAR=${OUTPUT_DIR}/${USER}_cookie.jar
 
 echo "Making ${OUTPUT_DIR} if it does not exist"
 mkdir -p ${OUTPUT_DIR}
 
-CURL=$(which curl)
-if [ ! -f ${CURL} ]
-then 
-   echo "curl not found, unable to collect thread dumps"
-else
-   COOKIE_JAR=${OUTPUT_DIR}/${USER}_cookie.jar
-   CURL_LOG=${OUTPUT_DIR}/curl.log
-   if  [[ ${VERBOSE} =~ .*true* ]]
-   then
-      CURL_COMMAND="${CURL} -v -k -c ${COOKIE_JAR} -b ${COOKIE_JAR} -s -f"
-#      CURL_COMMAND="${CURL} -v -k -c ${COOKIE_JAR} -b @${COOKIE_JAR} -s -f"
-   else
-      CURL_COMMAND="${CURL} -k -c ${COOKIE_JAR} -b ${COOKIE_JAR} -s -f"
-#      CURL_COMMAND="${CURL} -k -c ${COOKIE_JAR} -b @${COOKIE_JAR} -s -f"
-   fi
-   echo "Login to Hue to get Cookie:"
-   echo "${CURL_COMMAND} -X GET -L \"${HUE_PASS_URL}\" 2>&1 >> ${CURL_LOG}"
-   ${CURL_COMMAND} -X GET -L "${HUE_PASS_URL}" 2>&1 >> ${CURL_LOG}
-   CSRF_TOKEN=`grep ${HOSTNAME} ${COOKIE_JAR} | grep csrftoken | cut -f 7`
-   echo "${CURL_COMMAND} -H \"X-CSRFToken: ${CSRF_TOKEN}\" -X POST -F username=${USER} -F \"password=${PASSWORD}\" -L \"${HUE_PASS_URL}\" 2>&1 >> ${CURL_LOG}"
-   ${CURL_COMMAND} -H "X-CSRFToken: ${CSRF_TOKEN}" -X POST -F username=${USER} -F "password=${PASSWORD}" -L "${HUE_PASS_URL}" 2>&1 >> ${CURL_LOG}
-fi
-STRACE=$(which strace)
-if [ ! -f ${STRACE} ]
-then
-   echo "strace not found, unable to collect strace info"
-else
-   STRACE_COMMAND="${STRACE} -P ${PID}"
-fi
-HUE_STRACE_FILE=${OUTPUT_DIR}/strace
-LSOF=$(which lsof)
-if [ ! -f ${LSOF} ]
-then
-   echo "lsof not found, unable to determine number of connections"
-else
-   LSOF_COMMAND="${LSOF} -P -p ${PID}"
-fi
-HUE_LSOF_FILE=${OUTPUT_DIR}/lsof
+do_ps
 
+hue_login
 echo "Gathering info:"
-for x in {1..4}
+for (( x=1; x<=${RUNS}; x++ ))
 do
    DATE=$(date '+%Y%m%d-%H%M%S')
-   echo "${DATE}"
-   echo "Getting a thread dump:"
-   echo "${CURL_COMMAND} -X GET -H \"X-CSRFToken: ${CSRF_TOKEN}\" -o ${HUE_THREADS_FILE} -L \"${HUE_THREADS_URL}\""
-   ${CURL_COMMAND} -X GET -H "X-CSRFToken: ${CSRF_TOKEN}" -o ${HUE_THREADS_FILE} -L "${HUE_THREADS_URL}"
-exit
+   echo "DATE: ${DATE}"
+
    echo "Getting CPU and Memory usage"
-   PS_COMMAND=$(ps aux | grep [r]uncherrypyserver | awk '{print $6" "$2" "$3" "$12}' | awk '{print $2}')
+   do_ps
+   echo "PID CPU MEM MEM_MB" >> ${HUE_USAGE_FILE}_${DATE}
+   echo "${PID} ${CPU} ${MEM} ${MEM_MB}" >> ${HUE_USAGE_FILE}_${DATE}
+   echo "free -m results" >> ${HUE_USAGE_FILE}_${DATE}
+   free -m >> ${HUE_USAGE_FILE}_${DATE}
+
+   echo "Getting strace"
+   do_strace \
+        ${PID} \
+        ${STRACE_WAIT} \
+        -o ${HUE_STRACE_FILE}_${DATE} -T -t
+
+   echo "Getting open connections"
+   do_lsof \
+        ${PID} \
+        ${HUE_LSOF_FILE}_${DATE}
+
+   echo "Getting a thread dump:"
+   do_curl \
+	GET \
+	"${HUE_THREADS_URL}" \
+	-L -o ${HUE_THREADS_FILE}_${DATE}
+
+   sleep ${RUN_WAIT}
+done
+
+mkdir ${OUTPUT_DIR}/logs
+cp -pr ${HUE_LOG_DIR}/* ${OUTPUT_DIR}/logs 
+
+echo "Collecting done, please zip ${OUTPUT_DIR} and upload to the ticket"
+}
+
+function do_curl() {
+
+   METHOD=$1
+   shift
+   URL=$1
+   shift
+   ARGS=$@
+
+   CURL=$(which curl)
+   if [ -z ${COOKIE_JAR} ]
+   then
+      COOKIE_JAR=/tmp/cookie.jar
+   fi
+   if [ -f ${COOKIE_JAR} ]
+   then
+      CSRF_TOKEN=`grep ${HOSTNAME} ${COOKIE_JAR} | grep csrftoken | cut -f 7`
+   fi
+   if [ ! -f ${CURL} ]
+   then
+      echo "curl not found, unable to run any curl commands"
+   else
+      ${CURL} \
+         ${CURL_OPTS} \
+         -k \
+         -e "${HUE_HTTP}://${HUE_SERVER}:${HUE_PORT}/" \
+         -b @${COOKIE_JAR} \
+         -c ${COOKIE_JAR} \
+         -H "X-CSRFToken: ${CSRF_TOKEN}" \
+         -X ${METHOD} \
+         -s \
+         -f \
+         ${URL} \
+         ${ARGS}
+   fi
+
+}
+
+function hue_login() {
+   echo "Login to Hue to get Cookie:"
+   do_curl \
+	GET \
+	"${HUE_PASS_URL}" \
+	-L 2>&1 > /dev/null
+
+   do_curl \
+        POST \
+        "${HUE_PASS_URL}" \
+        -F username=${HUE_USER} -F password="${HUE_PASSWORD}" -F server="${HUE_AUTH_SERVER}" 2>&1 > /dev/null
+}
+
+function do_strace()
+{
+   SPID=$1
+   shift
+   WAIT=$1
+   shift
+   ARGS=$@
+
+   STRACE=$(which strace)
+   if [ ! -f ${STRACE} ]
+   then
+      echo "strace not found, unable to collect strace info"
+   else
+      timeout ${WAIT}s ${STRACE} -p ${SPID} ${ARGS} &
+   fi
+}
+
+function do_lsof()
+{
+   LPID=$1
+   shift
+   LOG_FILE=$1
+   shift
+   ARGS=$@
+
+   if [ -z ${LOG_FILE} ]
+   then
+      LOG_FILE=/tmp/lsof.log
+   fi
+
+   LSOF=$(which lsof)
+   if [ ! -f ${LSOF} ]
+   then
+      echo "lsof not found, unable to determine number of connections"
+   else
+      ${LSOF} -P -p ${LPID} ${ARGS} > ${LOG_FILE}
+   fi
+}
+
+function do_ps()
+{
+   PS_COMMAND=$(ps aux | grep [r]uncherrypyserver | awk '{print $6" "$2" "$3" "$12}')
    MEM=$(echo ${PS_COMMAND} | awk '{print $1}')
-   MEM_MB=$(expr ${MEM} / 1024)
    PID=$(echo ${PS_COMMAND} | awk '{print $2}')
    CPU=$(echo ${PS_COMMAND} | awk '{print $3}')
    PROC=$(echo ${PS_COMMAND} | awk '{print $4}')
-   echo "PID CPU MEM MEM_MB"
-   echo "${PID} ${CPU} ${MEM} ${MEM_MB}"
-   echo "Getting strace"
-   ${STRACE_COMMAND}
-   echo "Getting open connections"
-   ${LSOF_COMMAND}
 
-   sleep 30
-done
+   if [[ ! ${PID} == ?(-)+([0-9]) ]]
+   then
+     echo "Unable to get PID from Process, either Hue is not running on this host or Hue is not using CherryPy server"
+     exit 1
+   fi
 
+   MEM_MB=$(expr ${MEM} / 1024)
+}
 
-#If Hue is using any CPU when the hang occurs. If they are running Hue on linux and they have strace available, it would be helpful to know if Hue is making any system calls with strace -P $HUE_PID.
-#How many open connections are there. This can be found with lsof -p $HUE_PID -P.
-#The python stack trace either through http://$HUE_HOST:$HUE_PORT/desktop/debug/threads or pdbinject if that url hangs.
-echo "Collecting done, please zip ${OUTPUT_DIR} and upload to the ticket"
-#rm -f ${OUTPUT_DIR}/${USER}_cookie.txt
+function get_cm_process_dir()
+{
+   if [[ -d /var/run/cloudera-scm-agent/process ]]
+   then
+      HUE_CONF_DIR="/var/run/cloudera-scm-agent/process/`ls -1 /var/run/cloudera-scm-agent/process | grep HUE | sort -n | tail -1 `"
+   else
+      HUE_CONF_DIR=/etc/hue/conf
+   fi
+   HUE_INI=${HUE_CONF_DIR}/hue.ini
+}
+
+debug()
+{
+
+  if [[ ! -z $VERBOSE ]]
+  then
+    echo "$1" >> ${LOG_FILE}
+  fi
+
+}
+
+main "$@"

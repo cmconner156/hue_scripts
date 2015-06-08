@@ -67,6 +67,11 @@ HUE_USAGE_FILE=${OUTPUT_DIR}/cpu_mem_usage
 HUE_THREADS_FILE=${OUTPUT_DIR}/threads
 HUE_STRACE_FILE=${OUTPUT_DIR}/strace
 HUE_LSOF_FILE=${OUTPUT_DIR}/lsof
+HUE_ENVIRON_FILE=${OUTPUT_DIR}/environ
+HUE_CMDLINE_FILE=${OUTPUT_DIR}/cmdline
+HUE_LIMITS_FILE=${OUTPUT_DIR}/limits
+HUE_NETSTAT_FILE=${OUTPUT_DIR}/netstat
+HUE_SUDO=${OUTPUT_DIR}/sudo
 COOKIE_JAR=${OUTPUT_DIR}/${USER}_cookie.jar
 
 echo "Making ${OUTPUT_DIR} if it does not exist"
@@ -87,6 +92,19 @@ do
    echo "${PID} ${CPU} ${MEM} ${MEM_MB}" >> ${HUE_USAGE_FILE}_${DATE}
    echo "free -m results" >> ${HUE_USAGE_FILE}_${DATE}
    free -m >> ${HUE_USAGE_FILE}_${DATE}
+
+   echo "Gathering process info"
+   strings /proc/${PID}/environ >> ${HUE_ENVIRON_FILE}_${DATE}
+   strings /proc/${PID}/cmdline >> ${HUE_CMDLINE_FILE}_${DATE}
+   strings /proc/${PID}/limits >> ${HUE_LIMITS_FILE}_${DATE}
+
+   echo "Gathering netstat info"
+   netstat -anp | grep ${PID} >> ${HUE_NETSTAT_FILE}_${DATE}
+
+   echo "Gathering environment info"
+   do_sudo \
+        ${HUE_SUDO} \
+        ${DATE}
 
    echo "Getting strace"
    do_strace \
@@ -218,6 +236,17 @@ function do_ps()
    fi
 
    MEM_MB=$(expr ${MEM} / 1024)
+}
+
+function do_sudo()
+{
+   HUE_SUDO=$1
+   shift
+   DATE=$1
+   shift
+   ARGS=$@
+   sudo -u hue /bin/bash -c "/usr/bin/env" >> ${HUE_SUDO}_env_${DATE}
+   sudo -u hue /bin/bash -c "/usr/bin/env which python2.6" >> ${HUE_SUDO}_python_${DATE}
 }
 
 function get_cm_process_dir()
