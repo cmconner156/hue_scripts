@@ -160,7 +160,8 @@ main()
         exit 1
       fi
 
-      OUTPUT_DIR=${OUTPUT_DIR_BASE}/${START_DATE}/${PID}
+      OUTPUT_DIR_DATE=${OUTPUT_DIR_BASE}/${START_DATE}
+      OUTPUT_DIR=${OUTPUT_DIR_DATE}/${PID}
       HUE_USAGE_FILE=${OUTPUT_DIR}/cpu_mem_usage/cpu_mem_usage
       HUE_THREADS_FILE=${OUTPUT_DIR}/threads/threads
       HUE_STRACE_FILE=${OUTPUT_DIR}/strace/strace
@@ -284,7 +285,7 @@ main()
         ${HUE_SUDO} \
         ${DATE}
 
-   echo "Collecting done, please zip ${OUTPUT_DIR} and upload to the ticket"
+   echo "Collecting done, please zip ${OUTPUT_DIR_DATE} and upload to the ticket"
 }
 
 function do_curl() {
