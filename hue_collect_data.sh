@@ -151,6 +151,7 @@ main()
 
    AGENT_PROCESS_DIR="/var/run/cloudera-scm-agent/process"
    START_DATE=$(date '+%Y%m%d-%H%M')
+   MKDIR="mkdir -p"
 
    for PID in `ps aux | grep [r]uncherrypyserver | awk '{print $2}'`
    do
@@ -178,7 +179,7 @@ main()
       HUE_SERVER=${HOSTNAME}
 
       echo "Making ${OUTPUT_DIR} if it does not exist"
-      mkdir -p ${OUTPUT_DIR}
+      ${MKDIR} ${OUTPUT_DIR}
 
       get_cm_process_dir ${PID}
 
@@ -216,7 +217,7 @@ main()
       
          echo "Getting CPU and Memory usage"
          do_ps ${PID}
-         mkdir -p `dirname ${HUE_USAGE_FILE}`
+         ${MKDIR} `dirname ${HUE_USAGE_FILE}`
          echo "PID CPU MEM MEM_MB" >> ${HUE_USAGE_FILE}_${DATE}
          echo "${PID} ${CPU} ${MEM} ${MEM_MB}" >> ${HUE_USAGE_FILE}_${DATE}
          echo "free -m results" >> ${HUE_USAGE_FILE}_${DATE}
@@ -225,14 +226,14 @@ main()
          if [[ ${COLLECT_NETSTAT} ]]
          then
             echo "Gathering netstat info"
-            mkdir -p `dirname ${HUE_NETSTAT_FILE}`
+            ${MKDIR} `dirname ${HUE_NETSTAT_FILE}`
             netstat -anp | grep ${PID} >> ${HUE_NETSTAT_FILE}_${DATE}
          fi
 
          if [[ ${COLLECT_STRACE} ]]
          then
             echo "Getting strace"
-            mkdir -p `dirname ${HUE_STRACE_FILE}`
+            ${MKDIR} `dirname ${HUE_STRACE_FILE}`
             do_strace \
                  ${PID} \
                  ${STRACE_WAIT} \
@@ -242,7 +243,7 @@ main()
          if [[ ${COLLECT_LSOF} ]]
          then
             echo "Getting open connections"
-            mkdir -p `dirname ${HUE_LSOF_FILE}`
+            ${MKDIR} `dirname ${HUE_LSOF_FILE}`
             do_lsof \
                  ${PID} \
                  ${HUE_LSOF_FILE}_${DATE}
@@ -251,7 +252,7 @@ main()
          if [[ ! -z ${COLLECT_THREADS} ]]
          then
             echo "Getting a thread dump:"
-            mkdir -p `dirname ${HUE_THREADS_FILE}`
+            ${MKDIR} `dirname ${HUE_THREADS_FILE}`
             do_curl \
                  GET \
                  "${HUE_THREADS_URL}" \
@@ -268,14 +269,14 @@ main()
       fi
 
       echo "Gathering process info"
-      mkdir -p `dirname ${HUE_ENVIRON_FILE}`
+      ${MKDIR} `dirname ${HUE_ENVIRON_FILE}`
       strings /proc/${PID}/environ >> ${HUE_ENVIRON_FILE}_${DATE}
-      mkdir -p `dirname ${HUE_CMDLINE_FILE}`
+      ${MKDIR} `dirname ${HUE_CMDLINE_FILE}`
       strings /proc/${PID}/cmdline >> ${HUE_CMDLINE_FILE}_${DATE}
-      mkdir -p `dirname ${HUE_LIMITS_FILE}`
+      ${MKDIR} `dirname ${HUE_LIMITS_FILE}`
       strings /proc/${PID}/limits >> ${HUE_LIMITS_FILE}_${DATE}
 
-      mkdir ${OUTPUT_DIR}/logs
+      ${MKDIR} ${OUTPUT_DIR}/logs
       cp -pr ${HUE_LOG_DIR}/* ${OUTPUT_DIR}/logs 
 
    done
@@ -284,6 +285,12 @@ main()
    do_sudo \
         ${HUE_SUDO} \
         ${DATE}
+
+  if [[ ! -z ${STRACE_PID} ]]
+   then
+      echo "strace still running, waiting for it to complete: ${STRACE_PID}"
+      wait ${STRACE_PID}
+   fi
 
    echo "Collecting done, please zip ${OUTPUT_DIR_DATE} and upload to the ticket"
 }
@@ -351,7 +358,13 @@ function do_strace()
    then
       echo "strace not found, unable to collect strace info"
    else
-      timeout ${WAIT}s ${STRACE} -p ${SPID} ${ARGS} &
+      if [[ ! -z ${STRACE_PID} ]]
+      then
+         echo "strace still running, waiting for it to complete: ${STRACE_PID}"
+         wait ${STRACE_PID}
+      fi
+      timeout ${WAIT}s ${STRACE} -f -v -p ${SPID} ${ARGS} &
+      STRACE_PID=$!
    fi
 }
 
@@ -416,7 +429,7 @@ function get_cm_process_dir()
 function do_instances()
 {
    HUE_PORT=$1
-   mkdir -p ${HUE_CONFS}
+   ${MKDIR} ${HUE_CONFS}
    if [[ -d ${AGENT_PROCESS_DIR} ]]
    then
       for x in `find ${AGENT_PROCESS_DIR}/*hue-HUE_SERVER -name "hue.ini" -exec grep -H ${HUE_PORT} {} \; | awk -F\/ '{print $6}' | sort -n | tail -3`
