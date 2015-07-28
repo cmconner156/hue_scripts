@@ -10,7 +10,7 @@ KILL_ME=5000  #This is the number of MB at which it will kill.
              #Starting with 5000(5gb)
 VERBOSE=true #true then this writes out the proc info each time it runs, leave blank
              #to only write out when we kill the process
-LOG_FILE=/var/log/hue_mem_cron.log
+LOG_FILE=/var/log/hue/`basename "$0" | awk -F\. '{print $1}'`.log
 ROTATE_SIZE=10 #MB before rotating, size in MB before rotating log to .1, we only keep
                #2 log files, so 20MB max
 TMP_LOCATION=/tmp/hue_mem_cron
@@ -36,7 +36,7 @@ mkdir -p ${TMP_LOCATION}
 if [[ -f ${LOG_FILE} ]]
 then
    LOG_SIZE=`du -sm ${LOG_FILE} | awk '{print $1}'`
-   if [ ${LOG_SIZE} -gt ${ROTATE_SIZE} ]
+   if [[ ${LOG_SIZE} -gt ${ROTATE_SIZE} ]]
    then
       mv ${LOG_FILE} ${LOG_FILE}.1
    fi
