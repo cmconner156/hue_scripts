@@ -394,7 +394,7 @@ function do_ps()
 {
    PID=$1
    shift
-   PS_COMMAND=$(ps aux -q ${PID} | tail -1 | awk '{print $6" "$2" "$3" "$12}')
+   PS_COMMAND=$(ps aux | grep ${PID} | grep [r]uncherrypyserver | tail -1 | awk '{print $6" "$2" "$3" "$12}')
    MEM=$(echo ${PS_COMMAND} | awk '{print $1}')
    CPU=$(echo ${PS_COMMAND} | awk '{print $3}')
    PROC=$(echo ${PS_COMMAND} | awk '{print $4}')
