@@ -18,7 +18,7 @@
 #Cleans up old oozie workflow and beeswax savedqueries to
 #prevent the DB from getting too large.
 PARCEL_DIR=/opt/cloudera/parcels/CDH
-LOG_FILE=LOG_FILE=/var/log/hue/`basename "$0" | awk -F\. '{print $1}'`.log
+LOG_FILE=/var/log/hue/`basename "$0" | awk -F\. '{print $1}'`.log
 LOG_ROTATE_SIZE=10 #MB before rotating, size in MB before rotating log to .1
 LOG_ROTATE_COUNT=2 #number of log files, so 20MB max
 DATE=`date '+%Y%m%d-%H%M'`
