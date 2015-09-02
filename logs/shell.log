@@ -1,5 +1,20 @@
-[01/Sep/2015 16:49:54 ] settings     INFO     Welcome to Hue 3.7.0
-[01/Sep/2015 16:52:01 ] settings     INFO     Welcome to Hue 3.7.0
-[01/Sep/2015 16:52:27 ] settings     INFO     Welcome to Hue 3.7.0
-[01/Sep/2015 17:00:14 ] settings     INFO     Welcome to Hue 3.7.0
-[02/Sep/2015 10:13:41 ] settings     INFO     Welcome to Hue 3.7.0
+[02/Sep/2015 12:55:49 ] settings     INFO     Welcome to Hue 3.7.0
+[02/Sep/2015 09:55:50 -0700] __init__     WARNING  Couldn't import snappy. Support for snappy compression disabled.
+[02/Sep/2015 12:58:45 ] settings     INFO     Welcome to Hue 3.7.0
+[02/Sep/2015 09:58:46 -0700] __init__     WARNING  Couldn't import snappy. Support for snappy compression disabled.
+[02/Sep/2015 13:06:25 ] settings     INFO     Welcome to Hue 3.7.0
+[02/Sep/2015 10:06:25 -0700] __init__     WARNING  Couldn't import snappy. Support for snappy compression disabled.
+[02/Sep/2015 13:06:43 ] settings     INFO     Welcome to Hue 3.7.0
+[02/Sep/2015 10:06:43 -0700] __init__     WARNING  Couldn't import snappy. Support for snappy compression disabled.
+[02/Sep/2015 13:06:59 ] settings     INFO     Welcome to Hue 3.7.0
+[02/Sep/2015 10:06:59 -0700] __init__     WARNING  Couldn't import snappy. Support for snappy compression disabled.
+[02/Sep/2015 13:08:58 ] settings     INFO     Welcome to Hue 3.7.0
+[02/Sep/2015 10:08:58 -0700] __init__     WARNING  Couldn't import snappy. Support for snappy compression disabled.
+[02/Sep/2015 13:11:31 ] settings     INFO     Welcome to Hue 3.7.0
+[02/Sep/2015 10:11:31 -0700] __init__     WARNING  Couldn't import snappy. Support for snappy compression disabled.
+[02/Sep/2015 13:11:36 ] settings     INFO     Welcome to Hue 3.7.0
+[02/Sep/2015 10:11:36 -0700] __init__     WARNING  Couldn't import snappy. Support for snappy compression disabled.
+[02/Sep/2015 13:12:01 ] settings     INFO     Welcome to Hue 3.7.0
+[02/Sep/2015 10:12:01 -0700] __init__     WARNING  Couldn't import snappy. Support for snappy compression disabled.
+[02/Sep/2015 13:12:27 ] settings     INFO     Welcome to Hue 3.7.0
+[02/Sep/2015 10:12:27 -0700] __init__     WARNING  Couldn't import snappy. Support for snappy compression disabled.
