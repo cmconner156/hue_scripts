@@ -1,5 +1,9 @@
 #!/bin/bash
 #NOTE: This script requires ldapsearch to be installed
+#Make note of what referrals look like:
+# refldap://ForestDnsZones.ad2.test.com/DC=ForestDnsZones,DC=ad2,DC=test,DC=com
+# refldap://DomainDnsZones.ad2.test.com/DC=DomainDnsZones,DC=ad2,DC=test,DC=com
+# refldap://ad2.test.com/CN=Configuration,DC=ad2,DC=test,DC=com
 
 #parse command line arguments
 parse_arguments()
@@ -15,8 +19,9 @@ parse_arguments()
   OUTPUT_DIR=/tmp/hue_ldap_test
   TEST_USER=${USER}
   TEST_GROUP=
-  GETOPT=`getopt -n $0 -o o:,u:,g:,v,h \
-      -l outdir:,user:,group:,verbose,help \
+  HUE_CONF_DIR=
+  GETOPT=`getopt -n $0 -o o:,u:,g:,c:,v,h \
+      -l outdir:,user:,group:,conf:,verbose,help \
       -- "$@"`
   eval set -- "$GETOPT"
   while true;
@@ -32,6 +37,10 @@ parse_arguments()
       ;;
     -g|--group)
       TEST_GROUP=$2
+      shift 2
+      ;;
+    -c|--conf)
+      HUE_CONF_DIR=$2
       shift 2
       ;;
     -v|--verbose)
@@ -59,7 +68,10 @@ usage: $0 [options]
 Tests Hue Server Ldap Config:
 
 OPTIONS
-   -o|--outdir <outdir>    Location to dump collected data - default /tmp/hue_collect_data.
+   -o|--outdir <outdir>    Location to dump ldap test report - default /tmp/hue_ldap_test.
+   -u|--user <user>        User that exists in ldap to search for - default root.
+   -g|--group <group>      Group that exists in ldap to search for - default, does not search for group.
+   -c|--conf <dir>         Custom Hue conf directory with hue.ini for quicker testing - default, hue process dir.
    -h|--help               Show this message.
 EOF
 }
@@ -69,6 +81,27 @@ debug()
    if [[ ! -z $VERBOSE ]]
    then
       echo "$1"
+   fi
+}
+
+report()
+{
+   echo "$1" | tee -a ${REPORT_FILE}
+}
+
+message()
+{
+   case "$1" in
+   "SEARCH_METHOD")
+     MESSAGE="WARN: ldap_username_pattern, nt_domain and search_bind_authentication are exclusive, only one should be set at a time."
+     ;;
+   *)
+     MESSAGE="Unknown message type"
+     ;;
+   esac
+   if [[ -z $2 ]]
+   then
+     echo "${MESSAGE}" | tee -a ${REPORT_FILE}
    fi
 }
 
@@ -89,7 +122,7 @@ main()
       echo "ldapsearch not found, please install ldapsearch"
       exit 1
    else
-      LDAPSEARCH_COMMAND="${LDAPSEARCH} -LLL"
+      LDAPSEARCH_COMMAND="${LDAPSEARCH} -x -LLL"
    fi
 
    AGENT_PROCESS_DIR="/var/run/cloudera-scm-agent/process"
@@ -104,11 +137,14 @@ main()
       CDH_HOME=/usr
    fi
 
-   if [ -d "${AGENT_PROCESS_DIR}" ]
+   if [[ -z ${HUE_CONF_DIR} ]]
    then
-      HUE_CONF_DIR="${AGENT_PROCESS_DIR}/`ls -1 ${AGENT_PROCESS_DIR} | grep HUE | sort -n | tail -1 `"
-   else
-      HUE_CONF_DIR="/etc/hue/conf"
+      if [ -d "${AGENT_PROCESS_DIR}" ]
+      then
+         HUE_CONF_DIR="${AGENT_PROCESS_DIR}/`ls -1 ${AGENT_PROCESS_DIR} | grep HUE | sort -n | tail -1 `"
+      else
+         HUE_CONF_DIR="/etc/hue/conf"
+      fi
    fi
    TMP_ENV_FILE=${HUE_CONF_DIR}/hue_tmp_env.sh
    TMP_PASS_FILE=${HUE_CONF_DIR}/hue_tmp_ldap_pass.txt
@@ -127,8 +163,8 @@ main()
    fi
 
    export CDH_HOME HUE_CONF_DIR ORACLE_HOME LD_LIBRARY_PATH COMMAND
-   debug "CDH_HOME: ${CDH_HOME}"
-   debug "HUE_CONF_DIR: ${HUE_CONF_DIR}"
+   report "CDH_HOME: ${CDH_HOME}"
+   report "HUE_CONF_DIR: ${HUE_CONF_DIR}"
 
    ${COMMAND} >> /dev/null 2>&1 <<EOF
 import desktop.conf
@@ -143,7 +179,7 @@ def write_property( hue_ldap_conf_file, ldap_config, property_name):
       property_value=func.get()
   else:
     property_value = desktop.conf.get_ldap_bind_password(ldap_config)
-  hue_ldap_conf_file.write("%s=%s\n" % (property_name,property_value))
+  hue_ldap_conf_file.write("%s=\"%s\"\n" % (property_name,property_value))
   return
 
 hue_ldap_conf_file = open('${TMP_ENV_FILE}', 'w')
@@ -169,10 +205,11 @@ write_property( hue_ldap_conf_file, ldap_config.GROUPS, "group_member_attr")
 EOF
 
 source ${TMP_ENV_FILE}
+FILTER_BASE="(${user_name_attr}=${TEST_USER})"
 
 if [[ -z ${ldap_url} ]]
 then
-   echo "Required attribute ldap_url is not set" | tee -a ${REPORT_FILE}
+   report "Required attribute ldap_url is not set"
    exit 1
 else
    LDAPSEARCH_COMMAND="${LDAPSEARCH_COMMAND} -H ${ldap_url}"
@@ -182,44 +219,91 @@ if [[ ! -z ${bind_dn} && ${bind_dn} != "None" ]]
 then
    if [[ -z ${bind_password} || ${bind_password} == "None" ]]
    then
-      echo "if bind_dn is set, then bind_password is required" | tee -a ${REPORT_FILE}
-      exit 1
+      report "WARN: if bind_dn is set, then bind_password is required"
+   fi
+   if [[ ! -z ${nt_domain} && ${nt_domain} != "None" ]]
+   then
+      bind_dn=${bind_dn}@${nt_domain}
    fi
    echo -n "${bind_password}" > ${TMP_PASS_FILE}
-   LDAPSEARCH_COMMAND="${LDAPSEARCH_COMMAND} -x -D ${bind_dn} -y ${TMP_PASS_FILE}"
+   LDAPSEARCH_COMMAND="${LDAPSEARCH_COMMAND} -D ${bind_dn} -y ${TMP_PASS_FILE}"
 fi
 
 if [[ -z ${base_dn} || ${base_dn} == "None" ]]
 then
-   echo "Required attribute base_dn is not set" | tee -a ${REPORT_FILE}
-   exit 1
+   report "WARN: base_dn is not set and may be required"
 else
    LDAPSEARCH_COMMAND="${LDAPSEARCH_COMMAND} -b ${base_dn}"
 fi
 
+SEARCH_METHOD_FLAG=
+if [[ ${search_bind_authentication} == "True" ]]
+then
+   if [[ ! -z ${nt_domain} && ${nt_domain} != "None" ]]
+   then
+      message "SEARCH_METHOD" ${SEARCH_METHOD_FLAG}
+      SEARCH_METHOD_FLAG=true
+   fi
+   if [[ ! -z ${ldap_username_pattern} && ${ldap_username_pattern} != "None" ]]
+   then
+      message "SEARCH_METHOD" ${SEARCH_METHOD_FLAG}
+      SEARCH_METHOD_FLAG=true
+   fi
+fi
+
+if [[ ! -z ${nt_domain} && ${nt_domain} != "None"  ]]
+then
+   if [[ ${search_bind_authentication} == "True" ]]
+   then
+      message "SEARCH_METHOD" ${SEARCH_METHOD_FLAG}
+      SEARCH_METHOD_FLAG=true
+   fi
+   if [[ ! -z ${ldap_username_pattern} && ${ldap_username_pattern} != "None" ]]
+   then
+      message "SEARCH_METHOD" ${SEARCH_METHOD_FLAG}
+      SEARCH_METHOD_FLAG=true
+   fi
+fi
+
+if [[ ! -z ${ldap_username_pattern} && ${ldap_username_pattern} != "None"  ]]
+then
+   if [[ ${search_bind_authentication} == "True" ]]
+   then
+      message "SEARCH_METHOD" ${SEARCH_METHOD_FLAG}
+      SEARCH_METHOD_FLAG=true
+   fi
+   if [[ ! -z ${nt_domain} && ${nt_domain} != "None" ]]
+   then
+      message "SEARCH_METHOD" ${SEARCH_METHOD_FLAG}
+      SEARCH_METHOD_FLAG=true
+   fi
+   FILTER_BASE="(dn${ldap_username_pattern//\<username\>/${TEST_USER}})"
+fi
+
 if [[ -z ${ldap_cert} ]]
 then
-   LDAPTLS_REQCERT=never
+   export LDAPTLS_REQCERT=never
 fi
 
 cat ${TMP_ENV_FILE} | grep -v bind_password | grep -v bash > ${REPORT_FILE}
-echo >> ${REPORT_FILE}
+report ""
 
 LDAPSEARCH_USER_COMMAND="${LDAPSEARCH_COMMAND} '(&(${user_filter})(${user_name_attr}=${TEST_USER}))' dn ${user_name_attr}"
 
-echo "Running ldapsearch command on user ${TEST_USER}:" | tee -a ${REPORT_FILE}
-echo "${LDAPSEARCH_USER_COMMAND}" | tee -a ${REPORT_FILE}
+report "Running ldapsearch command on user ${TEST_USER}:"
+report "${LDAPSEARCH_USER_COMMAND}"
 eval ${LDAPSEARCH_USER_COMMAND} | tee -a ${REPORT_FILE}
-echo | tee -a ${REPORT_FILE}
+report ""
 if [[ ! -z ${TEST_GROUP} ]]
 then
    LDAPSEARCH_GROUP_COMMAND="${LDAPSEARCH_COMMAND} '(&(${group_filter})(${group_name_attr}=${TEST_GROUP}))' dn ${group_name_attr} ${group_member_attr}"
-   echo "Running ldapsearch command on group ${TEST_GROUP}:" | tee -a ${REPORT_FILE}
-   echo "${LDAPSEARCH_GROUP_COMMAND}" | tee -a ${REPORT_FILE}
+   report "Running ldapsearch command on group ${TEST_GROUP}:"
+   report "${LDAPSEARCH_GROUP_COMMAND}"
    eval ${LDAPSEARCH_GROUP_COMMAND} | tee -a ${REPORT_FILE}
 fi
-echo | tee -a ${REPORT_FILE}
+report ""
 
+env >> ${REPORT_FILE}
 echo "View ${REPORT_FILE} for more details"
 
 #rm -f ${TMP_ENV_FILE} ${TMP_PASS_FILE}
