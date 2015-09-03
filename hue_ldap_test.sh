@@ -303,10 +303,11 @@ else
    LDAPSEARCH_USER_COMMAND="${LDAPSEARCH_COMMAND} '${USER_FILTER}'"
 #   LDAPSEARCH_USER_COMMAND="${LDAPSEARCH_COMMAND} '${USER_FILTER}' dn ${user_name_attr}"
 fi
-
 report "Running ldapsearch command on user ${TEST_USER}:"
 report "${LDAPSEARCH_USER_COMMAND}"
 eval ${LDAPSEARCH_USER_COMMAND} 2>&1 | grep -vi password | tee -a ${REPORT_FILE}
+USER_BIND_DN=`grep -i "dn:" ${REPORT_FILE} | awk -F\: '{print $2}'`
+
 report ""
 if [[ ! -z ${TEST_GROUP} ]]
 then
@@ -323,10 +324,9 @@ report "Running ldapsearch command on root dse:"
 report "${LDAPSEARCH_ROOT_COMMAND}"
 eval ${LDAPSEARCH_ROOT_COMMAND} 2>&1 | tee -a ${REPORT_FILE}
 
-USER_BIND_DN=`grep "dn:" ${REPORT_FILE} | grep ${TEST_USER} | awk '{print $2}'`
 LDAPSEARCH_USER_BIND_COMMAND="${LDAPSEARCH_COMMAND_NOAUTH} -D ${USER_BIND_DN} -W '${USER_FILTER}' dn ${user_name_attr}"
-report "Running ldapsearch command binding as ${TEST_USER}:"
-report "When prompted please enter ${TEST_USER}'s password:"
+report "Running ldapsearch command binding as ${USER_BIND_DN}(${TEST_USER}):"
+report "When prompted please enter ${USER_BIND_DN}'s password:"
 report "${LDAPSEARCH_USER_BIND_COMMAND}"
 eval ${LDAPSEARCH_USER_BIND_COMMAND} 2>&1 | tee -a ${REPORT_FILE}
 #read USER_PASS
