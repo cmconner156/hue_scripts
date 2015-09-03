@@ -179,7 +179,10 @@ def write_property( hue_ldap_conf_file, ldap_config, property_name):
     else:
       property_value=func.get()
   else:
-    property_value = desktop.conf.get_ldap_bind_password(ldap_config)
+    try:
+      property_value = desktop.conf.get_ldap_bind_password(ldap_config)
+    except AttributeError:
+      property_value = ldap_config.BIND_PASSWORD.get()
   hue_ldap_conf_file.write("%s=\"%s\"\n" % (property_name,property_value))
   return
 
