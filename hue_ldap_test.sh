@@ -5,8 +5,6 @@
 # refldap://DomainDnsZones.ad2.test.com/DC=DomainDnsZones,DC=ad2,DC=test,DC=com
 # refldap://ad2.test.com/CN=Configuration,DC=ad2,DC=test,DC=com
 #-s scope   one of base, one, sub or children (search scope)
-#Working ldapsearch for bind test:
-#/usr/bin/ldapsearch -x -LLL -b CN=Users,DC=ad,DC=sec,DC=cloudera,DC=com -H ldap://w2k8-1.ad.sec.cloudera.com -D  CN=Chris\ Conner,CN=Users,DC=ad,DC=sec,DC=cloudera,DC=com -W "(&(objectclass=user)(sAMAccountName=cconner))" dn sAMAccountName
 
 #parse command line arguments
 parse_arguments()
@@ -220,6 +218,11 @@ else
    LDAPSEARCH_COMMAND="${LDAPSEARCH_COMMAND} -H ${ldap_url}"
 fi
 
+if [[ -z ${ldap_cert} || ${ldap_cert} =~ .*None.* ]]
+then
+   LDAPSEARCH_COMMAND="LDAPTLS_REQCERT=never ${LDAPSEARCH_COMMAND}"
+fi
+
 LDAPSEARCH_COMMAND_NOAUTH=${LDAPSEARCH_COMMAND}
 if [[ ! -z ${bind_dn} && ${bind_dn} != "None" ]]
 then
@@ -288,11 +291,6 @@ then
    fi
 fi
 
-if [[ -z ${ldap_cert} ]]
-then
-   export LDAPTLS_REQCERT=never
-fi
-
 USER_FILTER="(&(${user_filter})(${user_name_attr}=${TEST_USER}))"
 GROUP_FILTER="(&(${group_filter})(${group_name_attr}=${TEST_GROUP}))"
 cat ${TMP_ENV_FILE} | grep -v bind_password | grep -v bash > ${REPORT_FILE}
@@ -300,10 +298,8 @@ report ""
 if [[ ! -z ${ldap_username_pattern} && ${ldap_username_pattern} != "None"  ]]
 then
    LDAPSEARCH_USER_COMMAND="${LDAPSEARCH_COMMAND} -b ${ldap_username_pattern//\<username\>/${TEST_USER}}"
-#   LDAPSEARCH_USER_COMMAND="${LDAPSEARCH_COMMAND} -b ${ldap_username_pattern//\<username\>/${TEST_USER}} dn ${user_name_attr}"
 else
    LDAPSEARCH_USER_COMMAND="${LDAPSEARCH_COMMAND} '${USER_FILTER}'"
-#   LDAPSEARCH_USER_COMMAND="${LDAPSEARCH_COMMAND} '${USER_FILTER}' dn ${user_name_attr}"
 fi
 report "Running ldapsearch command on user ${TEST_USER}:"
 report "${LDAPSEARCH_USER_COMMAND}"
@@ -314,7 +310,6 @@ report ""
 if [[ ! -z ${TEST_GROUP} ]]
 then
   LDAPSEARCH_GROUP_COMMAND="${LDAPSEARCH_COMMAND} '${GROUP_FILTER}'"
-#  LDAPSEARCH_GROUP_COMMAND="${LDAPSEARCH_COMMAND} '${GROUP_FILTER}' dn ${group_name_attr} ${group_member_attr}"
    report "Running ldapsearch command on group ${TEST_GROUP}:"
    report "${LDAPSEARCH_GROUP_COMMAND}"
    eval ${LDAPSEARCH_GROUP_COMMAND} 2>&1 | tee -a ${REPORT_FILE}
@@ -326,20 +321,15 @@ report "Running ldapsearch command on root dse:"
 report "${LDAPSEARCH_ROOT_COMMAND}"
 eval ${LDAPSEARCH_ROOT_COMMAND} 2>&1 | tee -a ${REPORT_FILE}
 
-LDAPSEARCH_USER_BIND_COMMAND="${LDAPSEARCH_COMMAND_NOAUTH} -D ${USER_BIND_DN} -W '${USER_FILTER}' dn ${user_name_attr}"
+LDAPSEARCH_USER_BIND_COMMAND="${LDAPSEARCH_COMMAND_NOAUTH} -D ${USER_BIND_DN// /\\ } -W '${USER_FILTER}' dn ${user_name_attr}"
 report "Running ldapsearch command binding as ${USER_BIND_DN}(${TEST_USER}):"
 report "When prompted please enter ${USER_BIND_DN}'s password:"
 report "${LDAPSEARCH_USER_BIND_COMMAND}"
 eval ${LDAPSEARCH_USER_BIND_COMMAND} 2>&1 | tee -a ${REPORT_FILE}
-#read USER_PASS
-#echo -n 
 
-#ldapsearch -x -H ldap://ad-readonly.sjc.cloudera.com -s base -b ""
-
-#env >> ${REPORT_FILE}
 echo "View ${REPORT_FILE} for more details"
 
-#rm -f ${TMP_ENV_FILE} ${TMP_PASS_FILE}
+rm -f ${TMP_ENV_FILE} ${TMP_PASS_FILE}
 
 }
 
