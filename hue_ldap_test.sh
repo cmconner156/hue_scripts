@@ -5,6 +5,8 @@
 # refldap://DomainDnsZones.ad2.test.com/DC=DomainDnsZones,DC=ad2,DC=test,DC=com
 # refldap://ad2.test.com/CN=Configuration,DC=ad2,DC=test,DC=com
 #-s scope   one of base, one, sub or children (search scope)
+#Working ldapsearch for bind test:
+#/usr/bin/ldapsearch -x -LLL -b CN=Users,DC=ad,DC=sec,DC=cloudera,DC=com -H ldap://w2k8-1.ad.sec.cloudera.com -D  CN=Chris\ Conner,CN=Users,DC=ad,DC=sec,DC=cloudera,DC=com -W "(&(objectclass=user)(sAMAccountName=cconner))" dn sAMAccountName
 
 #parse command line arguments
 parse_arguments()

@@ -45,9 +45,11 @@ else
    COMMAND="${CDH_HOME}/share/hue/build/env/bin/hue shell"
 fi
 
-export CDH_HOME HUE_CONF_DIR COMMAND
+ORACLE_HOME=/opt/cloudera/parcels/ORACLE_INSTANT_CLIENT/instantclient_11_2/
+LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${ORACLE_HOME}
+export CDH_HOME HUE_CONF_DIR ORACLE_HOME LD_LIBRARY_PATH COMMAND
 
-${COMMAND} <<EOF
+${COMMAND} >> /dev/null 2>&1 <<EOF
 from beeswax.models import SavedQuery
 from datetime import date, timedelta
 from oozie.models import Workflow
@@ -81,9 +83,9 @@ while loopCount > 0:
    if loopCount < deleteCount:
       deleteCount = loopCount
    excludeCount = loopCount - deleteCount
-   savedQuerys = SavedQuery.objects.filter(is_auto=True, mtime__lte=date.today() - timedelta(days=keepDays))[:excludeCount]
+   savedQuerys = SavedQuery.objects.filter(is_auto=True, mtime__lte=date.today() - timedelta(days=keepDays))[:excludeCount].values_list("id", flat=True)
    try:
-      SavedQuery.objects.exclude(pk__in=savedQuerys).delete()
+      SavedQuery.objects.exclude(pk__in=list(savedQuerys)).delete()
       loopCount -= deleteCount
       errorCount = 0
       deleteCount = deleteRecords
