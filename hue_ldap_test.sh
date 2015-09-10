@@ -244,7 +244,7 @@ then
       bind_dn=${bind_dn}@${nt_domain}
    fi
    echo -n "${bind_password}" > ${TMP_PASS_FILE}
-   LDAPSEARCH_COMMAND="${LDAPSEARCH_COMMAND} -D ${bind_dn} -y ${TMP_PASS_FILE}"
+   LDAPSEARCH_COMMAND="${LDAPSEARCH_COMMAND} -D ${bind_dn// /\\ } -y ${TMP_PASS_FILE}"
 fi
 
 LDAPSEARCH_COMMAND_NOBASE=${LDAPSEARCH_COMMAND}
@@ -255,7 +255,7 @@ then
       report "WARN: base_dn is not set and may be required"
    fi
 else
-   LDAPSEARCH_COMMAND="${LDAPSEARCH_COMMAND} -b ${base_dn}"
+   LDAPSEARCH_COMMAND="${LDAPSEARCH_COMMAND} -b \"${base_dn}\""
 fi
 
 SEARCH_METHOD_FLAG=
@@ -307,7 +307,7 @@ cat ${TMP_ENV_FILE} | grep -v bind_password | grep -v bash >> ${REPORT_FILE}
 report ""
 if [[ ! -z ${ldap_username_pattern} && ${ldap_username_pattern} != "None"  ]]
 then
-   LDAPSEARCH_USER_COMMAND="${LDAPSEARCH_COMMAND_NOBASE} -b ${ldap_username_pattern//\<username\>/${TEST_USER}}"
+   LDAPSEARCH_USER_COMMAND="${LDAPSEARCH_COMMAND_NOBASE} -b \"${ldap_username_pattern//\<username\>/${TEST_USER}}\""
 else
    LDAPSEARCH_USER_COMMAND="${LDAPSEARCH_COMMAND} '${USER_FILTER}'"
 fi
