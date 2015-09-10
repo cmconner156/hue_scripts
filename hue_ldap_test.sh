@@ -1,10 +1,7 @@
 #!/bin/bash
+#This script will grab current Hue configuration for ldap
+#and run ldapsearch commands to validate the config
 #NOTE: This script requires ldapsearch to be installed
-#Make note of what referrals look like:
-# refldap://ForestDnsZones.ad2.test.com/DC=ForestDnsZones,DC=ad2,DC=test,DC=com
-# refldap://DomainDnsZones.ad2.test.com/DC=DomainDnsZones,DC=ad2,DC=test,DC=com
-# refldap://ad2.test.com/CN=Configuration,DC=ad2,DC=test,DC=com
-#-s scope   one of base, one, sub or children (search scope)
 
 #parse command line arguments
 parse_arguments()
@@ -18,7 +15,7 @@ parse_arguments()
 
   # Parse short and long option parameters.
   OUTPUT_DIR=/tmp/hue_ldap_test
-  TEST_USER=${USER}
+  TEST_USER=
   TEST_GROUP=
   HUE_CONF_DIR=
   GETOPT=`getopt -n $0 -o o:,u:,g:,c:,v,h \
@@ -66,11 +63,11 @@ usage()
 cat << EOF
 usage: $0 [options]
 
-Tests Hue Server Ldap Config:
+Tests Hue Server Ldap Config by runnning ldapsearch:
 
 OPTIONS
    -o|--outdir <outdir>    Location to dump ldap test report - default /tmp/hue_ldap_test.
-   -u|--user <user>        User that exists in ldap to search for - default root.
+   -u|--user <user>        Required: User that exists in ldap to search for
    -g|--group <group>      Group that exists in ldap to search for - default, does not search for group.
    -c|--conf <dir>         Custom Hue conf directory with hue.ini for quicker testing - default, hue process dir.
    -h|--help               Show this message.
@@ -112,6 +109,13 @@ main()
 
    LDAPSEARCH=$(which ldapsearch)
 
+   if [[ -z ${TEST_USER} ]]
+   then
+      echo "-u <ldapuser> required"
+      usage
+      exit 1
+   fi
+
    if [[ ! ${USER} =~ .*root* ]]
    then
       echo "Script must be run as root: exiting"
@@ -149,12 +153,14 @@ main()
    fi
    TMP_ENV_FILE=${HUE_CONF_DIR}/hue_tmp_env.sh
    TMP_PASS_FILE=${HUE_CONF_DIR}/hue_tmp_ldap_pass.txt
+   TMP_FILE=${HUE_CONF_DIR}/hue_tmp.txt
    touch ${TMP_ENV_FILE}
    chmod 600 ${TMP_ENV_FILE}
    touch ${TMP_PASS_FILE}
    chmod 600 ${TMP_PASS_FILE}
    mkdir -p ${OUTPUT_DIR}
    REPORT_FILE=${OUTPUT_DIR}/hue_ldap_report.txt
+   rm -f ${REPORT_FILE}
 
    if [ -d "${CDH_HOME}/lib/hue/build/env/bin" ]
    then
@@ -166,6 +172,7 @@ main()
    export CDH_HOME HUE_CONF_DIR ORACLE_HOME LD_LIBRARY_PATH COMMAND
    report "CDH_HOME: ${CDH_HOME}"
    report "HUE_CONF_DIR: ${HUE_CONF_DIR}"
+   report ""
 
    ${COMMAND} >> /dev/null 2>&1 <<EOF
 import desktop.conf
@@ -221,6 +228,8 @@ fi
 if [[ -z ${ldap_cert} || ${ldap_cert} =~ .*None.* ]]
 then
    LDAPSEARCH_COMMAND="LDAPTLS_REQCERT=never ${LDAPSEARCH_COMMAND}"
+else
+   LDAPSEARCH_COMMAND="LDAPTLS_REQCERT=ALLOW LDAPTLS_CACERT=${ldap_cert} ${LDAPSEARCH_COMMAND}"
 fi
 
 LDAPSEARCH_COMMAND_NOAUTH=${LDAPSEARCH_COMMAND}
@@ -238,6 +247,7 @@ then
    LDAPSEARCH_COMMAND="${LDAPSEARCH_COMMAND} -D ${bind_dn} -y ${TMP_PASS_FILE}"
 fi
 
+LDAPSEARCH_COMMAND_NOBASE=${LDAPSEARCH_COMMAND}
 if [[ -z ${base_dn} || ${base_dn} == "None" ]]
 then
    if [[ -z ${ldap_username_pattern} || ${ldap_username_pattern} == "None" ]]
@@ -293,30 +303,42 @@ fi
 
 USER_FILTER="(&(${user_filter})(${user_name_attr}=${TEST_USER}))"
 GROUP_FILTER="(&(${group_filter})(${group_name_attr}=${TEST_GROUP}))"
-cat ${TMP_ENV_FILE} | grep -v bind_password | grep -v bash > ${REPORT_FILE}
+cat ${TMP_ENV_FILE} | grep -v bind_password | grep -v bash >> ${REPORT_FILE}
 report ""
 if [[ ! -z ${ldap_username_pattern} && ${ldap_username_pattern} != "None"  ]]
 then
-   LDAPSEARCH_USER_COMMAND="${LDAPSEARCH_COMMAND} -b ${ldap_username_pattern//\<username\>/${TEST_USER}}"
+   LDAPSEARCH_USER_COMMAND="${LDAPSEARCH_COMMAND_NOBASE} -b ${ldap_username_pattern//\<username\>/${TEST_USER}}"
 else
    LDAPSEARCH_USER_COMMAND="${LDAPSEARCH_COMMAND} '${USER_FILTER}'"
 fi
 report "Running ldapsearch command on user ${TEST_USER}:"
 report "${LDAPSEARCH_USER_COMMAND}"
+eval ${LDAPSEARCH_USER_COMMAND} 2>&1 | grep -vi password | tee ${TMP_FILE}
+USER_BIND_DN=`grep -i "dn:" ${TMP_FILE} | awk -F\: '{print $2}'`
+cat ${TMP_FILE} >> ${REPORT_FILE}
+
+report ""
+LDAPSEARCH_USER_COMMAND="${LDAPSEARCH_COMMAND_NOBASE} '(${user_name_attr}=${TEST_USER})'"
+report "Running ldapsearch command on user ${TEST_USER} without base or filter:"
+report "${LDAPSEARCH_USER_COMMAND}"
 eval ${LDAPSEARCH_USER_COMMAND} 2>&1 | grep -vi password | tee -a ${REPORT_FILE}
-USER_BIND_DN=`grep -i "dn:" ${REPORT_FILE} | awk -F\: '{print $2}'`
 
 report ""
 if [[ ! -z ${TEST_GROUP} ]]
 then
-  LDAPSEARCH_GROUP_COMMAND="${LDAPSEARCH_COMMAND} '${GROUP_FILTER}'"
+   LDAPSEARCH_GROUP_COMMAND="${LDAPSEARCH_COMMAND} '${GROUP_FILTER}'"
    report "Running ldapsearch command on group ${TEST_GROUP}:"
+   report "${LDAPSEARCH_GROUP_COMMAND}"
+   eval ${LDAPSEARCH_GROUP_COMMAND} 2>&1 | tee -a ${REPORT_FILE}
+   report ""
+   LDAPSEARCH_GROUP_COMMAND="${LDAPSEARCH_COMMAND_NOBASE} '(${group_name_attr}=${TEST_GROU})'"
+   report "Running ldapsearch command on group ${TEST_GROUP} without base or filter:"
    report "${LDAPSEARCH_GROUP_COMMAND}"
    eval ${LDAPSEARCH_GROUP_COMMAND} 2>&1 | tee -a ${REPORT_FILE}
 fi
 report ""
 
-LDAPSEARCH_ROOT_COMMAND="${LDAPSEARCH_COMMAND} -s base -b ''"
+LDAPSEARCH_ROOT_COMMAND="${LDAPSEARCH_COMMAND_NOBASE} -s base -b ''"
 report "Running ldapsearch command on root dse:"
 report "${LDAPSEARCH_ROOT_COMMAND}"
 eval ${LDAPSEARCH_ROOT_COMMAND} 2>&1 | tee -a ${REPORT_FILE}
@@ -329,7 +351,7 @@ eval ${LDAPSEARCH_USER_BIND_COMMAND} 2>&1 | tee -a ${REPORT_FILE}
 
 echo "View ${REPORT_FILE} for more details"
 
-rm -f ${TMP_ENV_FILE} ${TMP_PASS_FILE}
+rm -f ${TMP_ENV_FILE} ${TMP_PASS_FILE} ${TMP_FILE}
 
 }
 
