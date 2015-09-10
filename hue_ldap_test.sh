@@ -232,6 +232,17 @@ else
    LDAPSEARCH_COMMAND="LDAPTLS_REQCERT=ALLOW LDAPTLS_CACERT=${ldap_cert} ${LDAPSEARCH_COMMAND}"
 fi
 
+LDAPSEARCH_COMMAND_NOBASE=${LDAPSEARCH_COMMAND}
+if [[ -z ${base_dn} || ${base_dn} == "None" ]]
+then
+   if [[ -z ${ldap_username_pattern} || ${ldap_username_pattern} == "None" ]]
+   then
+      report "WARN: base_dn is not set and may be required"
+   fi
+else
+   LDAPSEARCH_COMMAND="${LDAPSEARCH_COMMAND} -b \"${base_dn}\""
+fi
+
 LDAPSEARCH_COMMAND_NOAUTH=${LDAPSEARCH_COMMAND}
 if [[ ! -z ${bind_dn} && ${bind_dn} != "None" ]]
 then
@@ -245,17 +256,7 @@ then
    fi
    echo -n "${bind_password}" > ${TMP_PASS_FILE}
    LDAPSEARCH_COMMAND="${LDAPSEARCH_COMMAND} -D ${bind_dn// /\\ } -y ${TMP_PASS_FILE}"
-fi
-
-LDAPSEARCH_COMMAND_NOBASE=${LDAPSEARCH_COMMAND}
-if [[ -z ${base_dn} || ${base_dn} == "None" ]]
-then
-   if [[ -z ${ldap_username_pattern} || ${ldap_username_pattern} == "None" ]]
-   then
-      report "WARN: base_dn is not set and may be required"
-   fi
-else
-   LDAPSEARCH_COMMAND="${LDAPSEARCH_COMMAND} -b \"${base_dn}\""
+   LDAPSEARCH_COMMAND_NOBASE="${LDAPSEARCH_COMMAND} -D ${bind_dn// /\\ } -y ${TMP_PASS_FILE}"
 fi
 
 SEARCH_METHOD_FLAG=
