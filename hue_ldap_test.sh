@@ -255,8 +255,8 @@ then
       bind_dn=${bind_dn}@${nt_domain}
    fi
    echo -n "${bind_password}" > ${TMP_PASS_FILE}
-   LDAPSEARCH_COMMAND="${LDAPSEARCH_COMMAND} -D ${bind_dn// /\\ } -y ${TMP_PASS_FILE}"
    LDAPSEARCH_COMMAND_NOBASE="${LDAPSEARCH_COMMAND} -D ${bind_dn// /\\ } -y ${TMP_PASS_FILE}"
+   LDAPSEARCH_COMMAND="${LDAPSEARCH_COMMAND} -D ${bind_dn// /\\ } -y ${TMP_PASS_FILE}"
 fi
 
 SEARCH_METHOD_FLAG=
