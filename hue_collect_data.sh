@@ -155,7 +155,7 @@ main()
 
    for PID in `ps aux | grep [r]uncherrypyserver | awk '{print $2}'`
    do
-      if [[ ! ${PID} == ?(-)+([0-9]) ]]
+      if [[ ! ${PID} =~ ^[0-9]{1,5}$ ]]
       then
         echo "Unable to get PID from Process, either Hue is not running on this host or Hue is not using CherryPy server"
         exit 1
