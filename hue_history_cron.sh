@@ -23,6 +23,12 @@ LOG_ROTATE_SIZE=10 #MB before rotating, size in MB before rotating log to .1
 LOG_ROTATE_COUNT=2 #number of log files, so 20MB max
 DATE=`date '+%Y%m%d-%H%M'`
 KEEP_DAYS=7    #Number of days of beeswax and oozie history to keep
+BEESWAX_DELETE_RECORDS=999 #number of beeswax records to delete at a time
+                             #to avoid Non Fatal Exception: DatabaseError: too many SQL variables
+WORKFLOW_DELETE_RECORDS=999 #number of workflow records to delete at a time
+                             #to avoid Non Fatal Exception: DatabaseError: too many SQL variables
+RESET_COUNT=15              #number of deletion attempts before trying max again
+RESET_MAX=5                 #number of resets permitted
 
 if [ ! -d "/usr/lib/hadoop" ]
 then
@@ -47,7 +53,7 @@ fi
 
 ORACLE_HOME=/opt/cloudera/parcels/ORACLE_INSTANT_CLIENT/instantclient_11_2/
 LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${ORACLE_HOME}
-export CDH_HOME HUE_CONF_DIR ORACLE_HOME LD_LIBRARY_PATH COMMAND
+export CDH_HOME HUE_CONF_DIR ORACLE_HOME LD_LIBRARY_PATH COMMAND DEBUG=true DESKTOP_DEBUG=true
 
 ${COMMAND} >> /dev/null 2>&1 <<EOF
 from beeswax.models import SavedQuery
@@ -60,8 +66,13 @@ import sys
 
 LOGFILE="${LOG_FILE}"
 keepDays = ${KEEP_DAYS}
-deleteRecords = 900
+deleteBeeswaxRecords = ${BEESWAX_DELETE_RECORDS}
+deleteWorkflowRecords = ${WORKFLOW_DELETE_RECORDS}
+resetCount = ${RESET_COUNT}
+resetMax = ${RESET_MAX}
 errorCount = 0
+checkCount = 0
+resets = 0
 log = logging.getLogger('')
 log.setLevel(logging.INFO)
 format = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
@@ -73,42 +84,60 @@ log.addHandler(fh)
 log.info('HUE_CONF_DIR: ${HUE_CONF_DIR}')
 log.info("Cleaning up anything in the Hue tables oozie*, desktop* and beeswax* older than ${KEEP_DAYS} old")
 
-savedQuerys = SavedQuery.objects.filter(is_auto=True, mtime__lte=date.today() - timedelta(days=keepDays))
-totalQuerys = savedQuerys.count()
-loopCount = totalQuerys
-deleteCount = deleteRecords
-log.info("SavedQuerys left: %s" % totalQuerys)
-log.info("Looping through querys")
-while loopCount > 0:
-   if loopCount < deleteCount:
-      deleteCount = loopCount
-   excludeCount = loopCount - deleteCount
-   savedQuerys = SavedQuery.objects.filter(is_auto=True, mtime__lte=date.today() - timedelta(days=keepDays))[:excludeCount].values_list("id", flat=True)
+totalQuerys = SavedQuery.objects.filter(is_auto=True, mtime__lte=date.today() - timedelta(days=keepDays)).values_list("id", flat=True)
+log.info("Looping through querys. %s querys to be deleted." % totalQuerys.count())
+while totalQuerys.count():
+   if deleteBeeswaxRecords < 30 and resets < resetMax:
+      checkCount += 1
+   if checkCount == resetCount:
+      deleteBeeswaxRecords = ${BEESWAX_DELETE_RECORDS}
+      resets += 1
+      checkCount = 0
+   log.info("SavedQuerys left: %s" % totalQuerys.count())
+   savedQuerys = SavedQuery.objects.filter(is_auto=True, mtime__lte=date.today() - timedelta(days=keepDays)).values_list("id", flat=True)[:deleteBeeswaxRecords]
    try:
-      SavedQuery.objects.exclude(pk__in=list(savedQuerys)).delete()
-      loopCount -= deleteCount
+      SavedQuery.objects.filter(pk__in = savedQuerys).delete()
       errorCount = 0
-      deleteCount = deleteRecords
    except DatabaseError, e:
       log.info("Non Fatal Exception: %s: %s" % (e.__class__.__name__, e))
       errorCount += 1
-      deleteCount = 1
-      if errorCount > 9:
+      if errorCount > 9 and deleteBeeswaxRecords == 1:
          raise
-   log.info("querys left: %s" % loopCount)
+      if deleteBeeswaxRecords > 100:
+         deleteBeeswaxRecords = max(deleteBeeswaxRecords - 100, 1)
+      else:
+         deleteBeeswaxRecords = max(deleteBeeswaxRecords - 10, 1)
+      log.info("Decreasing max delete records for SavedQuerys to: %s" % deleteBeeswaxRecords)
+   totalQuerys = SavedQuery.objects.filter(is_auto=True, mtime__lte=date.today() - timedelta(days=keepDays)).values_list("id", flat=True)
 
-workflows = Workflow.objects.filter(is_trashed=True, last_modified__lte=date.today() - timedelta(days=keepDays))
-totalWorkflows = workflows.count()
-loopCount = 1
-maxCount = 1000
-log.info("Workflows left: %s" % totalWorkflows)
-log.info("Looping through workflows")
-for w in workflows:
-   w.delete(skip_trash=True)
-   loopCount += 1
-   if loopCount == maxCount:
-      totalWorkflows = totalWorkflows - maxCount
-      loopCount = 1
-      log.info("Workflows left: %s" % totalWorkflows)
+errorCount = 0
+checkCount = 0
+resets = 0
+totalWorkflows = Workflow.objects.filter(is_trashed=True, last_modified__lte=date.today() - timedelta(days=keepDays)).values_list("id", flat=True)
+log.info("Looping through workflows. %s workflows to be deleted." % totalWorkflows.count())
+while totalWorkflows.count():
+   if deleteWorkflowRecords < 30 and resets < resetMax:
+      checkCount += 1
+   if checkCount == resetCount:
+      deleteWorkflowRecords = ${WORKFLOW_DELETE_RECORDS}
+      resets += 1
+      checkCount = 0
+   log.info("Workflows left: %s" % totalWorkflows.count())
+   deleteWorkflows = Workflow.objects.filter(is_trashed=True, last_modified__lte=date.today() - timedelta(days=keepDays)).values_list("id", flat=True)[:deleteWorkflowRecords]
+   try:
+      Workflow.objects.filter(pk__in = deleteWorkflows).delete()
+      errorCount = 0
+   except DatabaseError, e:
+      log.info("Non Fatal Exception: %s: %s" % (e.__class__.__name__, e))
+      errorCount += 1
+      if errorCount > 9 and deleteWorkflowRecords == 1:
+         raise
+      if deleteWorkflowRecords > 100:
+         deleteWorkflowRecords = max(deleteWorkflowRecords - 100, 1)
+      else:
+         deleteWorkflowRecords = max(deleteWorkflowRecords - 10, 1)
+      log.info("Decreasing max delete records for Workflows to: %s" % deleteWorkflowRecords)
+   totalWorkflows = Workflow.objects.filter(is_trashed=True, last_modified__lte=date.today() - timedelta(days=keepDays)).values_list("id", flat=True)
 
 EOF
+
