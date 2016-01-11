@@ -1,0 +1,21 @@
+[08/Jan/2016 12:27:24 ] settings     INFO     Welcome to Hue 3.7.0
+[08/Jan/2016 12:27:24 ] settings     WARNING  secret_key should be configured
+[08/Jan/2016 09:27:24 -0800] __init__     WARNING  Couldn't import snappy. Support for snappy compression disabled.
+[08/Jan/2016 09:28:29 -0800] models       WARNING  (1146, "Table 'hue79939.desktop_document' doesn't exist")
+[08/Jan/2016 09:28:29 -0800] models       WARNING  (1146, "Table 'hue79939.desktop_document' doesn't exist")
+[08/Jan/2016 09:28:29 -0800] models       WARNING  (1146, "Table 'hue79939.desktop_document' doesn't exist")
+[08/Jan/2016 09:29:04 -0800] models       INFO     HuePermissions: 25 added, 0 updated, 0 up to date, 0 stale
+[08/Jan/2016 12:31:35 ] settings     INFO     Welcome to Hue 3.7.0
+[08/Jan/2016 12:31:35 ] settings     WARNING  secret_key should be configured
+[08/Jan/2016 09:31:36 -0800] __init__     WARNING  Couldn't import snappy. Support for snappy compression disabled.
+[08/Jan/2016 09:32:47 -0800] models       WARNING  (1146, "Table 'hue79939.desktop_document' doesn't exist")
+[08/Jan/2016 09:32:47 -0800] models       WARNING  (1146, "Table 'hue79939.desktop_document' doesn't exist")
+[08/Jan/2016 09:32:47 -0800] models       WARNING  (1146, "Table 'hue79939.desktop_document' doesn't exist")
+[08/Jan/2016 09:33:22 -0800] models       INFO     HuePermissions: 25 added, 0 updated, 0 up to date, 0 stale
+[08/Jan/2016 12:40:53 ] settings     INFO     Welcome to Hue 3.7.0
+[08/Jan/2016 12:40:53 ] settings     WARNING  secret_key should be configured
+[08/Jan/2016 09:40:53 -0800] __init__     WARNING  Couldn't import snappy. Support for snappy compression disabled.
+[08/Jan/2016 09:42:04 -0800] models       WARNING  (1146, "Table 'hue79939.desktop_document' doesn't exist")
+[08/Jan/2016 09:42:04 -0800] models       WARNING  (1146, "Table 'hue79939.desktop_document' doesn't exist")
+[08/Jan/2016 09:42:04 -0800] models       WARNING  (1146, "Table 'hue79939.desktop_document' doesn't exist")
+[08/Jan/2016 09:42:42 -0800] models       INFO     HuePermissions: 25 added, 0 updated, 0 up to date, 0 stale
