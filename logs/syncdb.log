@@ -1,9 +1,0 @@
-[08/Jan/2016 12:27:09 ] settings     INFO     Welcome to Hue 3.7.0
-[08/Jan/2016 12:27:09 ] settings     WARNING  secret_key should be configured
-[08/Jan/2016 09:27:09 -0800] __init__     WARNING  Couldn't import snappy. Support for snappy compression disabled.
-[08/Jan/2016 12:31:21 ] settings     INFO     Welcome to Hue 3.7.0
-[08/Jan/2016 12:31:21 ] settings     WARNING  secret_key should be configured
-[08/Jan/2016 09:31:21 -0800] __init__     WARNING  Couldn't import snappy. Support for snappy compression disabled.
-[08/Jan/2016 12:40:39 ] settings     INFO     Welcome to Hue 3.7.0
-[08/Jan/2016 12:40:39 ] settings     WARNING  secret_key should be configured
-[08/Jan/2016 09:40:40 -0800] __init__     WARNING  Couldn't import snappy. Support for snappy compression disabled.
