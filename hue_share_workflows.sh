@@ -5,7 +5,13 @@ PARCEL_DIR=/opt/cloudera/parcels/CDH
 USERNAME=$1
 GROUP=$2
 PERMISSION=$3
-USAGE="usage: hue_share_workflows.sh <workflow_owner_username> <hue_group_to_share_with> <permission_read_or_write>"
+USAGE="usage: $0 <workflow_owner_username> <hue_group_to_share_with> <permission_read_or_write>"
+
+if [[ ! ${USER} =~ .*root* ]]
+then
+  echo "Script must be run as root: exiting"
+  exit 1
+fi
 
 if [[ -z ${USERNAME} ]]
 then

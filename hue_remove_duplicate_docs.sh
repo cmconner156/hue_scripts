@@ -2,7 +2,7 @@
 #Removes any duplicate document entries.
 PARCEL_DIR=/opt/cloudera/parcels/CDH
 
-USAGE="usage: hue_remove_duplicate_docs.sh"
+USAGE="usage: $0"
 
 if [[ ! ${USER} =~ .*root* ]]
 then
