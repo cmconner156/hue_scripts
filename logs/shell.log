@@ -1,5 +1,536 @@
-[09/Feb/2016 12:41:17 ] settings     INFO     Welcome to Hue 3.7.0
-[09/Feb/2016 12:42:58 ] settings     INFO     Welcome to Hue 3.7.0
-[09/Feb/2016 12:44:42 ] settings     INFO     Welcome to Hue 3.7.0
-[09/Feb/2016 12:47:09 ] settings     INFO     Welcome to Hue 3.7.0
-[09/Feb/2016 12:54:31 ] settings     INFO     Welcome to Hue 3.7.0
+[16/Feb/2016 14:04:57 ] settings     INFO     Welcome to Hue 3.9.0
+[16/Feb/2016 11:04:57 -0800] __init__     WARNING  Couldn't import snappy. Support for snappy compression disabled.
+[16/Feb/2016 11:04:57 -0800] models       INFO     Sample user found: hue
+[16/Feb/2016 11:04:57 -0800] connectionpool INFO     Starting new HTTP connection (1): cdh55-1.qa.test.com
+[16/Feb/2016 11:04:57 -0800] kerberos_    ERROR    generate_request_header(): authGSSClientStep() failed:
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/build/env/lib/python2.7/site-packages/requests_kerberos-0.6.1-py2.7.egg/requests_kerberos/kerberos_.py", line 114, in generate_request_header
+    _negotiate_value(response))
+GSSError: (('Unspecified GSS failure.  Minor code may provide more information', 851968), ('No Kerberos credentials available', -1765328243))
+[16/Feb/2016 11:04:57 -0800] kerberos_    ERROR    authenticate_server(): authGSSClientStep() failed:
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/build/env/lib/python2.7/site-packages/requests_kerberos-0.6.1-py2.7.egg/requests_kerberos/kerberos_.py", line 229, in authenticate_server
+    _negotiate_value(response))
+GSSError: (('Unspecified GSS failure.  Minor code may provide more information', 851968), ('No Kerberos credentials available', -1765328243))
+[16/Feb/2016 11:04:57 -0800] kerberos_    ERROR    handle_mutual_auth(): Mutual authentication failed
+[16/Feb/2016 11:04:57 -0800] models       ERROR    Failed to create home directory for user hue: Unable to authenticate <Response [401]>
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/apps/useradmin/src/useradmin/models.py", line 326, in install_sample_user
+    if not fs.do_as_user(SAMPLE_USER_INSTALL, fs.get_home_dir):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/libs/hadoop/src/hadoop/fs/webhdfs.py", line 753, in do_as_user
+    return fn(*args, **kwargs)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/libs/hadoop/src/hadoop/fs/webhdfs.py", line 442, in get_home_dir
+    res = self._root.get(params=params)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/resource.py", line 97, in get
+    return self.invoke("GET", relpath, params, headers=headers, allow_redirects=True)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/resource.py", line 78, in invoke
+    urlencode=self._urlencode)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/http_client.py", line 161, in execute
+    raise self._exc_class(ex)
+WebHdfsException: Unable to authenticate <Response [401]>
+[16/Feb/2016 11:04:57 -0800] models       INFO     Sample user found: hue
+[16/Feb/2016 11:04:57 -0800] connectionpool INFO     Starting new HTTP connection (2): cdh55-1.qa.test.com
+[16/Feb/2016 11:04:57 -0800] kerberos_    ERROR    generate_request_header(): authGSSClientStep() failed:
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/build/env/lib/python2.7/site-packages/requests_kerberos-0.6.1-py2.7.egg/requests_kerberos/kerberos_.py", line 114, in generate_request_header
+    _negotiate_value(response))
+GSSError: (('Unspecified GSS failure.  Minor code may provide more information', 851968), ('No Kerberos credentials available', -1765328243))
+[16/Feb/2016 11:04:57 -0800] kerberos_    ERROR    authenticate_server(): authGSSClientStep() failed:
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/build/env/lib/python2.7/site-packages/requests_kerberos-0.6.1-py2.7.egg/requests_kerberos/kerberos_.py", line 229, in authenticate_server
+    _negotiate_value(response))
+GSSError: (('Unspecified GSS failure.  Minor code may provide more information', 851968), ('No Kerberos credentials available', -1765328243))
+[16/Feb/2016 11:04:57 -0800] kerberos_    ERROR    handle_mutual_auth(): Mutual authentication failed
+[16/Feb/2016 11:04:57 -0800] models       ERROR    Failed to create home directory for user hue: Unable to authenticate <Response [401]>
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/apps/useradmin/src/useradmin/models.py", line 326, in install_sample_user
+    if not fs.do_as_user(SAMPLE_USER_INSTALL, fs.get_home_dir):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/libs/hadoop/src/hadoop/fs/webhdfs.py", line 753, in do_as_user
+    return fn(*args, **kwargs)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/libs/hadoop/src/hadoop/fs/webhdfs.py", line 442, in get_home_dir
+    res = self._root.get(params=params)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/resource.py", line 97, in get
+    return self.invoke("GET", relpath, params, headers=headers, allow_redirects=True)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/resource.py", line 78, in invoke
+    urlencode=self._urlencode)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/http_client.py", line 161, in execute
+    raise self._exc_class(ex)
+WebHdfsException: Unable to authenticate <Response [401]>
+[16/Feb/2016 11:04:57 -0800] models       INFO     Sample user found: hue
+[16/Feb/2016 11:04:57 -0800] connectionpool INFO     Starting new HTTP connection (3): cdh55-1.qa.test.com
+[16/Feb/2016 11:04:57 -0800] kerberos_    ERROR    generate_request_header(): authGSSClientStep() failed:
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/build/env/lib/python2.7/site-packages/requests_kerberos-0.6.1-py2.7.egg/requests_kerberos/kerberos_.py", line 114, in generate_request_header
+    _negotiate_value(response))
+GSSError: (('Unspecified GSS failure.  Minor code may provide more information', 851968), ('No Kerberos credentials available', -1765328243))
+[16/Feb/2016 11:04:57 -0800] kerberos_    ERROR    authenticate_server(): authGSSClientStep() failed:
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/build/env/lib/python2.7/site-packages/requests_kerberos-0.6.1-py2.7.egg/requests_kerberos/kerberos_.py", line 229, in authenticate_server
+    _negotiate_value(response))
+GSSError: (('Unspecified GSS failure.  Minor code may provide more information', 851968), ('No Kerberos credentials available', -1765328243))
+[16/Feb/2016 11:04:58 -0800] kerberos_    ERROR    handle_mutual_auth(): Mutual authentication failed
+[16/Feb/2016 11:04:58 -0800] models       ERROR    Failed to create home directory for user hue: Unable to authenticate <Response [401]>
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/apps/useradmin/src/useradmin/models.py", line 326, in install_sample_user
+    if not fs.do_as_user(SAMPLE_USER_INSTALL, fs.get_home_dir):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/libs/hadoop/src/hadoop/fs/webhdfs.py", line 753, in do_as_user
+    return fn(*args, **kwargs)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/libs/hadoop/src/hadoop/fs/webhdfs.py", line 442, in get_home_dir
+    res = self._root.get(params=params)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/resource.py", line 97, in get
+    return self.invoke("GET", relpath, params, headers=headers, allow_redirects=True)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/resource.py", line 78, in invoke
+    urlencode=self._urlencode)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/http_client.py", line 161, in execute
+    raise self._exc_class(ex)
+WebHdfsException: Unable to authenticate <Response [401]>
+[16/Feb/2016 11:04:58 -0800] models       INFO     Sample user found: hue
+[16/Feb/2016 11:04:58 -0800] connectionpool INFO     Starting new HTTP connection (4): cdh55-1.qa.test.com
+[16/Feb/2016 11:04:58 -0800] kerberos_    ERROR    generate_request_header(): authGSSClientStep() failed:
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/build/env/lib/python2.7/site-packages/requests_kerberos-0.6.1-py2.7.egg/requests_kerberos/kerberos_.py", line 114, in generate_request_header
+    _negotiate_value(response))
+GSSError: (('Unspecified GSS failure.  Minor code may provide more information', 851968), ('No Kerberos credentials available', -1765328243))
+[16/Feb/2016 11:04:58 -0800] kerberos_    ERROR    authenticate_server(): authGSSClientStep() failed:
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/build/env/lib/python2.7/site-packages/requests_kerberos-0.6.1-py2.7.egg/requests_kerberos/kerberos_.py", line 229, in authenticate_server
+    _negotiate_value(response))
+GSSError: (('Unspecified GSS failure.  Minor code may provide more information', 851968), ('No Kerberos credentials available', -1765328243))
+[16/Feb/2016 11:04:58 -0800] kerberos_    ERROR    handle_mutual_auth(): Mutual authentication failed
+[16/Feb/2016 11:04:58 -0800] models       ERROR    Failed to create home directory for user hue: Unable to authenticate <Response [401]>
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/apps/useradmin/src/useradmin/models.py", line 326, in install_sample_user
+    if not fs.do_as_user(SAMPLE_USER_INSTALL, fs.get_home_dir):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/libs/hadoop/src/hadoop/fs/webhdfs.py", line 753, in do_as_user
+    return fn(*args, **kwargs)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/libs/hadoop/src/hadoop/fs/webhdfs.py", line 442, in get_home_dir
+    res = self._root.get(params=params)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/resource.py", line 97, in get
+    return self.invoke("GET", relpath, params, headers=headers, allow_redirects=True)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/resource.py", line 78, in invoke
+    urlencode=self._urlencode)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/http_client.py", line 161, in execute
+    raise self._exc_class(ex)
+WebHdfsException: Unable to authenticate <Response [401]>
+[16/Feb/2016 11:04:58 -0800] models       INFO     Sample user found: hue
+[16/Feb/2016 11:04:58 -0800] connectionpool INFO     Starting new HTTP connection (5): cdh55-1.qa.test.com
+[16/Feb/2016 11:04:58 -0800] kerberos_    ERROR    generate_request_header(): authGSSClientStep() failed:
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/build/env/lib/python2.7/site-packages/requests_kerberos-0.6.1-py2.7.egg/requests_kerberos/kerberos_.py", line 114, in generate_request_header
+    _negotiate_value(response))
+GSSError: (('Unspecified GSS failure.  Minor code may provide more information', 851968), ('No Kerberos credentials available', -1765328243))
+[16/Feb/2016 11:04:58 -0800] kerberos_    ERROR    authenticate_server(): authGSSClientStep() failed:
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/build/env/lib/python2.7/site-packages/requests_kerberos-0.6.1-py2.7.egg/requests_kerberos/kerberos_.py", line 229, in authenticate_server
+    _negotiate_value(response))
+GSSError: (('Unspecified GSS failure.  Minor code may provide more information', 851968), ('No Kerberos credentials available', -1765328243))
+[16/Feb/2016 11:04:58 -0800] kerberos_    ERROR    handle_mutual_auth(): Mutual authentication failed
+[16/Feb/2016 11:04:58 -0800] models       ERROR    Failed to create home directory for user hue: Unable to authenticate <Response [401]>
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/apps/useradmin/src/useradmin/models.py", line 326, in install_sample_user
+    if not fs.do_as_user(SAMPLE_USER_INSTALL, fs.get_home_dir):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/libs/hadoop/src/hadoop/fs/webhdfs.py", line 753, in do_as_user
+    return fn(*args, **kwargs)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/libs/hadoop/src/hadoop/fs/webhdfs.py", line 442, in get_home_dir
+    res = self._root.get(params=params)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/resource.py", line 97, in get
+    return self.invoke("GET", relpath, params, headers=headers, allow_redirects=True)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/resource.py", line 78, in invoke
+    urlencode=self._urlencode)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/http_client.py", line 161, in execute
+    raise self._exc_class(ex)
+WebHdfsException: Unable to authenticate <Response [401]>
+[16/Feb/2016 11:04:58 -0800] models       INFO     Sample user found: hue
+[16/Feb/2016 11:04:58 -0800] connectionpool INFO     Starting new HTTP connection (6): cdh55-1.qa.test.com
+[16/Feb/2016 11:04:58 -0800] kerberos_    ERROR    generate_request_header(): authGSSClientStep() failed:
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/build/env/lib/python2.7/site-packages/requests_kerberos-0.6.1-py2.7.egg/requests_kerberos/kerberos_.py", line 114, in generate_request_header
+    _negotiate_value(response))
+GSSError: (('Unspecified GSS failure.  Minor code may provide more information', 851968), ('No Kerberos credentials available', -1765328243))
+[16/Feb/2016 11:04:58 -0800] kerberos_    ERROR    authenticate_server(): authGSSClientStep() failed:
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/build/env/lib/python2.7/site-packages/requests_kerberos-0.6.1-py2.7.egg/requests_kerberos/kerberos_.py", line 229, in authenticate_server
+    _negotiate_value(response))
+GSSError: (('Unspecified GSS failure.  Minor code may provide more information', 851968), ('No Kerberos credentials available', -1765328243))
+[16/Feb/2016 11:04:58 -0800] kerberos_    ERROR    handle_mutual_auth(): Mutual authentication failed
+[16/Feb/2016 11:04:58 -0800] models       ERROR    Failed to create home directory for user hue: Unable to authenticate <Response [401]>
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/apps/useradmin/src/useradmin/models.py", line 326, in install_sample_user
+    if not fs.do_as_user(SAMPLE_USER_INSTALL, fs.get_home_dir):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/libs/hadoop/src/hadoop/fs/webhdfs.py", line 753, in do_as_user
+    return fn(*args, **kwargs)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/libs/hadoop/src/hadoop/fs/webhdfs.py", line 442, in get_home_dir
+    res = self._root.get(params=params)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/resource.py", line 97, in get
+    return self.invoke("GET", relpath, params, headers=headers, allow_redirects=True)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/resource.py", line 78, in invoke
+    urlencode=self._urlencode)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/http_client.py", line 161, in execute
+    raise self._exc_class(ex)
+WebHdfsException: Unable to authenticate <Response [401]>
+[16/Feb/2016 11:04:58 -0800] models       INFO     Sample user found: hue
+[16/Feb/2016 11:04:58 -0800] connectionpool INFO     Starting new HTTP connection (7): cdh55-1.qa.test.com
+[16/Feb/2016 11:04:58 -0800] kerberos_    ERROR    generate_request_header(): authGSSClientStep() failed:
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/build/env/lib/python2.7/site-packages/requests_kerberos-0.6.1-py2.7.egg/requests_kerberos/kerberos_.py", line 114, in generate_request_header
+    _negotiate_value(response))
+GSSError: (('Unspecified GSS failure.  Minor code may provide more information', 851968), ('No Kerberos credentials available', -1765328243))
+[16/Feb/2016 11:04:58 -0800] kerberos_    ERROR    authenticate_server(): authGSSClientStep() failed:
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/build/env/lib/python2.7/site-packages/requests_kerberos-0.6.1-py2.7.egg/requests_kerberos/kerberos_.py", line 229, in authenticate_server
+    _negotiate_value(response))
+GSSError: (('Unspecified GSS failure.  Minor code may provide more information', 851968), ('No Kerberos credentials available', -1765328243))
+[16/Feb/2016 11:04:58 -0800] kerberos_    ERROR    handle_mutual_auth(): Mutual authentication failed
+[16/Feb/2016 11:04:58 -0800] models       ERROR    Failed to create home directory for user hue: Unable to authenticate <Response [401]>
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/apps/useradmin/src/useradmin/models.py", line 326, in install_sample_user
+    if not fs.do_as_user(SAMPLE_USER_INSTALL, fs.get_home_dir):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/libs/hadoop/src/hadoop/fs/webhdfs.py", line 753, in do_as_user
+    return fn(*args, **kwargs)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/libs/hadoop/src/hadoop/fs/webhdfs.py", line 442, in get_home_dir
+    res = self._root.get(params=params)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/resource.py", line 97, in get
+    return self.invoke("GET", relpath, params, headers=headers, allow_redirects=True)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/resource.py", line 78, in invoke
+    urlencode=self._urlencode)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/http_client.py", line 161, in execute
+    raise self._exc_class(ex)
+WebHdfsException: Unable to authenticate <Response [401]>
+[16/Feb/2016 11:04:58 -0800] models       INFO     Sample user found: hue
+[16/Feb/2016 11:04:58 -0800] connectionpool INFO     Starting new HTTP connection (8): cdh55-1.qa.test.com
+[16/Feb/2016 11:04:58 -0800] kerberos_    ERROR    generate_request_header(): authGSSClientStep() failed:
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/build/env/lib/python2.7/site-packages/requests_kerberos-0.6.1-py2.7.egg/requests_kerberos/kerberos_.py", line 114, in generate_request_header
+    _negotiate_value(response))
+GSSError: (('Unspecified GSS failure.  Minor code may provide more information', 851968), ('No Kerberos credentials available', -1765328243))
+[16/Feb/2016 11:04:58 -0800] kerberos_    ERROR    authenticate_server(): authGSSClientStep() failed:
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/build/env/lib/python2.7/site-packages/requests_kerberos-0.6.1-py2.7.egg/requests_kerberos/kerberos_.py", line 229, in authenticate_server
+    _negotiate_value(response))
+GSSError: (('Unspecified GSS failure.  Minor code may provide more information', 851968), ('No Kerberos credentials available', -1765328243))
+[16/Feb/2016 11:04:58 -0800] kerberos_    ERROR    handle_mutual_auth(): Mutual authentication failed
+[16/Feb/2016 11:04:58 -0800] models       ERROR    Failed to create home directory for user hue: Unable to authenticate <Response [401]>
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/apps/useradmin/src/useradmin/models.py", line 326, in install_sample_user
+    if not fs.do_as_user(SAMPLE_USER_INSTALL, fs.get_home_dir):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/libs/hadoop/src/hadoop/fs/webhdfs.py", line 753, in do_as_user
+    return fn(*args, **kwargs)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/libs/hadoop/src/hadoop/fs/webhdfs.py", line 442, in get_home_dir
+    res = self._root.get(params=params)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/resource.py", line 97, in get
+    return self.invoke("GET", relpath, params, headers=headers, allow_redirects=True)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/resource.py", line 78, in invoke
+    urlencode=self._urlencode)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/http_client.py", line 161, in execute
+    raise self._exc_class(ex)
+WebHdfsException: Unable to authenticate <Response [401]>
+[16/Feb/2016 11:04:58 -0800] models       INFO     Sample user found: hue
+[16/Feb/2016 11:04:58 -0800] connectionpool INFO     Starting new HTTP connection (9): cdh55-1.qa.test.com
+[16/Feb/2016 11:04:58 -0800] kerberos_    ERROR    generate_request_header(): authGSSClientStep() failed:
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/build/env/lib/python2.7/site-packages/requests_kerberos-0.6.1-py2.7.egg/requests_kerberos/kerberos_.py", line 114, in generate_request_header
+    _negotiate_value(response))
+GSSError: (('Unspecified GSS failure.  Minor code may provide more information', 851968), ('No Kerberos credentials available', -1765328243))
+[16/Feb/2016 11:04:58 -0800] kerberos_    ERROR    authenticate_server(): authGSSClientStep() failed:
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/build/env/lib/python2.7/site-packages/requests_kerberos-0.6.1-py2.7.egg/requests_kerberos/kerberos_.py", line 229, in authenticate_server
+    _negotiate_value(response))
+GSSError: (('Unspecified GSS failure.  Minor code may provide more information', 851968), ('No Kerberos credentials available', -1765328243))
+[16/Feb/2016 11:04:58 -0800] kerberos_    ERROR    handle_mutual_auth(): Mutual authentication failed
+[16/Feb/2016 11:04:58 -0800] models       ERROR    Failed to create home directory for user hue: Unable to authenticate <Response [401]>
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/apps/useradmin/src/useradmin/models.py", line 326, in install_sample_user
+    if not fs.do_as_user(SAMPLE_USER_INSTALL, fs.get_home_dir):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/libs/hadoop/src/hadoop/fs/webhdfs.py", line 753, in do_as_user
+    return fn(*args, **kwargs)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/libs/hadoop/src/hadoop/fs/webhdfs.py", line 442, in get_home_dir
+    res = self._root.get(params=params)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/resource.py", line 97, in get
+    return self.invoke("GET", relpath, params, headers=headers, allow_redirects=True)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/resource.py", line 78, in invoke
+    urlencode=self._urlencode)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/http_client.py", line 161, in execute
+    raise self._exc_class(ex)
+WebHdfsException: Unable to authenticate <Response [401]>
+[16/Feb/2016 11:04:58 -0800] models       INFO     Sample user found: hue
+[16/Feb/2016 11:04:58 -0800] connectionpool INFO     Starting new HTTP connection (10): cdh55-1.qa.test.com
+[16/Feb/2016 11:04:58 -0800] kerberos_    ERROR    generate_request_header(): authGSSClientStep() failed:
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/build/env/lib/python2.7/site-packages/requests_kerberos-0.6.1-py2.7.egg/requests_kerberos/kerberos_.py", line 114, in generate_request_header
+    _negotiate_value(response))
+GSSError: (('Unspecified GSS failure.  Minor code may provide more information', 851968), ('No Kerberos credentials available', -1765328243))
+[16/Feb/2016 11:04:58 -0800] kerberos_    ERROR    authenticate_server(): authGSSClientStep() failed:
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/build/env/lib/python2.7/site-packages/requests_kerberos-0.6.1-py2.7.egg/requests_kerberos/kerberos_.py", line 229, in authenticate_server
+    _negotiate_value(response))
+GSSError: (('Unspecified GSS failure.  Minor code may provide more information', 851968), ('No Kerberos credentials available', -1765328243))
+[16/Feb/2016 11:04:58 -0800] kerberos_    ERROR    handle_mutual_auth(): Mutual authentication failed
+[16/Feb/2016 11:04:58 -0800] models       ERROR    Failed to create home directory for user hue: Unable to authenticate <Response [401]>
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/apps/useradmin/src/useradmin/models.py", line 326, in install_sample_user
+    if not fs.do_as_user(SAMPLE_USER_INSTALL, fs.get_home_dir):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/libs/hadoop/src/hadoop/fs/webhdfs.py", line 753, in do_as_user
+    return fn(*args, **kwargs)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/libs/hadoop/src/hadoop/fs/webhdfs.py", line 442, in get_home_dir
+    res = self._root.get(params=params)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/resource.py", line 97, in get
+    return self.invoke("GET", relpath, params, headers=headers, allow_redirects=True)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/resource.py", line 78, in invoke
+    urlencode=self._urlencode)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/http_client.py", line 161, in execute
+    raise self._exc_class(ex)
+WebHdfsException: Unable to authenticate <Response [401]>
+[16/Feb/2016 11:04:58 -0800] models       INFO     Sample user found: hue
+[16/Feb/2016 11:04:58 -0800] connectionpool INFO     Starting new HTTP connection (11): cdh55-1.qa.test.com
+[16/Feb/2016 11:04:58 -0800] kerberos_    ERROR    generate_request_header(): authGSSClientStep() failed:
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/build/env/lib/python2.7/site-packages/requests_kerberos-0.6.1-py2.7.egg/requests_kerberos/kerberos_.py", line 114, in generate_request_header
+    _negotiate_value(response))
+GSSError: (('Unspecified GSS failure.  Minor code may provide more information', 851968), ('No Kerberos credentials available', -1765328243))
+[16/Feb/2016 11:04:58 -0800] kerberos_    ERROR    authenticate_server(): authGSSClientStep() failed:
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/build/env/lib/python2.7/site-packages/requests_kerberos-0.6.1-py2.7.egg/requests_kerberos/kerberos_.py", line 229, in authenticate_server
+    _negotiate_value(response))
+GSSError: (('Unspecified GSS failure.  Minor code may provide more information', 851968), ('No Kerberos credentials available', -1765328243))
+[16/Feb/2016 11:04:58 -0800] kerberos_    ERROR    handle_mutual_auth(): Mutual authentication failed
+[16/Feb/2016 11:04:58 -0800] models       ERROR    Failed to create home directory for user hue: Unable to authenticate <Response [401]>
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/apps/useradmin/src/useradmin/models.py", line 326, in install_sample_user
+    if not fs.do_as_user(SAMPLE_USER_INSTALL, fs.get_home_dir):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/libs/hadoop/src/hadoop/fs/webhdfs.py", line 753, in do_as_user
+    return fn(*args, **kwargs)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/libs/hadoop/src/hadoop/fs/webhdfs.py", line 442, in get_home_dir
+    res = self._root.get(params=params)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/resource.py", line 97, in get
+    return self.invoke("GET", relpath, params, headers=headers, allow_redirects=True)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/resource.py", line 78, in invoke
+    urlencode=self._urlencode)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/http_client.py", line 161, in execute
+    raise self._exc_class(ex)
+WebHdfsException: Unable to authenticate <Response [401]>
+[16/Feb/2016 11:04:58 -0800] models       INFO     Sample user found: hue
+[16/Feb/2016 11:04:58 -0800] connectionpool INFO     Starting new HTTP connection (12): cdh55-1.qa.test.com
+[16/Feb/2016 11:04:58 -0800] kerberos_    ERROR    generate_request_header(): authGSSClientStep() failed:
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/build/env/lib/python2.7/site-packages/requests_kerberos-0.6.1-py2.7.egg/requests_kerberos/kerberos_.py", line 114, in generate_request_header
+    _negotiate_value(response))
+GSSError: (('Unspecified GSS failure.  Minor code may provide more information', 851968), ('No Kerberos credentials available', -1765328243))
+[16/Feb/2016 11:04:58 -0800] kerberos_    ERROR    authenticate_server(): authGSSClientStep() failed:
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/build/env/lib/python2.7/site-packages/requests_kerberos-0.6.1-py2.7.egg/requests_kerberos/kerberos_.py", line 229, in authenticate_server
+    _negotiate_value(response))
+GSSError: (('Unspecified GSS failure.  Minor code may provide more information', 851968), ('No Kerberos credentials available', -1765328243))
+[16/Feb/2016 11:04:58 -0800] kerberos_    ERROR    handle_mutual_auth(): Mutual authentication failed
+[16/Feb/2016 11:04:58 -0800] models       ERROR    Failed to create home directory for user hue: Unable to authenticate <Response [401]>
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/apps/useradmin/src/useradmin/models.py", line 326, in install_sample_user
+    if not fs.do_as_user(SAMPLE_USER_INSTALL, fs.get_home_dir):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/libs/hadoop/src/hadoop/fs/webhdfs.py", line 753, in do_as_user
+    return fn(*args, **kwargs)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/libs/hadoop/src/hadoop/fs/webhdfs.py", line 442, in get_home_dir
+    res = self._root.get(params=params)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/resource.py", line 97, in get
+    return self.invoke("GET", relpath, params, headers=headers, allow_redirects=True)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/resource.py", line 78, in invoke
+    urlencode=self._urlencode)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/http_client.py", line 161, in execute
+    raise self._exc_class(ex)
+WebHdfsException: Unable to authenticate <Response [401]>
+[16/Feb/2016 11:04:58 -0800] models       INFO     Sample user found: hue
+[16/Feb/2016 11:04:58 -0800] connectionpool INFO     Starting new HTTP connection (13): cdh55-1.qa.test.com
+[16/Feb/2016 11:04:58 -0800] kerberos_    ERROR    generate_request_header(): authGSSClientStep() failed:
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/build/env/lib/python2.7/site-packages/requests_kerberos-0.6.1-py2.7.egg/requests_kerberos/kerberos_.py", line 114, in generate_request_header
+    _negotiate_value(response))
+GSSError: (('Unspecified GSS failure.  Minor code may provide more information', 851968), ('No Kerberos credentials available', -1765328243))
+[16/Feb/2016 11:04:58 -0800] kerberos_    ERROR    authenticate_server(): authGSSClientStep() failed:
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/build/env/lib/python2.7/site-packages/requests_kerberos-0.6.1-py2.7.egg/requests_kerberos/kerberos_.py", line 229, in authenticate_server
+    _negotiate_value(response))
+GSSError: (('Unspecified GSS failure.  Minor code may provide more information', 851968), ('No Kerberos credentials available', -1765328243))
+[16/Feb/2016 11:04:58 -0800] kerberos_    ERROR    handle_mutual_auth(): Mutual authentication failed
+[16/Feb/2016 11:04:58 -0800] models       ERROR    Failed to create home directory for user hue: Unable to authenticate <Response [401]>
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/apps/useradmin/src/useradmin/models.py", line 326, in install_sample_user
+    if not fs.do_as_user(SAMPLE_USER_INSTALL, fs.get_home_dir):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/libs/hadoop/src/hadoop/fs/webhdfs.py", line 753, in do_as_user
+    return fn(*args, **kwargs)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/libs/hadoop/src/hadoop/fs/webhdfs.py", line 442, in get_home_dir
+    res = self._root.get(params=params)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/resource.py", line 97, in get
+    return self.invoke("GET", relpath, params, headers=headers, allow_redirects=True)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/resource.py", line 78, in invoke
+    urlencode=self._urlencode)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/http_client.py", line 161, in execute
+    raise self._exc_class(ex)
+WebHdfsException: Unable to authenticate <Response [401]>
+[16/Feb/2016 11:04:58 -0800] models       INFO     Sample user found: hue
+[16/Feb/2016 11:04:58 -0800] connectionpool INFO     Starting new HTTP connection (14): cdh55-1.qa.test.com
+[16/Feb/2016 11:04:58 -0800] kerberos_    ERROR    generate_request_header(): authGSSClientStep() failed:
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/build/env/lib/python2.7/site-packages/requests_kerberos-0.6.1-py2.7.egg/requests_kerberos/kerberos_.py", line 114, in generate_request_header
+    _negotiate_value(response))
+GSSError: (('Unspecified GSS failure.  Minor code may provide more information', 851968), ('No Kerberos credentials available', -1765328243))
+[16/Feb/2016 11:04:58 -0800] kerberos_    ERROR    authenticate_server(): authGSSClientStep() failed:
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/build/env/lib/python2.7/site-packages/requests_kerberos-0.6.1-py2.7.egg/requests_kerberos/kerberos_.py", line 229, in authenticate_server
+    _negotiate_value(response))
+GSSError: (('Unspecified GSS failure.  Minor code may provide more information', 851968), ('No Kerberos credentials available', -1765328243))
+[16/Feb/2016 11:04:58 -0800] kerberos_    ERROR    handle_mutual_auth(): Mutual authentication failed
+[16/Feb/2016 11:04:58 -0800] models       ERROR    Failed to create home directory for user hue: Unable to authenticate <Response [401]>
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/apps/useradmin/src/useradmin/models.py", line 326, in install_sample_user
+    if not fs.do_as_user(SAMPLE_USER_INSTALL, fs.get_home_dir):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/libs/hadoop/src/hadoop/fs/webhdfs.py", line 753, in do_as_user
+    return fn(*args, **kwargs)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/libs/hadoop/src/hadoop/fs/webhdfs.py", line 442, in get_home_dir
+    res = self._root.get(params=params)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/resource.py", line 97, in get
+    return self.invoke("GET", relpath, params, headers=headers, allow_redirects=True)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/resource.py", line 78, in invoke
+    urlencode=self._urlencode)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/http_client.py", line 161, in execute
+    raise self._exc_class(ex)
+WebHdfsException: Unable to authenticate <Response [401]>
+[16/Feb/2016 11:04:58 -0800] models       INFO     Sample user found: hue
+[16/Feb/2016 11:04:58 -0800] connectionpool INFO     Starting new HTTP connection (15): cdh55-1.qa.test.com
+[16/Feb/2016 11:04:58 -0800] kerberos_    ERROR    generate_request_header(): authGSSClientStep() failed:
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/build/env/lib/python2.7/site-packages/requests_kerberos-0.6.1-py2.7.egg/requests_kerberos/kerberos_.py", line 114, in generate_request_header
+    _negotiate_value(response))
+GSSError: (('Unspecified GSS failure.  Minor code may provide more information', 851968), ('No Kerberos credentials available', -1765328243))
+[16/Feb/2016 11:04:58 -0800] kerberos_    ERROR    authenticate_server(): authGSSClientStep() failed:
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/build/env/lib/python2.7/site-packages/requests_kerberos-0.6.1-py2.7.egg/requests_kerberos/kerberos_.py", line 229, in authenticate_server
+    _negotiate_value(response))
+GSSError: (('Unspecified GSS failure.  Minor code may provide more information', 851968), ('No Kerberos credentials available', -1765328243))
+[16/Feb/2016 11:04:58 -0800] kerberos_    ERROR    handle_mutual_auth(): Mutual authentication failed
+[16/Feb/2016 11:04:58 -0800] models       ERROR    Failed to create home directory for user hue: Unable to authenticate <Response [401]>
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/apps/useradmin/src/useradmin/models.py", line 326, in install_sample_user
+    if not fs.do_as_user(SAMPLE_USER_INSTALL, fs.get_home_dir):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/libs/hadoop/src/hadoop/fs/webhdfs.py", line 753, in do_as_user
+    return fn(*args, **kwargs)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/libs/hadoop/src/hadoop/fs/webhdfs.py", line 442, in get_home_dir
+    res = self._root.get(params=params)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/resource.py", line 97, in get
+    return self.invoke("GET", relpath, params, headers=headers, allow_redirects=True)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/resource.py", line 78, in invoke
+    urlencode=self._urlencode)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/http_client.py", line 161, in execute
+    raise self._exc_class(ex)
+WebHdfsException: Unable to authenticate <Response [401]>
+[16/Feb/2016 11:04:58 -0800] models       INFO     Sample user found: hue
+[16/Feb/2016 11:04:58 -0800] connectionpool INFO     Starting new HTTP connection (16): cdh55-1.qa.test.com
+[16/Feb/2016 11:04:58 -0800] kerberos_    ERROR    generate_request_header(): authGSSClientStep() failed:
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/build/env/lib/python2.7/site-packages/requests_kerberos-0.6.1-py2.7.egg/requests_kerberos/kerberos_.py", line 114, in generate_request_header
+    _negotiate_value(response))
+GSSError: (('Unspecified GSS failure.  Minor code may provide more information', 851968), ('No Kerberos credentials available', -1765328243))
+[16/Feb/2016 11:04:58 -0800] kerberos_    ERROR    authenticate_server(): authGSSClientStep() failed:
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/build/env/lib/python2.7/site-packages/requests_kerberos-0.6.1-py2.7.egg/requests_kerberos/kerberos_.py", line 229, in authenticate_server
+    _negotiate_value(response))
+GSSError: (('Unspecified GSS failure.  Minor code may provide more information', 851968), ('No Kerberos credentials available', -1765328243))
+[16/Feb/2016 11:04:58 -0800] kerberos_    ERROR    handle_mutual_auth(): Mutual authentication failed
+[16/Feb/2016 11:04:58 -0800] models       ERROR    Failed to create home directory for user hue: Unable to authenticate <Response [401]>
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/apps/useradmin/src/useradmin/models.py", line 326, in install_sample_user
+    if not fs.do_as_user(SAMPLE_USER_INSTALL, fs.get_home_dir):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/libs/hadoop/src/hadoop/fs/webhdfs.py", line 753, in do_as_user
+    return fn(*args, **kwargs)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/libs/hadoop/src/hadoop/fs/webhdfs.py", line 442, in get_home_dir
+    res = self._root.get(params=params)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/resource.py", line 97, in get
+    return self.invoke("GET", relpath, params, headers=headers, allow_redirects=True)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/resource.py", line 78, in invoke
+    urlencode=self._urlencode)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/http_client.py", line 161, in execute
+    raise self._exc_class(ex)
+WebHdfsException: Unable to authenticate <Response [401]>
+[16/Feb/2016 11:04:58 -0800] models       INFO     Sample user found: hue
+[16/Feb/2016 11:04:58 -0800] connectionpool INFO     Starting new HTTP connection (17): cdh55-1.qa.test.com
+[16/Feb/2016 11:04:58 -0800] kerberos_    ERROR    generate_request_header(): authGSSClientStep() failed:
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/build/env/lib/python2.7/site-packages/requests_kerberos-0.6.1-py2.7.egg/requests_kerberos/kerberos_.py", line 114, in generate_request_header
+    _negotiate_value(response))
+GSSError: (('Unspecified GSS failure.  Minor code may provide more information', 851968), ('No Kerberos credentials available', -1765328243))
+[16/Feb/2016 11:04:58 -0800] kerberos_    ERROR    authenticate_server(): authGSSClientStep() failed:
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/build/env/lib/python2.7/site-packages/requests_kerberos-0.6.1-py2.7.egg/requests_kerberos/kerberos_.py", line 229, in authenticate_server
+    _negotiate_value(response))
+GSSError: (('Unspecified GSS failure.  Minor code may provide more information', 851968), ('No Kerberos credentials available', -1765328243))
+[16/Feb/2016 11:04:58 -0800] kerberos_    ERROR    handle_mutual_auth(): Mutual authentication failed
+[16/Feb/2016 11:04:58 -0800] models       ERROR    Failed to create home directory for user hue: Unable to authenticate <Response [401]>
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/apps/useradmin/src/useradmin/models.py", line 326, in install_sample_user
+    if not fs.do_as_user(SAMPLE_USER_INSTALL, fs.get_home_dir):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/libs/hadoop/src/hadoop/fs/webhdfs.py", line 753, in do_as_user
+    return fn(*args, **kwargs)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/libs/hadoop/src/hadoop/fs/webhdfs.py", line 442, in get_home_dir
+    res = self._root.get(params=params)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/resource.py", line 97, in get
+    return self.invoke("GET", relpath, params, headers=headers, allow_redirects=True)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/resource.py", line 78, in invoke
+    urlencode=self._urlencode)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/http_client.py", line 161, in execute
+    raise self._exc_class(ex)
+WebHdfsException: Unable to authenticate <Response [401]>
+[16/Feb/2016 11:04:58 -0800] models       INFO     Sample user found: hue
+[16/Feb/2016 11:04:58 -0800] connectionpool INFO     Starting new HTTP connection (18): cdh55-1.qa.test.com
+[16/Feb/2016 11:04:58 -0800] kerberos_    ERROR    generate_request_header(): authGSSClientStep() failed:
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/build/env/lib/python2.7/site-packages/requests_kerberos-0.6.1-py2.7.egg/requests_kerberos/kerberos_.py", line 114, in generate_request_header
+    _negotiate_value(response))
+GSSError: (('Unspecified GSS failure.  Minor code may provide more information', 851968), ('No Kerberos credentials available', -1765328243))
+[16/Feb/2016 11:04:58 -0800] kerberos_    ERROR    authenticate_server(): authGSSClientStep() failed:
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/build/env/lib/python2.7/site-packages/requests_kerberos-0.6.1-py2.7.egg/requests_kerberos/kerberos_.py", line 229, in authenticate_server
+    _negotiate_value(response))
+GSSError: (('Unspecified GSS failure.  Minor code may provide more information', 851968), ('No Kerberos credentials available', -1765328243))
+[16/Feb/2016 11:04:58 -0800] kerberos_    ERROR    handle_mutual_auth(): Mutual authentication failed
+[16/Feb/2016 11:04:58 -0800] models       ERROR    Failed to create home directory for user hue: Unable to authenticate <Response [401]>
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/apps/useradmin/src/useradmin/models.py", line 326, in install_sample_user
+    if not fs.do_as_user(SAMPLE_USER_INSTALL, fs.get_home_dir):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/libs/hadoop/src/hadoop/fs/webhdfs.py", line 753, in do_as_user
+    return fn(*args, **kwargs)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/libs/hadoop/src/hadoop/fs/webhdfs.py", line 442, in get_home_dir
+    res = self._root.get(params=params)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/resource.py", line 97, in get
+    return self.invoke("GET", relpath, params, headers=headers, allow_redirects=True)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/resource.py", line 78, in invoke
+    urlencode=self._urlencode)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/http_client.py", line 161, in execute
+    raise self._exc_class(ex)
+WebHdfsException: Unable to authenticate <Response [401]>
+[16/Feb/2016 11:04:58 -0800] models       INFO     Sample user found: hue
+[16/Feb/2016 11:04:58 -0800] connectionpool INFO     Starting new HTTP connection (19): cdh55-1.qa.test.com
+[16/Feb/2016 11:04:58 -0800] kerberos_    ERROR    generate_request_header(): authGSSClientStep() failed:
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/build/env/lib/python2.7/site-packages/requests_kerberos-0.6.1-py2.7.egg/requests_kerberos/kerberos_.py", line 114, in generate_request_header
+    _negotiate_value(response))
+GSSError: (('Unspecified GSS failure.  Minor code may provide more information', 851968), ('No Kerberos credentials available', -1765328243))
+[16/Feb/2016 11:04:58 -0800] kerberos_    ERROR    authenticate_server(): authGSSClientStep() failed:
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/build/env/lib/python2.7/site-packages/requests_kerberos-0.6.1-py2.7.egg/requests_kerberos/kerberos_.py", line 229, in authenticate_server
+    _negotiate_value(response))
+GSSError: (('Unspecified GSS failure.  Minor code may provide more information', 851968), ('No Kerberos credentials available', -1765328243))
+[16/Feb/2016 11:04:58 -0800] kerberos_    ERROR    handle_mutual_auth(): Mutual authentication failed
+[16/Feb/2016 11:04:58 -0800] models       ERROR    Failed to create home directory for user hue: Unable to authenticate <Response [401]>
+Traceback (most recent call last):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/apps/useradmin/src/useradmin/models.py", line 326, in install_sample_user
+    if not fs.do_as_user(SAMPLE_USER_INSTALL, fs.get_home_dir):
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/libs/hadoop/src/hadoop/fs/webhdfs.py", line 753, in do_as_user
+    return fn(*args, **kwargs)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/libs/hadoop/src/hadoop/fs/webhdfs.py", line 442, in get_home_dir
+    res = self._root.get(params=params)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/resource.py", line 97, in get
+    return self.invoke("GET", relpath, params, headers=headers, allow_redirects=True)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/resource.py", line 78, in invoke
+    urlencode=self._urlencode)
+  File "/opt/cloudera/parcels/CDH-5.5.1-1.cdh5.5.1.p0.11/lib/hue/desktop/core/src/desktop/lib/rest/http_client.py", line 161, in execute
+    raise self._exc_class(ex)
+WebHdfsException: Unable to authenticate <Response [401]>
+[16/Feb/2016 14:05:57 ] settings     INFO     Welcome to Hue 3.9.0
+[16/Feb/2016 11:05:58 -0800] __init__     WARNING  Couldn't import snappy. Support for snappy compression disabled.

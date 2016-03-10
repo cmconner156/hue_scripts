@@ -61,12 +61,16 @@ from django.contrib.auth.models import User
 from search.models import Collection
 user = User.objects.get(username=newowner)
 #for collection in Collection.objects.filter(name=dashboard):
-collection = Collection.objects.get(name=dashboard)
-print "Changing owner of colection(%s) from user(%s) to user(%s)" % (collection.name, collection.owner, user.username)
-collection.owner = user
-collection.save()
-collection = Collection.objects.get(name=dashboard)
-print "Owner of colection(%s) is now user(%s)" % (collection.name, collection.owner)
+#collection = Collection.objects.get(name=dashboard)
+
+for collection in Collection.objects.filter(name=dashboard):
+  print "Changing owner of colection(%s) from user(%s) to user(%s)" % (collection.name, collection.owner, user.username)
+  collection.owner = user
+  collection.save()
+
+#collection = Collection.objects.get(name=dashboard)
+for collection in Collection.objects.filter(name=dashboard):
+  print "Owner of colection(%s) is now user(%s)" % (collection.name, collection.owner)
 
 #Useful other examples:
 #from django.contrib.auth.models import User, Group
