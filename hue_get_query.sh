@@ -122,8 +122,8 @@ main()
         -L -o ${SAVED_QUERY_LIST}
 
 
-   QUERY_DESIGN=$(cat ${SAVED_QUERY_LIST} | grep execute | grep ${QUERY} | awk -F\" '{print $2}' | awk -F\/ '{print $5}')
-   echo "QUERY_DESING: ${QUERY_DESIGN}"
+   QUERY_DESIGN=$(cat ${SAVED_QUERY_LIST} | grep execute | grep "${QUERY}" | awk -F\" '{print $2}' | awk -F\/ '{print $5}')
+   echo "Query design number: ${QUERY_DESIGN}"
 
    HUE_GET_QUERY_JSON_URL="${HUE_HTTP}://${HUE_SERVER}:${HUE_PORT}/impala/api/design/${QUERY_DESIGN}/get"
 
@@ -131,7 +131,8 @@ main()
         GET \
         "${HUE_GET_QUERY_JSON_URL}" \
         -L
-   
+
+   rm -Rf ${HUE_GET_QUERY_TMP}
 }
 
 function do_curl() {
@@ -172,12 +173,13 @@ function do_curl() {
 }
 
 function hue_login() {
-   echo "Login to Hue to get Cookie:"
+   echo "Connect to Hue loging page to get Cookie and CSRF_TOKEN"
    do_curl \
 	GET \
 	"${HUE_PASS_URL}" \
 	-L 2>&1 > /dev/null
 
+   echo "Logging into Hue"
    do_curl \
         POST \
         "${HUE_PASS_URL}" \
