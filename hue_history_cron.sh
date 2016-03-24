@@ -85,6 +85,21 @@ main()
       exit 1
    fi
 
+   CDH_VERSION=`hadoop version | grep "Hadoop.*cdh.*" | awk -Fcdh '{print $2}'`
+   CDH_MAJOR_VER=${CDH_VERSION%%.*}
+   CDH_MINOR_VER=${CDH_VERSION:2:1}
+
+   if [[ ${CDH_MAJOR_VER} -ge 5 ]] && [[ ${CDH_MINOR_VER} -ge 5 ]]
+   then
+      HUE_IGNORE_PASSWORD_SCRIPT_ERRORS=1
+      if [[ -z ${HUE_DATABASE_PASSWORD} ]]
+      then
+         echo "CDH 5.5 and above requires that you set the environment variable:"
+         echo "HUE_DATABASE_PASSWORD=<dbpassword>"
+         exit 1
+      fi
+   fi
+
    PARCEL_DIR=/opt/cloudera/parcels/CDH
    LOG_FILE=/var/log/hue/`basename "$0" | awk -F\. '{print $1}'`.log
    LOG_ROTATE_SIZE=10 #MB before rotating, size in MB before rotating log to .1
@@ -165,7 +180,7 @@ if "${BEESWAX}" == "true":
       log.info("SavedQuerys left: %s" % totalQuerys.count())
       savedQuerys = SavedQuery.objects.filter(is_auto=True, mtime__lte=date.today() - timedelta(days=keepDays)).values_list("id", flat=True)[:deleteBeeswaxRecords]
       try:
-         SavedQuery.objects.filter(pk__in = savedQuerys).delete()
+         SavedQuery.objects.filter(pk__in = list(savedQuerys)).delete()
          errorCount = 0
       except DatabaseError, e:
          log.info("Non Fatal Exception: %s: %s" % (e.__class__.__name__, e))
@@ -195,7 +210,7 @@ if "${OOZIE}" == "true":
       log.info("Workflows left: %s" % totalWorkflows.count())
       deleteWorkflows = Workflow.objects.filter(is_trashed=True, last_modified__lte=date.today() - timedelta(days=keepDays)).values_list("id", flat=True)[:deleteWorkflowRecords]
       try:
-         Workflow.objects.filter(pk__in = deleteWorkflows).delete()
+         Workflow.objects.filter(pk__in = list(deleteWorkflows)).delete()
          errorCount = 0
       except DatabaseError, e:
          log.info("Non Fatal Exception: %s: %s" % (e.__class__.__name__, e))
