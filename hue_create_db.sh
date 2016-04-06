@@ -16,6 +16,9 @@ then
    exit 1
 fi
 
+export HUE_DATABASE_PASSWORD=${PASSWORD}
+export HUE_IGNORE_PASSWORD_SCRIPT_ERRORS=1
+
 HUE_CONF_DIR=/tmp/hue_create_db/${DATABASE}
 mkdir -p ${HUE_CONF_DIR}
 
