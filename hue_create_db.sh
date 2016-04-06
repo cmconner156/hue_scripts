@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 PARCEL_DIR=/opt/cloudera/parcels/CDH
 LOG_FILE=/var/log/hue/`basename "$0" | awk -F\. '{print $1}'`.log
 DATABASE=$1
@@ -44,7 +45,7 @@ cat > ${HUE_CONF_DIR}/hue.ini << EOF
 engine=mysql
 host=`hostname`
 port=3306
-user=hue
+user=${DATABASE}
 password=${PASSWORD}
 name=${DATABASE}
 EOF
@@ -52,6 +53,7 @@ EOF
 cat > ${HUE_CONF_DIR}/create.sql << EOF
 drop database if exists ${DATABASE};
 create database ${DATABASE};
+grant all on *.* to '${DATABASE}'@'%' identified by '${PASSWORD}';
 EOF
 
 mysql -uroot -p${PASSWORD} < ${HUE_CONF_DIR}/create.sql
@@ -59,8 +61,10 @@ mysql -uroot -p${PASSWORD} < ${HUE_CONF_DIR}/create.sql
 ${COMMAND} syncdb --noinput
 ${COMMAND} migrate --merge
 
+CONSTRAINT_ID=$(mysql -uroot -p${PASSWORD} ${DATABASE} -e "show create table auth_permission" | grep content_type_id_refs_id | awk -Fid_ '{print $3}' | awk -F\` '{print $1}')
+
 cat > ${HUE_CONF_DIR}/prepare.sql << EOF
-ALTER TABLE auth_permission DROP FOREIGN KEY content_type_id_refs_id_728de91f;
+ALTER TABLE auth_permission DROP FOREIGN KEY content_type_id_refs_id_${CONSTRAINT_ID};
 delete from django_content_type;
 EOF
 
