@@ -143,6 +143,7 @@ from beeswax.models import SavedQuery
 from datetime import date, timedelta
 from oozie.models import Workflow
 from django.db.utils import DatabaseError
+import desktop.conf
 import logging
 import logging.handlers
 import sys
@@ -165,6 +166,11 @@ fh.setFormatter(format)
 log.addHandler(fh)
 
 log.info('HUE_CONF_DIR: ${HUE_CONF_DIR}')
+log.info("DB Engine: %s" % desktop.conf.DATABASE.ENGINE.get())
+log.info("DB Name: %s" % desktop.conf.DATABASE.NAME.get())
+log.info("DB User: %s" % desktop.conf.DATABASE.USER.get())
+log.info("DB Host: %s" % desktop.conf.DATABASE.HOST.get())
+log.info("DB Port: %s" % str(desktop.conf.DATABASE.PORT.get()))
 log.info("Cleaning up anything in the Hue tables oozie*, desktop* and beeswax* older than ${KEEP_DAYS} old")
 
 if "${BEESWAX}" == "true":
