@@ -4,15 +4,21 @@ PARCEL_DIR=/opt/cloudera/parcels/CDH
 LOG_FILE=/var/log/hue/`basename "$0" | awk -F\. '{print $1}'`.log
 DATABASE=$1
 PASSWORD=$2
+TYPE=$3
 
 if [[ -z ${PASSWORD} ]]
 then
    PASSWORD="password"
 fi
 
+if [[ -z ${TYPE} ]]
+then
+   TYPE="mysql"
+fi
+
 if [[ -z ${DATABASE} ]]
 then
-   echo "Usage: hue_create_db.sh <database_name> <password>"
+   echo "Usage: hue_create_db.sh <database_name> <password> <dbtype-mysql-postgres>"
    exit 1
 fi
 
@@ -36,10 +42,15 @@ else
    COMMAND="${CDH_HOME}/share/hue/build/env/bin/hue"
 fi
 
+DATABASE_DUMP=${HUE_CONF_DIR}/hue_database_dump.json
 ORACLE_HOME=/opt/cloudera/parcels/ORACLE_INSTANT_CLIENT/instantclient_11_2/
 LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${ORACLE_HOME}
 export CDH_HOME HUE_CONF_DIR ORACLE_HOME LD_LIBRARY_PATH COMMAND PASSWORD DATABASE
 
+${COMMAND} dumpdata --indent 2 > ${HUE_CONF_DIR}/hue_database_dump.json
+
+if [[ ${TYPE} =~ .*mysql.* ]]
+then
 cat > ${HUE_CONF_DIR}/hue.ini << EOF
 [desktop]
 [[database]]
@@ -60,11 +71,48 @@ grant all on *.* to '${DATABASE}'@'%' identified by '${PASSWORD}';
 EOF
 
 mysql -uroot -p${PASSWORD} < ${HUE_CONF_DIR}/create.sql
+elif [[ ${TYPE} =~ .*postgres.* ]]
+then
+   yum -y install postgresql-server
+   chkconfig postgresql on
+   if [[ ! -f /var/lib/pgsql/data/postgresql.conf ]]
+   then
+      service postgresql initdb
+   fi
+   CHECK_HBA=$(grep ${DATABASE} /var/lib/pgsql/data/pg_hba.conf)
+   if [[ -z ${CHECK_HBA} ]]
+   then
+      echo "host        ${DATABASE}     ${DATABASE}     0.0.0.0/0       md5" >> /var/lib/pgsql/data/pg_hba.conf
+   fi
+   sed -i "s/#listen_addresses = 'localhost'/listen_addresses = '0.0.0.0'/g" /var/lib/pgsql/data/postgresql.conf
+   service postgresql restart
+   sudo -u postgres /bin/bash -c psql -U postgres << EOF
+create database ${DATABASE};
+\c ${DATABASE};
+create user ${DATABASE} with password '${PASSWORD}';
+grant all privileges on database ${DATABASE} to ${DATABASE};
+\q
+EOF
+cat > ${HUE_CONF_DIR}/hue.ini << EOF
+[desktop]
+[[database]]
+#engine=sqlite3
+#name=/var/lib/hue/desktop.db
+engine=postgresql_psycopg2
+host=`hostname`
+port=5432
+user=${DATABASE}
+password=${PASSWORD}
+name=${DATABASE}
+EOF
+fi
 
 ${COMMAND} syncdb --noinput
 ${COMMAND} migrate --merge
 
-CONSTRAINT_ID=$(mysql -uroot -p${PASSWORD} ${DATABASE} -e "show create table auth_permission" | grep content_type_id_refs_id | awk -Fid_ '{print $3}' | awk -F\` '{print $1}')
+if [[ ${TYPE} =~ .*mysql.* ]]
+then
+   CONSTRAINT_ID=$(mysql -uroot -p${PASSWORD} ${DATABASE} -e "show create table auth_permission" | grep content_type_id_refs_id | awk -Fid_ '{print $3}' | awk -F\` '{print $1}')
 
 cat > ${HUE_CONF_DIR}/prepare.sql << EOF
 ALTER TABLE auth_permission DROP FOREIGN KEY content_type_id_refs_id_${CONSTRAINT_ID};
@@ -73,6 +121,14 @@ EOF
 
 mysql -uroot -p${PASSWORD} ${DATABASE} < ${HUE_CONF_DIR}/prepare.sql
 
+elif [[ ${TYPE} =~ .*postgres.* ]]
+then
+  CONSTRAINT_ID=$(PGPASSWORD=${PASSWORD} psql -h `hostname` -U ${DATABASE} -d ${DATABASE} -c '\d auth_permission;' | grep content_type_id_refs_id | awk -Fid_ '{print $3}' | awk -F\" '{print $1}')
+#PGPASSWORD=${PASSWORD} psql -h `hostname` -U ${DATABASE} -d ${DATABASE} << EOF
+#ALTER TABLE auth_permission DROP CONSTRAINT content_type_id_refs_id_${CONSTRAINT_ID};
+#TRUNCATE django_content_type CASCADE;
+#EOF
+fi
 
 
 
