@@ -146,7 +146,7 @@ main()
    then
       if [ -d "${AGENT_PROCESS_DIR}" ]
       then
-         HUE_CONF_DIR="${AGENT_PROCESS_DIR}/`ls -1 ${AGENT_PROCESS_DIR} | grep HUE | sort -n | tail -1 `"
+         HUE_CONF_DIR="${AGENT_PROCESS_DIR}/`ls -1 ${AGENT_PROCESS_DIR} | grep HUE_SERVER | sort -n | tail -1 `"
       else
          HUE_CONF_DIR="/etc/hue/conf"
       fi

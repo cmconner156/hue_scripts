@@ -122,7 +122,7 @@ main()
 
    if [ -d "/var/run/cloudera-scm-agent/process" ]
    then
-      HUE_CONF_DIR="/var/run/cloudera-scm-agent/process/`ls -1 /var/run/cloudera-scm-agent/process | grep HUE | sort -n | tail -1 `"
+      HUE_CONF_DIR="/var/run/cloudera-scm-agent/process/`ls -1 /var/run/cloudera-scm-agent/process | grep HUE_SERVER | sort -n | tail -1 `"
    else
       HUE_CONF_DIR="/etc/hue/conf"
    fi
