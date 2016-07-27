@@ -32,8 +32,9 @@ parse_arguments()
   # Parse short and long option parameters.
   BEESWAX=true
   OOZIE=true
-  GETOPT=`getopt -n $0 -o b,o,h \
-      -l beeswax,oozie,help \
+  KEEP_DAYS=14
+  GETOPT=`getopt -n $0 -o b,o,d:,h \
+      -l beeswax,oozie,days:,help \
       -- "$@"`
   eval set -- "$GETOPT"
   while true;
@@ -46,6 +47,10 @@ parse_arguments()
     -o|--nooozie)
       OOZIE=
       shift
+      ;;
+    -d|--days)
+      KEEP_DAYS=
+      shift 2
       ;;
     --)
       shift
@@ -70,6 +75,7 @@ Cleans up the oozie_job, beeswax_queryhistory, beeswax_savedquery tables:
 OPTIONS
    -b|--nobeeswax          Disables cleaning of beeswax tables.
    -o|--nooozie            Disables cleaning of the oozie tables.
+   -d|--days		   Number of days of old data to keep.  Default 14.
    -h|--help               Show this message.
 EOF
 }
@@ -105,7 +111,7 @@ main()
    LOG_ROTATE_SIZE=10 #MB before rotating, size in MB before rotating log to .1
    LOG_ROTATE_COUNT=2 #number of log files, so 20MB max
    DATE=`date '+%Y%m%d-%H%M'`
-   KEEP_DAYS=7    #Number of days of beeswax and oozie history to keep
+#   KEEP_DAYS=7    #Number of days of beeswax and oozie history to keep
    BEESWAX_DELETE_RECORDS=999 #number of beeswax records to delete at a time
                                 #to avoid Non Fatal Exception: DatabaseError: too many SQL variables
    WORKFLOW_DELETE_RECORDS=999 #number of workflow records to delete at a time
