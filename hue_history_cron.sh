@@ -205,7 +205,7 @@ checkCount = 0
 resets = 0
 if "${OOZIE}" == "true":
    totalWorkflows = Workflow.objects.filter(is_trashed=True, last_modified__lte=date.today() - timedelta(days=keepDays)).values_list("id", flat=True)
-   log.info("Looping through workflows. %s workflows to be deleted." % totalWorkflows.count())
+   log.info("Looping through trashed workflows. %s workflows to be deleted." % totalWorkflows.count())
    while totalWorkflows.count():
       if deleteWorkflowRecords < 30 and resets < resetMax:
          checkCount += 1
@@ -229,6 +229,36 @@ if "${OOZIE}" == "true":
             deleteWorkflowRecords = max(deleteWorkflowRecords - 10, 1)
          log.info("Decreasing max delete records for Workflows to: %s" % deleteWorkflowRecords)
       totalWorkflows = Workflow.objects.filter(is_trashed=True, last_modified__lte=date.today() - timedelta(days=keepDays)).values_list("id", flat=True)
+
+errorCount = 0
+checkCount = 0
+resets = 0
+if "${OOZIE}" == "true":
+   totalWorkflows = Workflow.objects.filter(name='', last_modified__lte=date.today() - timedelta(days=keepDays)).values_list("id", flat=True)
+   log.info("Looping through duplicate workflows. %s workflows to be deleted." % totalWorkflows.count())
+   while totalWorkflows.count():
+      if deleteWorkflowRecords < 30 and resets < resetMax:
+         checkCount += 1
+      if checkCount == resetCount:
+         deleteWorkflowRecords = ${WORKFLOW_DELETE_RECORDS}
+         resets += 1
+         checkCount = 0
+      log.info("Workflows left: %s" % totalWorkflows.count())
+      deleteWorkflows = Workflow.objects.filter(name='', last_modified__lte=date.today() - timedelta(days=keepDays)).values_list("id", flat=True)[:deleteWorkflowRecords]
+      try:
+         Workflow.objects.filter(pk__in = list(deleteWorkflows)).delete()
+         errorCount = 0
+      except DatabaseError, e:
+         log.info("Non Fatal Exception: %s: %s" % (e.__class__.__name__, e))
+         errorCount += 1
+         if errorCount > 9 and deleteWorkflowRecords == 1:
+            raise
+         if deleteWorkflowRecords > 100:
+            deleteWorkflowRecords = max(deleteWorkflowRecords - 100, 1)
+         else:
+            deleteWorkflowRecords = max(deleteWorkflowRecords - 10, 1)
+         log.info("Decreasing max delete records for Workflows to: %s" % deleteWorkflowRecords)
+      totalWorkflows = Workflow.objects.filter(name='', last_modified__lte=date.today() - timedelta(days=keepDays)).values_list("id", flat=True)
 
 EOF
 
