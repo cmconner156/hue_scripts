@@ -136,13 +136,22 @@ main()
    if [ -d "${CDH_HOME}/lib/hue/build/env/bin" ]
    then
       COMMAND="${CDH_HOME}/lib/hue/build/env/bin/hue shell"
+      TEST_COMMAND="${CDH_HOME}/lib/hue/build/env/bin/hue dbshell"
    else
       COMMAND="${CDH_HOME}/share/hue/build/env/bin/hue shell"
+      TEST_COMMAND="${CDH_HOME}/share/hue/build/env/bin/hue dbshell"
    fi
 
    ORACLE_HOME=/opt/cloudera/parcels/ORACLE_INSTANT_CLIENT/instantclient_11_2/
    LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${ORACLE_HOME}
    export CDH_HOME HUE_CONF_DIR ORACLE_HOME LD_LIBRARY_PATH COMMAND DEBUG=true DESKTOP_DEBUG=true
+
+echo "quit;" | ${TEST_COMMAND}
+if [[ $? -ne 0 ]]
+then
+   echo "HUE_DATABASE_PASSWORD is incorrect.  Please check CM: http://${HOSTNAME}:7180/api/v5/cm/deployment and search for HUE_SERVER and database to find correct password"
+   exit 1
+fi
 
 ${COMMAND} >> /dev/null 2>&1 <<EOF
 from beeswax.models import SavedQuery
