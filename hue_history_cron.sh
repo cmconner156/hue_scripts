@@ -146,7 +146,7 @@ main()
    LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${ORACLE_HOME}
    export CDH_HOME HUE_CONF_DIR ORACLE_HOME LD_LIBRARY_PATH COMMAND DEBUG=true DESKTOP_DEBUG=true
 
-echo "quit;" | ${TEST_COMMAND}
+echo "quit" | ${TEST_COMMAND}
 if [[ $? -ne 0 ]]
 then
    echo "HUE_DATABASE_PASSWORD is incorrect.  Please check CM: http://${HOSTNAME}:7180/api/v5/cm/deployment and search for HUE_SERVER and database to find correct password"
