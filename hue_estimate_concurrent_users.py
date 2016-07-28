@@ -31,7 +31,8 @@ elif options.today:
 else:
   now = None
 
-print now.year, now.month, now.day
+if now:
+  print now.year, now.month, now.day
 
 date = None
 userlist = []
