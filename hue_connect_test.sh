@@ -104,7 +104,7 @@ main()
    HUE_TEST_URL="${HUE_HTTP}://${HUE_SERVER}:${HUE_PORT}/useradmin/"
    
    hue_login
-   echo "Posting Impala Params:"
+   echo "Testing Hue connectivity:"
    do_curl \
         GET \
         "${HUE_TEST_URL}"
@@ -136,6 +136,7 @@ function do_curl() {
       debug "${CURL} \
          ${CURL_OPTS} \
          -k \
+	 -v \
 	 --insecure \
          -e \"${HUE_HTTP}://${HUE_SERVER}:${HUE_PORT}/\" \
          -b @${COOKIE_JAR} \
@@ -148,8 +149,9 @@ function do_curl() {
 
       ${CURL} \
          ${CURL_OPTS} \
-	 --insecure \
          -k \
+	 -v \
+	 --insecure \
          -e "${HUE_HTTP}://${HUE_SERVER}:${HUE_PORT}/" \
          -b @${COOKIE_JAR} \
          -c ${COOKIE_JAR} \
