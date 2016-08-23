@@ -32,9 +32,10 @@ parse_arguments()
   # Parse short and long option parameters.
   BEESWAX=true
   OOZIE=true
+  VERBOSE=
   KEEP_DAYS=14
-  GETOPT=`getopt -n $0 -o b,o,d:,h \
-      -l beeswax,oozie,days:,help \
+  GETOPT=`getopt -n $0 -o b,o,d:,v,h \
+      -l beeswax,oozie,days:,verbose,help \
       -- "$@"`
   eval set -- "$GETOPT"
   while true;
@@ -51,6 +52,10 @@ parse_arguments()
     -d|--days)
       KEEP_DAYS=
       shift 2
+      ;;
+    -v|--verbose)
+      VERBOSE=true
+      shift
       ;;
     --)
       shift
@@ -76,8 +81,17 @@ OPTIONS
    -b|--nobeeswax          Disables cleaning of beeswax tables.
    -o|--nooozie            Disables cleaning of the oozie tables.
    -d|--days		   Number of days of old data to keep.  Default 14.
+   -v|--verbose		   Enable verbose logging
    -h|--help               Show this message.
 EOF
+}
+
+debug()
+{
+   if [[ ! -z $VERBOSE ]]
+   then
+      echo "$1" >> ${LOG_FILE}
+   fi
 }
 
 main()
@@ -107,7 +121,13 @@ main()
    fi
 
    PARCEL_DIR=/opt/cloudera/parcels/CDH
-   LOG_FILE=/var/log/hue/`basename "$0" | awk -F\. '{print $1}'`.log
+   LOG_DIR=/var/log/hue
+   if [[ ! -d ${LOG_DIR} ]]
+   then
+      mkdir -p ${LOG_DIR}
+      chown -R hue:hue ${LOG_DIR}
+   fi
+   LOG_FILE=${LOG_DIR}/`basename "$0" | awk -F\. '{print $1}'`.log
    LOG_ROTATE_SIZE=10 #MB before rotating, size in MB before rotating log to .1
    LOG_ROTATE_COUNT=2 #number of log files, so 20MB max
    DATE=`date '+%Y%m%d-%H%M'`
@@ -144,8 +164,13 @@ main()
 
    ORACLE_HOME=/opt/cloudera/parcels/ORACLE_INSTANT_CLIENT/instantclient_11_2/
    LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${ORACLE_HOME}
-   export CDH_HOME HUE_CONF_DIR ORACLE_HOME LD_LIBRARY_PATH COMMAND DEBUG=true DESKTOP_DEBUG=true
+   export CDH_HOME HUE_CONF_DIR ORACLE_HOME LD_LIBRARY_PATH COMMAND DEBUG=true
+   if [[ ! -z ${VERBOSE} ]]
+   then
+      export DESKTOP_DEBUG=true
+   fi
 
+debug "Running echo 'quit' | ${TEST_COMMAND}"
 echo "quit" | ${TEST_COMMAND}
 if [[ $? -ne 0 ]]
 then
@@ -153,6 +178,7 @@ then
    exit 1
 fi
 
+debug "Running ${COMMAND}"
 ${COMMAND} >> /dev/null 2>&1 <<EOF
 from beeswax.models import SavedQuery
 from datetime import date, timedelta
