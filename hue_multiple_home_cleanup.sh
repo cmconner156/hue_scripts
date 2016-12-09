@@ -30,6 +30,7 @@ then
    else
       HUE_CONF_DIR="/etc/hue/conf"
    fi
+   export HUE_CONF_DIR
 fi
 
 if [ -d "${CDH_HOME}/lib/hue/build/env/bin" ]
@@ -39,10 +40,14 @@ else
    COMMAND="${CDH_HOME}/share/hue/build/env/bin/hue shell"
 fi
 
-ORACLE_HOME=/opt/cloudera/parcels/ORACLE_INSTANT_CLIENT/instantclient_11_2/
-LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${ORACLE_HOME}
+if [[ -z ${ORACLE_HOME} ]]
+then
+   ORACLE_HOME=/opt/cloudera/parcels/ORACLE_INSTANT_CLIENT/instantclient_11_2/
+   LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${ORACLE_HOME}
+   export ORACLE_HOME LD_LIBRARY_PATH
+fi
 HUE_IGNORE_PASSWORD_SCRIPT_ERRORS=1
-export CDH_HOME HUE_CONF_DIR ORACLE_HOME LD_LIBRARY_PATH COMMAND HUE_IGNORE_PASSWORD_SCRIPT_ERRORS
+export CDH_HOME COMMAND HUE_IGNORE_PASSWORD_SCRIPT_ERRORS
 
 echo "HUE_CONF_DIR: ${HUE_CONF_DIR}"
 echo "COMMAND: ${COMMAND}"
