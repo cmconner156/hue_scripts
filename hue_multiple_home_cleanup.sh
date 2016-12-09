@@ -17,11 +17,14 @@ else
    CDH_HOME=/usr
 fi
 
-if [ -d "/var/run/cloudera-scm-agent/process" ]
+if [[ -z ${HUE_CONF_DIR} ]]
 then
-   HUE_CONF_DIR="/var/run/cloudera-scm-agent/process/`ls -1 /var/run/cloudera-scm-agent/process | grep HUE_SERVER | sort -n | tail -1 `"
-else
-   HUE_CONF_DIR="/etc/hue/conf"
+   if [ -d "/var/run/cloudera-scm-agent/process" ]
+   then
+      HUE_CONF_DIR="/var/run/cloudera-scm-agent/process/`ls -1 /var/run/cloudera-scm-agent/process | grep HUE_SERVER | sort -n | tail -1 `"
+   else
+      HUE_CONF_DIR="/etc/hue/conf"
+   fi
 fi
 
 if [ -d "${CDH_HOME}/lib/hue/build/env/bin" ]
