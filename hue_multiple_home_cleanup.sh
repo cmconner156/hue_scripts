@@ -4,10 +4,15 @@ PARCEL_DIR=/opt/cloudera/parcels/CDH
 
 USAGE="usage: $0"
 
+OVERRIDE=$1
+
 if [[ ! ${USER} =~ .*root* ]]
 then
-  echo "Script must be run as root: exiting"
-  exit 1
+  if [[ -z ${OVERRIDE} ]]
+  then
+    echo "Script must be run as root: exiting"
+    exit 1
+  fi
 fi
 
 if [ ! -d "/usr/lib/hadoop" ]
