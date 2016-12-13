@@ -84,31 +84,4 @@ for user in User.objects.filter():
         movecount=movecount + 1
 
 
-for user in User.objects.filter():
-  print user.username
-  last_modified=datetime.now()
-  oldest_doc=0L
-  movecount=1
-  trashdir_count=0
-  for document in Document2.objects.filter(owner=user, name=Document2.TRASH_DIR):
-    print "User has a trash"
-    trashdir_count=trashdir_count + 1
-  if trashdir_count > 1:
-    print "%s has more than 1 trashdir" % user.username
-    print "Fixing by moving newer ones to subdirectories"
-    for document in Document2.objects.filter(owner=user, name=Document2.TRASH_DIR):
-      trashdir_count=trashdir_count + 1
-      if document.last_modified < last_modified:
-        last_modified=document.last_modified
-        oldest_doc_id=document.id
-    print "Oldest doc is %s" % oldest_doc_id
-    oldest_doc = Document2.objects.get(id=oldest_doc_id)
-    for document in Document2.objects.filter(owner=user, name=Document2.TRASH_DIR):
-      if document.id != oldest_doc_id:
-        document.name="scriptmoved%s" % movecount
-        document.parent_directory=oldest_doc
-        document.save()
-        movecount=movecount + 1
-
-
 EOF
