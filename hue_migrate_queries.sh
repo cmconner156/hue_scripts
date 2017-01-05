@@ -17,7 +17,7 @@ then
   fi
 fi
 
-if [ ! -d "/usr/lib/hadoop" ]
+if [ -d "$PARCEL_DIR/" ]
 then
    CDH_HOME=$PARCEL_DIR
 else
