@@ -182,12 +182,16 @@ from desktop.models import Document2
 from django.contrib.auth.models import User
 
 username = "${USERNAME}"
+text = "${TEXT}"
 user = User.objects.get(username=username)
 
+logging.warn("Finding doc2 entries for %s containing string:" % user.username)
+logging.warn("%s" % text)
+
 for doc2 in Document2.objects.filter(owner=user):
-  if "${TEXT}" in doc2.data:
-    print "Doc2: %s" % doc2.data
-    print ""
+  if text in doc2.data:
+    logging.warn("Doc2: %s" % doc2.data)
+    logging.warn("")
 
 EOF
 
