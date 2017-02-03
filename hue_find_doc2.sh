@@ -189,7 +189,7 @@ logging.warn("Finding doc2 entries for %s containing string:" % user.username)
 logging.warn("%s" % text)
 
 for doc2 in Document2.objects.filter(owner=user):
-  if text in doc2.data:
+  if text in doc2.data or text in doc2.name:
     logging.warn("Doc2: %s" % doc2.data)
     logging.warn("")
 
