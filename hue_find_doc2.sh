@@ -192,3 +192,5 @@ for doc2 in Document2.objects.filter(owner=user):
 EOF
 
 }
+
+main "$@"
