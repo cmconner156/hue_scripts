@@ -13,17 +13,27 @@ parse_arguments()
   fi
 
   # Parse short and long option parameters.
-  ATEST=
+  OVERRIDE=
+  USERNAME=
+  TEXT=
   VERBOSE=
-  GETOPT=`getopt -n $0 -o a:,v,h \
-      -l atest:,verbose,help \
+  GETOPT=`getopt -n $0 -o o,u:,t:,v,h \
+      -l override,username:,text:,verbose,help \
       -- "$@"`
   eval set -- "$GETOPT"
   while true;
   do
     case "$1" in
-    -a|--atest)
-      ATEST=$2
+    -o|--override)
+      OVERRIDE=true
+      shift
+      ;;
+    -u|--username)
+      USERNAME=$2
+      shift 2
+      ;;
+    -t|--text)
+      TEXT=$2
       shift 2
       ;;
     -v|--verbose)
@@ -49,10 +59,12 @@ usage()
 cat << EOF
 usage: $0 [options]
 
-Tests SPNEGO connectivity to each service:
+Checks Hue DB for doc2 entry for specified user:
 
 OPTIONS
-   -a|--atest <none>       Sample var
+   -o|--override           Allow script to run as non-root, must set HUE_CONF_DIR manually before running
+   -u|--username <user>    User to check for doc2 entry
+   -t|--text <text>        Text to search for such as query name, text in query, workflow name etc
    -v|--verbose            Verbose logging, off by default
    -h|--help               Show this message.
 EOF
@@ -62,6 +74,20 @@ main()
 {
 
   parse_arguments "$@"
+
+  if [[ -z ${USERNAME} ]]
+  then
+    echo "-u <user> required"
+    usage
+    exit 1
+  fi
+
+  if [[ -z ${TEXT} ]]
+  then
+    usage
+    echo "-t <text> required"
+    exit 1
+  fi
 
   #SET IMPORTANT ENV VARS
   if [[ -z ${HUE_CONF_DIR} ]]
@@ -155,11 +181,11 @@ import logging
 from desktop.models import Document2
 from django.contrib.auth.models import User
 
-username = "pri20074"
+username = "${USERNAME}"
 user = User.objects.get(username=username)
 
 for doc2 in Document2.objects.filter(owner=user):
-  if "statement" in doc2.data:
+  if "${TEXT}" in doc2.data:
     print "Doc2: %s" % doc2.data
     print ""
 
