@@ -209,7 +209,7 @@ tags = [
 #logging.warn("Doc.tags: %s" % DocumentTag.objects.get_tags(user=user))
 
 
-logging.warn("Docs that do have imported tag")
+logging.warn("Docs that do not have imported tag: IE: Should not already be imported")
 count = 0
 for doc in docs.exclude(tags__in=tags):
   logging.warn("content_type_id: %s" % doc.content_type_id)
@@ -237,7 +237,7 @@ for doc in docs.exclude(tags__in=tags):
 #      doc.add_tag(imported_tag)
 #      doc.save()
 
-logging.warn("Docs imported tag counted: %s" % count)
+logging.warn("Docs no imported tag counted: %s" % count)
 logging.warn("")
 logging.warn("")
 
@@ -248,7 +248,7 @@ tags = [
 ]
 
 count = 0
-logging.warn("Docs that do not have imported tag")
+logging.warn("Docs that do have imported tag: IE: Should already be imported")
 for doc in docs.exclude(tags__in=tags):
   logging.warn("content_type_id: %s" % doc.content_type_id)
   logging.warn("dict: %s" % doc.__dict__)
@@ -261,15 +261,15 @@ logging.warn("Docs no imported tag counted: %s" % count)
 logging.warn("")
 logging.warn("")
 
+logging.warn("Doc2 count")
 count = 0
 for doc2 in Document2.objects.filter(owner=user):
-  if "user_guid" in doc2.data:
-    logging.warn("Doc2: %s" % doc2.data)
-    logging.warn("")
-    count = count + 1
+  logging.warn("Doc2: %s" % doc2.data)
+  logging.warn("")
+  count = count + 1
 
 
-logging.warn("Docs counted: %s" % count)
+logging.warn("Doc counted: %s" % count)
 
 logging.warn("")
 logging.warn("")
