@@ -247,7 +247,7 @@ tags = [
   DocumentTag.objects.get_example_tag(user=user), # No examples
 ]
 
-dog_tag_count = 0
+doc_tag_count = 0
 logging.warn("Docs that do have imported tag: IE: Should already be imported")
 for doc in docs.exclude(tags__in=tags):
   logging.warn("content_type_id: %s" % doc.content_type_id)
