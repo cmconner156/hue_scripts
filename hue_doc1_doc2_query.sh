@@ -210,13 +210,13 @@ tags = [
 
 
 logging.warn("Docs that do not have imported tag: IE: Should not already be imported")
-count = 0
+doc_notag_count = 0
 for doc in docs.exclude(tags__in=tags):
   logging.warn("content_type_id: %s" % doc.content_type_id)
   logging.warn("dict: %s" % doc.__dict__)
   logging.warn("Doc.content_object.data: %s" % doc.content_object.data)
   logging.warn("Doc.tags: %s" % doc.tags.all())
-  count = count + 1
+  doct_notag_count = doc_notag_count + 1
 #  if doc.content_object:
 #    notebook = import_saved_beeswax_query(doc.content_object)
 #    data = notebook.get_data()
@@ -237,7 +237,7 @@ for doc in docs.exclude(tags__in=tags):
 #      doc.add_tag(imported_tag)
 #      doc.save()
 
-logging.warn("Docs no imported tag counted: %s" % count)
+logging.warn("Docs no imported tag counted: %s" % doc_notag_count)
 logging.warn("")
 logging.warn("")
 
@@ -247,29 +247,31 @@ tags = [
   DocumentTag.objects.get_example_tag(user=user), # No examples
 ]
 
-count = 0
+dog_tag_count = 0
 logging.warn("Docs that do have imported tag: IE: Should already be imported")
 for doc in docs.exclude(tags__in=tags):
   logging.warn("content_type_id: %s" % doc.content_type_id)
   logging.warn("dict: %s" % doc.__dict__)
   logging.warn("Doc.content_object.data: %s" % doc.content_object.data)
   logging.warn("Doc.tags: %s" % doc.tags.all())
-  count = count + 1
+  doc_tag_count = doc_tag_count + 1
 
 
-logging.warn("Docs no imported tag counted: %s" % count)
+logging.warn("Docs no imported tag counted: %s" % doc_tag_count)
 logging.warn("")
 logging.warn("")
 
 logging.warn("Doc2 count")
-count = 0
+doc2_count = 0
 for doc2 in Document2.objects.filter(owner=user):
   logging.warn("Doc2: %s" % doc2.data)
   logging.warn("")
-  count = count + 1
+  doc2_count = doc2_count + 1
 
 
-logging.warn("Doc counted: %s" % count)
+logging.warn("Docs no imported tag counted: %s" % doc_notag_count)
+logging.warn("Docs imported tag counted: %s" % doc_tag_count)
+logging.warn("Doc2 counted: %s" % doc2_count)
 
 logging.warn("")
 logging.warn("")
