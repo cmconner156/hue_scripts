@@ -237,7 +237,7 @@ for doc in docs.exclude(tags__in=tags):
 #      doc.add_tag(imported_tag)
 #      doc.save()
 
-logging.warn("Docs counted: %s" % count)
+logging.warn("Docs imported tag counted: %s" % count)
 logging.warn("")
 logging.warn("")
 
@@ -257,7 +257,7 @@ for doc in docs.exclude(tags__in=tags):
   count = count + 1
 
 
-logging.warn("Docs counted: %s" % count)
+logging.warn("Docs no imported tag counted: %s" % count)
 logging.warn("")
 logging.warn("")
 
@@ -267,7 +267,6 @@ for doc2 in Document2.objects.filter(owner=user):
     logging.warn("Doc2: %s" % doc2.data)
     logging.warn("")
     count = count + 1
-    logging.warn("COUNT: %s" % count)
 
 
 logging.warn("Docs counted: %s" % count)
