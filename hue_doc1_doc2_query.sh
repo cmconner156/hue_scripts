@@ -135,9 +135,9 @@ main()
     fi
     if [[ -z ${ORACLE_HOME} ]]
     then
-      echo "It looks like you are using Oracle as your backend" | tee ${LOG_FILE}
-      echo "ORACLE_HOME must be set to the correct Oracle client" | tee ${LOG_FILE}
-      echo "before running this script" | tee ${LOG_FILE}
+      echo "It looks like you are using Oracle as your backend" | tee -a ${LOG_FILE}
+      echo "ORACLE_HOME must be set to the correct Oracle client" | tee -a ${LOG_FILE}
+      echo "before running this script" | tee -a ${LOG_FILE}
       exit 1
     fi
   fi
@@ -145,26 +145,26 @@ main()
   HUE_IGNORE_PASSWORD_SCRIPT_ERRORS=1
   if [[ -z ${HUE_DATABASE_PASSWORD} ]]
   then
-    echo "CDH 5.5 and above requires that you set the environment variable:" | tee ${LOG_FILE}
-    echo "HUE_DATABASE_PASSWORD=<dbpassword>" | tee ${LOG_FILE}
+    echo "CDH 5.5 and above requires that you set the environment variable:" | tee -a ${LOG_FILE}
+    echo "HUE_DATABASE_PASSWORD=<dbpassword>" | tee -a ${LOG_FILE}
     exit 1
   fi
   export CDH_HOME COMMAND HUE_IGNORE_PASSWORD_SCRIPT_ERRORS
 
-  echo "HUE_CONF_DIR: ${HUE_CONF_DIR}" | tee ${LOG_FILE}
+  echo "HUE_CONF_DIR: ${HUE_CONF_DIR}" | tee -a ${LOG_FILE}
 
-  echo "Validating DB connectivity" | tee ${LOG_FILE}
-  echo "COMMAND: echo \"from django.db import connection; cursor = connection.cursor(); cursor.execute('select count(*) from auth_user')\" | ${TEST_COMMAND}" | tee ${LOG_FILE}
-  echo "from django.db import connection; cursor = connection.cursor(); cursor.execute('select count(*) from auth_user')" | ${TEST_COMMAND} | tee ${LOG_FILE}
+  echo "Validating DB connectivity" | tee -a ${LOG_FILE}
+  echo "COMMAND: echo \"from django.db import connection; cursor = connection.cursor(); cursor.execute('select count(*) from auth_user')\" | ${TEST_COMMAND}" | tee -a ${LOG_FILE}
+  echo "from django.db import connection; cursor = connection.cursor(); cursor.execute('select count(*) from auth_user')" | ${TEST_COMMAND} | tee -a ${LOG_FILE}
   if [[ $? -ne 0 ]]
   then
-    echo "DB connect test did not work, HUE_DATABASE_PASSWORD may not be correct" | tee ${LOG_FILE}
-    echo "If the next query test fails check password in CM: http://<cmhostname>:7180/api/v5/cm/deployment and search for HUE_SERVER and database to find correct password" | tee ${LOG_FILE}
+    echo "DB connect test did not work, HUE_DATABASE_PASSWORD may not be correct" | tee -a ${LOG_FILE}
+    echo "If the next query test fails check password in CM: http://<cmhostname>:7180/api/v5/cm/deployment and search for HUE_SERVER and database to find correct password" | tee -a ${LOG_FILE}
   fi
 
-  echo "COMMAND: ${COMMAND}" | tee ${LOG_FILE}
+  echo "COMMAND: ${COMMAND}" | tee -a ${LOG_FILE}
 
-  ${COMMAND} 2>&1 <<EOF | tee ${LOG_FILE}
+  ${COMMAND} 2>&1 <<EOF | tee -a ${LOG_FILE}
 import json
 import logging
 import time
