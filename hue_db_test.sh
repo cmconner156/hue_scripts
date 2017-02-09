@@ -162,6 +162,7 @@ main()
   echo "Running queries to test timings.  See results in ${LOG_FILE}" | tee -a ${LOG_FILE}
   debug "Running ${COMMAND}"
   ${COMMAND} 2>&1 <<EOF | tee -a ${LOG_FILE}
+ import desktop.conf
 from datetime import datetime, timedelta
 from time import mktime
 from django.db import connection
