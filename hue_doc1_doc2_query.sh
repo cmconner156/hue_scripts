@@ -154,17 +154,17 @@ main()
   echo "HUE_CONF_DIR: ${HUE_CONF_DIR}"
 
   echo "Validating DB connectivity"
-  echo "COMMAND: echo 'quit' | ${TEST_COMMAND}"
-  echo "quit" | ${TEST_COMMAND}
+  echo "COMMAND: echo \"from django.db import connection; cursor = connection.cursor(); cursor.execute('select count(*) from auth_user')\" | ${TEST_COMMAND}"
+  echo "from django.db import connection; cursor = connection.cursor(); cursor.execute('select count(*) from auth_user')" | ${TEST_COMMAND}
   if [[ $? -ne 0 ]]
   then
-    echo "HUE_DATABASE_PASSWORD is incorrect.  Please check CM: http://${HOSTNAME}:7180/api/v5/cm/deployment and search for HUE_SERVER and database to find correct password"
-    exit 1
+    echo "DB connect test did not work, HUE_DATABASE_PASSWORD may not be correct"
+    echo "If the next query test fails check password in CM: http://<cmhostname>:7180/api/v5/cm/deployment and search for HUE_SERVER and database to find correct password"
   fi
 
   echo "COMMAND: ${COMMAND}"
 
-${COMMAND} 2>&1 <<EOF | tee ${LOG_FILE}
+  ${COMMAND} 2>&1 <<EOF | tee ${LOG_FILE}
 import json
 import logging
 import time

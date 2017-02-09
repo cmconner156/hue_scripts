@@ -1,23 +1,5 @@
 #!/bin/bash
-# Licensed to Cloudera, Inc. under one
-# or more contributor license agreements.  See the NOTICE file
-# distributed with this work for additional information
-# regarding copyright ownership.  Cloudera, Inc. licenses this file
-# to you under the Apache License, Version 2.0 (the
-# "License"); you may not use this file except in compliance
-# with the License.  You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
-#Cleans up old oozie workflow and beeswax savedqueries to
-#prevent the DB from getting too large.
-
+Test DB timings on login
 
 #parse command line arguments
 parse_arguments()
@@ -30,14 +12,19 @@ parse_arguments()
   fi
 
   # Parse short and long option parameters.
+  OVERRIDE=
   VERBOSE=
-  GETOPT=`getopt -n $0 -o v,h \
+  GETOPT=`getopt -n $0 -o o,v,h \
       -l verbose,help \
       -- "$@"`
   eval set -- "$GETOPT"
   while true;
   do
     case "$1" in
+    -o|--override)
+      OVERRIDE=true
+      shift
+      ;;
     -v|--verbose)
       VERBOSE=true
       shift
@@ -63,6 +50,7 @@ usage: $0 [options]
 Tests how long DB requests take:
 
 OPTIONS
+   -o|--override           Allow script to run as non-root, must set HUE_CONF_DIR manually before running
    -v|--verbose		   Enable verbose logging
    -h|--help               Show this message.
 EOF
@@ -80,158 +68,142 @@ debug()
 main()
 {
 
-   parse_arguments "$@"
+  parse_arguments "$@"
 
-   if [[ ! ${USER} =~ .*root* ]]
-   then
+  #SET IMPORTANT ENV VARS
+  if [[ -z ${HUE_CONF_DIR} ]]
+  then
+    if [ -d "/var/run/cloudera-scm-agent/process" ]
+    then
+      HUE_CONF_DIR="/var/run/cloudera-scm-agent/process/`ls -1 /var/run/cloudera-scm-agent/process | grep HUE_SERVER | sort -n | tail -1 `"
+    else
+      HUE_CONF_DIR="/etc/hue/conf"
+    fi
+    export HUE_CONF_DIR
+  fi
+
+  if [[ ! ${USER} =~ .*root* ]]
+  then
+    DESKTOP_LOG_DIR=${HUE_CONF_DIR}/logs
+    if [[ -z ${OVERRIDE} ]]
+    then
       echo "Script must be run as root: exiting"
       exit 1
-   fi
+    fi
+  else
+    DESKTOP_LOG_DIR=$(strings /proc/$(ps -ef | grep [r]unc | awk '{print $2}')/environ | grep DESKTOP_LOG_DIR | awk -F\= '{print $2}')
+  fi
 
-   CDH_VERSION=`hadoop version | grep "Hadoop.*cdh.*" | awk -Fcdh '{print $2}'`
-   CDH_MAJOR_VER=${CDH_VERSION%%.*}
-   CDH_MINOR_VER=${CDH_VERSION:2:1}
+  LOG_FILE=${DESKTOP_LOG_DIR}/`basename "$0" | awk -F\. '{print $1}'`.log
 
-   if [[ ${CDH_MAJOR_VER} -ge 5 ]] && [[ ${CDH_MINOR_VER} -ge 5 ]]
-   then
-      HUE_IGNORE_PASSWORD_SCRIPT_ERRORS=1
-      if [[ -z ${HUE_DATABASE_PASSWORD} ]]
+  PARCEL_DIR=/opt/cloudera/parcels/CDH
+  if [ ! -d "/usr/lib/hadoop" ]
+  then
+    CDH_HOME=$PARCEL_DIR
+  else
+    CDH_HOME=/usr
+  fi
+
+  if [ -d "${CDH_HOME}/lib/hue/build/env/bin" ]
+  then
+    COMMAND="${CDH_HOME}/lib/hue/build/env/bin/hue shell"
+    TEST_COMMAND="${CDH_HOME}/lib/hue/build/env/bin/hue dbshell"
+  else
+    COMMAND="${CDH_HOME}/share/hue/build/env/bin/hue shell"
+    TEST_COMMAND="${CDH_HOME}/share/hue/build/env/bin/hue dbshell"
+  fi
+
+  ORACLE_ENGINE_CHECK=$(grep engine ${HUE_CONF_DIR}/hue* | grep -i oracle)
+  if [[ ! -z ${ORACLE_ENGINE_CHECK} ]]
+  then
+    if [[ -z ${ORACLE_HOME} ]]
+    then
+      ORACLE_PARCEL=/opt/cloudera/parcels/ORACLE_INSTANT_CLIENT/instantclient_11_2
+      if [[ -d ${ORACLE_PARCEL} ]]
       then
-         echo "CDH 5.5 and above requires that you set the environment variable:"
-         echo "HUE_DATABASE_PASSWORD=<dbpassword>"
-         exit 1
+        ORACLE_HOME=${ORACLE_PARCEL}
+        LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${ORACLE_HOME}
+        export LD_LIBRARY_PATH ORACLE_HOME
       fi
-   fi
-
-   PARCEL_DIR=/opt/cloudera/parcels/CDH
-   LOG_DIR=/var/log/hue
-   if [[ ! -d ${LOG_DIR} ]]
-   then
-      mkdir -p ${LOG_DIR}
-      chown -R hue:hue ${LOG_DIR}
-   fi
-   LOG_FILE=${LOG_DIR}/`basename "$0" | awk -F\. '{print $1}'`.log
-   LOG_ROTATE_SIZE=10 #MB before rotating, size in MB before rotating log to .1
-   LOG_ROTATE_COUNT=2 #number of log files, so 20MB max
-   DATE=`date '+%Y%m%d-%H%M'`
-#   KEEP_DAYS=7    #Number of days of beeswax and oozie history to keep
-   BEESWAX_DELETE_RECORDS=999 #number of beeswax records to delete at a time
-                                #to avoid Non Fatal Exception: DatabaseError: too many SQL variables
-   WORKFLOW_DELETE_RECORDS=999 #number of workflow records to delete at a time
-                                #to avoid Non Fatal Exception: DatabaseError: too many SQL variables
-   RESET_COUNT=15              #number of deletion attempts before trying max again
-   RESET_MAX=5                 #number of resets permitted
-
-   if [ ! -d "/usr/lib/hadoop" ]
-   then
-      CDH_HOME=$PARCEL_DIR
-   else
-      CDH_HOME=/usr
-   fi
-
-   if [ -d "/var/run/cloudera-scm-agent/process" ]
-   then
-      HUE_CONF_DIR="/var/run/cloudera-scm-agent/process/`ls -1 /var/run/cloudera-scm-agent/process | grep HUE_SERVER | sort -n | tail -1 `"
-   else
-      HUE_CONF_DIR="/etc/hue/conf"
-   fi
-
-   if [ -d "${CDH_HOME}/lib/hue/build/env/bin" ]
-   then
-      COMMAND="${CDH_HOME}/lib/hue/build/env/bin/hue shell"
-   else
-      COMMAND="${CDH_HOME}/share/hue/build/env/bin/hue shell"
-   fi
-
-   for config in $(grep engine= ${HUE_CONF_DIR}/hue* | sort -n)
-   do
-      ENGINE=$(echo ${config} | awk -F: '{print $2}')
-   done
-   
-   if [[ ${ENGINE} =~ .*oracle.* ]]
-   then
-      if [[ -z ${ORACLE_HOME} ]]
-      then
-         ORACLE_HOME=/opt/cloudera/parcels/ORACLE_INSTANT_CLIENT/instantclient_11_2/
-      fi
-      LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${ORACLE_HOME}
-      if [[ ! -d ${ORACLE_HOME} ]]
-      then
-         echo "Your engine is Oracle, you must set ORACLE_HOME correctly before running this script"
-         echo "Current ORACLE_HOME: ${ORACLE_HOME}"
-         exit 0
-      fi
-   fi
-
-   export CDH_HOME HUE_CONF_DIR ORACLE_HOME LD_LIBRARY_PATH COMMAND DEBUG=true
-   if [[ ! -z ${VERBOSE} ]]
-   then
-      export DESKTOP_DEBUG=true
-   fi
-
-   debug "Running echo \"from django.db import connection; cursor = connection.cursor(); cursor.execute('select count(*) from auth_user')\" | ${COMMAND}"
-   echo "from django.db import connection; cursor = connection.cursor(); cursor.execute('select count(*) from auth_user')" | ${COMMAND}
-   if [[ $? -ne 0 ]]
-   then
-      echo "HUE_DATABASE_PASSWORD is incorrect.  Please check CM: http://<cmhostname>:7180/api/v5/cm/deployment and search for HUE_SERVER and database to find correct password"
+    fi
+    if [[ -z ${ORACLE_HOME} ]]
+    then
+      echo "It looks like you are using Oracle as your backend"
+      echo "ORACLE_HOME must be set to the correct Oracle client"
+      echo "before running this script"
       exit 1
-   fi
+    fi
+  fi
 
-debug "Running ${COMMAND}"
-${COMMAND} >> /dev/null 2>&1 <<EOF
+  HUE_IGNORE_PASSWORD_SCRIPT_ERRORS=1
+  if [[ -z ${HUE_DATABASE_PASSWORD} ]]
+  then
+    echo "CDH 5.5 and above requires that you set the environment variable:"
+    echo "HUE_DATABASE_PASSWORD=<dbpassword>"
+    exit 1
+  fi
+  export CDH_HOME COMMAND HUE_IGNORE_PASSWORD_SCRIPT_ERRORS
+
+  export CDH_HOME HUE_CONF_DIR ORACLE_HOME LD_LIBRARY_PATH COMMAND DEBUG=true
+  if [[ ! -z ${VERBOSE} ]]
+  then
+    export DESKTOP_DEBUG=true
+  fi
+
+  echo "Validating DB connectivity"
+  echo "COMMAND: echo \"from django.db import connection; cursor = connection.cursor(); cursor.execute('select count(*) from auth_user')\" | ${TEST_COMMAND}"
+  echo "from django.db import connection; cursor = connection.cursor(); cursor.execute('select count(*) from auth_user')" | ${TEST_COMMAND}
+  if [[ $? -ne 0 ]]
+  then
+    echo "DB connect test did not work, HUE_DATABASE_PASSWORD may not be correct"
+    echo "If the next query test fails check password in CM: http://<cmhostname>:7180/api/v5/cm/deployment and search for HUE_SERVER and database to find correct password"
+  fi
+
+  echo "Running queries to test timings.  See results in ${LOG_FILE}"
+  debug "Running ${COMMAND}"
+  ${COMMAND} 2>&1 <<EOF | tee ${LOG_FILE}
 from datetime import datetime, timedelta
 from time import mktime
 from django.db import connection
 import logging
-import logging.handlers
 
-LOGFILE="${LOG_FILE}"
-GET_ITERATOR_CHUNK_SIZE = 100
-
-log = logging.getLogger('')
-log.setLevel(logging.DEBUG)
-format = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-fh = logging.handlers.RotatingFileHandler(LOGFILE, maxBytes=(1048576*${LOG_ROTATE_SIZE}), backupCount=${LOG_ROTATE_COUNT})
-fh.setFormatter(format)
-log.addHandler(fh)
-
-log.info('HUE_CONF_DIR: ${HUE_CONF_DIR}')
-log.info("DB Engine: %s" % desktop.conf.DATABASE.ENGINE.get())
-log.info("DB Name: %s" % desktop.conf.DATABASE.NAME.get())
-log.info("DB User: %s" % desktop.conf.DATABASE.USER.get())
-log.info("DB Host: %s" % desktop.conf.DATABASE.HOST.get())
-log.info("DB Port: %s" % str(desktop.conf.DATABASE.PORT.get()))
-log.info("Testing database query timings")
+log.warn('HUE_CONF_DIR: ${HUE_CONF_DIR}')
+log.warn("DB Engine: %s" % desktop.conf.DATABASE.ENGINE.get())
+log.warn("DB Name: %s" % desktop.conf.DATABASE.NAME.get())
+log.warn("DB User: %s" % desktop.conf.DATABASE.USER.get())
+log.warn("DB Host: %s" % desktop.conf.DATABASE.HOST.get())
+log.warn("DB Port: %s" % str(desktop.conf.DATABASE.PORT.get()))
+log.warn("Testing database query timings")
 
 count = 1
 with open("queries.txt", "r") as ins:
     cursor = connection.cursor()
     for line in ins:
       method, query = line.split('|')
-      log.info("method: %s: query: %s" % (method, query))
+      log.warn("method: %s: query: %s" % (method, query))
       try:
-        log.info("Query %s started" % count)
+        log.warn("Query %s started" % count)
         starttime = datetime.now()
         cursor.execute(query)
         if method == 'fetchone':
-          log.info("%s rows" % method)
+          log.warn("%s rows" % method)
           try:
             row = cursor.fetchone()
           except:
-            log.info("EXCEPTION: fetchone failed")
+            log.warn("EXCEPTION: fetchone failed")
         if method == 'fetchmany':
-          log.info("%s rows" % method)
+          log.warn("%s rows" % method)
           rows = cursor.fetchmany(GET_ITERATOR_CHUNK_SIZE)
-          log.info("Fetched %s rows" % len(rows))
+          log.warn("Fetched %s rows" % len(rows))
           while rows:
               rows = cursor.fetchmany(GET_ITERATOR_CHUNK_SIZE)
-              log.info("Fetched %s rows" % len(rows))
+              log.warn("Fetched %s rows" % len(rows))
         endtime = datetime.now()
         timediff = difference_in_seconds = abs(mktime(endtime.timetuple()) - mktime(starttime.timetuple()))
-        log.info("Query %s finished in %s" % (count, timediff))
+        log.warn("Query %s finished in %s" % (count, timediff))
         count = count + 1
       except:
-        log.info("EXCEPTION: query failed")
+        log.warn("EXCEPTION: query failed")
 
 EOF
 
