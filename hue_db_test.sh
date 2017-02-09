@@ -167,43 +167,43 @@ from time import mktime
 from django.db import connection
 import logging
 
-log.warn('HUE_CONF_DIR: ${HUE_CONF_DIR}')
-log.warn("DB Engine: %s" % desktop.conf.DATABASE.ENGINE.get())
-log.warn("DB Name: %s" % desktop.conf.DATABASE.NAME.get())
-log.warn("DB User: %s" % desktop.conf.DATABASE.USER.get())
-log.warn("DB Host: %s" % desktop.conf.DATABASE.HOST.get())
-log.warn("DB Port: %s" % str(desktop.conf.DATABASE.PORT.get()))
-log.warn("Testing database query timings")
+logging.warn('HUE_CONF_DIR: ${HUE_CONF_DIR}')
+logging.warn("DB Engine: %s" % desktop.conf.DATABASE.ENGINE.get())
+logging.warn("DB Name: %s" % desktop.conf.DATABASE.NAME.get())
+logging.warn("DB User: %s" % desktop.conf.DATABASE.USER.get())
+logging.warn("DB Host: %s" % desktop.conf.DATABASE.HOST.get())
+logging.warn("DB Port: %s" % str(desktop.conf.DATABASE.PORT.get()))
+logging.warn("Testing database query timings")
 
 count = 1
 with open("queries.txt", "r") as ins:
     cursor = connection.cursor()
     for line in ins:
       method, query = line.split('|')
-      log.warn("method: %s: query: %s" % (method, query))
+      logging.warn("method: %s: query: %s" % (method, query))
       try:
-        log.warn("Query %s started" % count)
+        logging.warn("Query %s started" % count)
         starttime = datetime.now()
         cursor.execute(query)
         if method == 'fetchone':
-          log.warn("%s rows" % method)
+          logging.warn("%s rows" % method)
           try:
             row = cursor.fetchone()
           except:
-            log.warn("EXCEPTION: fetchone failed")
+            logging.warn("EXCEPTION: fetchone failed")
         if method == 'fetchmany':
-          log.warn("%s rows" % method)
+          logging.warn("%s rows" % method)
           rows = cursor.fetchmany(GET_ITERATOR_CHUNK_SIZE)
-          log.warn("Fetched %s rows" % len(rows))
+          logging.warn("Fetched %s rows" % len(rows))
           while rows:
               rows = cursor.fetchmany(GET_ITERATOR_CHUNK_SIZE)
-              log.warn("Fetched %s rows" % len(rows))
+              logging.warn("Fetched %s rows" % len(rows))
         endtime = datetime.now()
         timediff = difference_in_seconds = abs(mktime(endtime.timetuple()) - mktime(starttime.timetuple()))
-        log.warn("Query %s finished in %s" % (count, timediff))
+        logging.warn("Query %s finished in %s" % (count, timediff))
         count = count + 1
       except:
-        log.warn("EXCEPTION: query failed")
+        logging.warn("EXCEPTION: query failed")
 
 EOF
 
