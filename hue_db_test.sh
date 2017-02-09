@@ -1,5 +1,5 @@
 #!/bin/bash
-Test DB timings on login
+#Test DB timings on login
 
 #parse command line arguments
 parse_arguments()
