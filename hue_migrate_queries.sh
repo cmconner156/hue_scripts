@@ -60,7 +60,7 @@ from desktop.converters import DocumentConverter
 from beeswax.models import SavedQuery, HQL, IMPALA, RDBMS
 import re
 
-DOC2_NAME_INVALID_CHARS = "[<>/~\`u'\xe9']" 
+DOC2_NAME_INVALID_CHARS = "[<>/~\`u'\xe9'u'\xfa'u'\xf3'u'\xf1'u'\xed']" 
 
 count = 0
 for user in User.objects.filter():
