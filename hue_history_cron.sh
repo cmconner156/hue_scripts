@@ -171,8 +171,15 @@ main()
       export DESKTOP_DEBUG=true
    fi
 
-debug "Running echo 'quit' | ${TEST_COMMAND}"
-echo "quit" | ${TEST_COMMAND}
+QUIT_COMMAND="quit"
+PG_ENGINE_CHECK=$(grep engine ${HUE_CONF_DIR}/hue* | grep -i postgres)
+if [[ ! -z ${PG_ENGINE_CHECK} ]]
+then
+   QUIT_COMMAND='\q'
+fi
+
+debug "Running echo ${QUIT_COMMAND} | ${TEST_COMMAND}"
+echo ${QUIT_COMMAND} | ${TEST_COMMAND}
 if [[ $? -ne 0 ]]
 then
    echo "HUE_DATABASE_PASSWORD is incorrect.  Please check CM: http://${HOSTNAME}:7180/api/v5/cm/deployment and search for HUE_SERVER and database to find correct password"

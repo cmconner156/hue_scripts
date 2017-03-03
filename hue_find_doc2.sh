@@ -154,6 +154,13 @@ main()
     fi
   fi
 
+  QUIT_COMMAND="quit"
+  PG_ENGINE_CHECK=$(grep engine ${HUE_CONF_DIR}/hue* | grep -i postgres)
+  if [[ ! -z ${PG_ENGINE_CHECK} ]]
+  then
+    QUIT_COMMAND='\q'
+  fi
+
   HUE_IGNORE_PASSWORD_SCRIPT_ERRORS=1
   if [[ -z ${HUE_DATABASE_PASSWORD} ]]
   then
@@ -167,8 +174,8 @@ main()
   echo "HUE_CONF_DIR: ${HUE_CONF_DIR}"
 
   echo "Validating DB connectivity"
-  echo "COMMAND: echo 'quit' | ${TEST_COMMAND}"
-  echo "quit" | ${TEST_COMMAND}
+  echo "COMMAND: echo ${QUIT_COMMAND} | ${TEST_COMMAND}"
+  echo ${QUIT_COMMAND} | ${TEST_COMMAND}
   if [[ $? -ne 0 ]]
   then
     echo "HUE_DATABASE_PASSWORD is incorrect.  Please check CM: http://${HOSTNAME}:7180/api/v5/cm/deployment and search for HUE_SERVER and database to find correct password"
