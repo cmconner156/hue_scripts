@@ -142,7 +142,8 @@ main()
     echo "HUE_DATABASE_PASSWORD=<dbpassword>" | tee -a ${LOG_FILE}
     exit 1
   fi
-  export CDH_HOME COMMAND HUE_IGNORE_PASSWORD_SCRIPT_ERRORS
+  PGPASSWORD=${HUE_DATABASE_PASSWORD}
+  export CDH_HOME COMMAND HUE_IGNORE_PASSWORD_SCRIPT_ERRORS PGPASSWORD
 
   export CDH_HOME HUE_CONF_DIR ORACLE_HOME LD_LIBRARY_PATH COMMAND DEBUG=true
   if [[ ! -z ${VERBOSE} ]]
@@ -207,6 +208,8 @@ with open("queries.txt", "r") as ins:
         logging.warn("EXCEPTION: query failed")
 
 EOF
+
+unset PGPASSWORD
 
 }
 

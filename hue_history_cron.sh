@@ -119,6 +119,7 @@ main()
          exit 1
       fi
    fi
+   PGPASSWORD=${HUE_DATABASE_PASSWORD} 
 
    PARCEL_DIR=/opt/cloudera/parcels/CDH
    LOG_DIR=/var/log/hue
@@ -164,7 +165,7 @@ main()
 
    ORACLE_HOME=/opt/cloudera/parcels/ORACLE_INSTANT_CLIENT/instantclient_11_2/
    LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${ORACLE_HOME}
-   export CDH_HOME HUE_CONF_DIR ORACLE_HOME LD_LIBRARY_PATH COMMAND DEBUG=true
+   export CDH_HOME HUE_CONF_DIR ORACLE_HOME LD_LIBRARY_PATH COMMAND DEBUG=true PGPASSWORD
    if [[ ! -z ${VERBOSE} ]]
    then
       export DESKTOP_DEBUG=true
@@ -302,6 +303,8 @@ if "${OOZIE}" == "true":
       totalWorkflows = Workflow.objects.filter(name='', last_modified__lte=date.today() - timedelta(days=keepDays)).values_list("id", flat=True)
 
 EOF
+
+unset PGPASSWORD
 
 }
 

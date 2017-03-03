@@ -161,7 +161,8 @@ main()
     echo "HUE_DATABASE_PASSWORD=<dbpassword>"
     exit 1
   fi
-  export CDH_HOME COMMAND HUE_IGNORE_PASSWORD_SCRIPT_ERRORS
+  PGPASSWORD=${HUE_DATABASE_PASSWORD}
+  export CDH_HOME COMMAND HUE_IGNORE_PASSWORD_SCRIPT_ERRORS PGPASSWORD
 
   echo "HUE_CONF_DIR: ${HUE_CONF_DIR}"
 
@@ -194,6 +195,8 @@ for doc2 in Document2.objects.filter(owner=user):
     logging.warn("")
 
 EOF
+
+unset PGPASSWORD
 
 }
 
