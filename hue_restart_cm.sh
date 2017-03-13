@@ -131,7 +131,6 @@ main() {
       CM_PASSWORD=`cat ${ENC_PASSWORD_FILE} | base64 --decode`
    fi
 
-   message "Restarting Hue process"
    CLUSTERNAME=$(urlencode "$(curl -L -s -k -X GET -u ${CM_USERNAME}:${CM_PASSWORD} "${CM_HTTP}://${CM_HOSTNAME}:${CM_PORT}/api/${CM_API}/clusters" | grep '"name" :' | awk -F\" '{print $4}')")
 
    SERVICENAME=$(urlencode "$(curl -L -s -k -X GET -u ${CM_USERNAME}:${CM_PASSWORD} "${CM_HTTP}://${CM_HOSTNAME}:${CM_PORT}/api/${CM_API}/clusters/${CLUSTERNAME}/services" | grep -B1 '"HUE"' | grep '"name" :' | awk -F\" '{print $4}')")
@@ -146,6 +145,8 @@ main() {
    ROLES_JSON=$(echo ${ROLES_JSON} | sed "s/,\"$/ ] }/g")
 
    RESTART_API_URL="/api/${CM_API}/clusters/${CLUSTERNAME}/services/${SERVICENAME}/roleCommands/restart"
+
+   message "Restarting Hue process -u ${CM_USERNAME}:${CM_PASSWORD}: ${CM_HTTP}://${CM_HOSTNAME}:${CM_PORT}${RESTART_API_URL}: Roles: ${ROLES_JSON}"
    RESULTS=`curl -s -X POST -u ${CM_USERNAME}:${CM_PASSWORD} -i -H "content-type:application/json" -d "${ROLES_JSON}" "${CM_HTTP}://${CM_HOSTNAME}:${CM_PORT}${RESTART_API_URL}"`
 }
 
