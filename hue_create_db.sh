@@ -6,9 +6,14 @@ DATABASE=$1
 PASSWORD=$2
 TYPE=$3
 
-if [[ -z ${PASSWORD} ]]
+if [[ -z ${DBUSER} ]]
 then
-   PASSWORD="password"
+   DBUSER="cloudera"
+fi
+
+if [[ -z ${DBPASSWORD} ]]
+then
+   DBPASSWORD="cloudera"
 fi
 
 if [[ -z ${TYPE} ]]
@@ -21,6 +26,7 @@ then
    echo "Usage: hue_create_db.sh <database_name> <password> <dbtype-mysql-postgres>"
    exit 1
 fi
+
 
 export HUE_DATABASE_PASSWORD=${PASSWORD}
 export HUE_IGNORE_PASSWORD_SCRIPT_ERRORS=1
