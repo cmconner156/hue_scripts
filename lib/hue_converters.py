@@ -10,6 +10,7 @@ from desktop.lib.exceptions_renderable import PopupException
 from django.core.exceptions import FieldError
 from desktop.models import Document, DocumentPermission, DocumentTag, Document2, Directory, Document2Permission
 from notebook.models import import_saved_beeswax_query
+from doc2_utils import findMatchingQuery
 
 #DOC2_NAME_INVALID_CHARS = "[<>/~`]"
 DOC2_NAME_INVALID_CHARS = "[<>/{}[\]~`u'\xe9'u'\xfa'u'\xf3'u'\xf1'u'\xed']"
@@ -20,8 +21,9 @@ class DocumentConverterHueScripts(object):
   Given a user, converts any existing Document objects to Document2 objects
   """
 
-  def __init__(self, user):
+  def __init__(self, user, allowdupes=False):
     self.user = user
+    self.allowdupes = allowdupes
     # If user does not have a home directory, we need to create one and import any orphan documents to it
     self.home_dir = Document2.objects.create_user_directories(self.user)
     self.imported_tag = DocumentTag.objects.get_imported2_tag(user=self.user)
@@ -44,21 +46,29 @@ class DocumentConverterHueScripts(object):
           notebook = import_saved_beeswax_query(doc.content_object)
           data = notebook.get_data()
 
-          if doc.is_historic():
-            data['isSaved'] = False
+          name = data['name']
+          query = data['snippets'][0]['statement_raw']
+          if self.allowdupes:
+            matchdocs = []
+          else:
+            matchdocs = findMatchingQuery(user=self.user, name=name, query=query, include_history=False)
+          if not matchdocs:
+            if doc.is_historic():
+              data['isSaved'] = False
 
-          doc2 = self._create_doc2(
-              document=doc,
-              doctype=data['type'],
-              name=data['name'],
-              description=data['description'],
-              data=notebook.get_json()
-          )
+            doc2 = self._create_doc2(
+                document=doc,
+                doctype=data['type'],
+                name=data['name'],
+                description=data['description'],
+                data=notebook.get_json()
+            )
 
-          if doc.is_historic():
-            doc2.is_history = False
+            if doc.is_historic():
+              doc2.is_history = False
 
-          self.imported_docs.append(doc2)
+            self.imported_docs.append(doc2)
+
     except ImportError:
       LOG.warn('Cannot convert Saved Query documents: beeswax app is not installed')
 
@@ -78,34 +88,41 @@ class DocumentConverterHueScripts(object):
           notebook = import_saved_beeswax_query(doc.content_object)
           data = notebook.get_data()
 
-          data['isSaved'] = False
-          data['snippets'][0]['lastExecuted'] = time.mktime(doc.last_modified.timetuple()) * 1000
+          name = data['name']
+          query = data['snippets'][0]['statement_raw']
+          if self.allowdupes:
+            matchdocs = []
+          else:
+            matchdocs = findMatchingQuery(user=self.user, name=name, query=query, include_history=False)
+          if not matchdocs:
+            data['isSaved'] = False
+            data['snippets'][0]['lastExecuted'] = time.mktime(doc.last_modified.timetuple()) * 1000
 
-          doc2 = self._historify(data, self.user)
-          doc2.last_modified = doc.last_modified
+            doc2 = self._historify(data, self.user)
+            doc2.last_modified = doc.last_modified
 
-          # save() updates the last_modified to current time. Resetting it using update()
-          doc2.save()
-          Document2.objects.filter(id=doc2.id).update(last_modified=doc.last_modified)
+            # save() updates the last_modified to current time. Resetting it using update()
+            doc2.save()
+            Document2.objects.filter(id=doc2.id).update(last_modified=doc.last_modified)
 
-          self.imported_docs.append(doc2)
+            self.imported_docs.append(doc2)
 
-          # Tag for not re-importing
-          Document.objects.link(
-            doc2,
-            owner=doc2.owner,
-            name=doc2.name,
-            description=doc2.description,
-            extra=doc.extra
-          )
+            # Tag for not re-importing
+            Document.objects.link(
+              doc2,
+              owner=doc2.owner,
+              name=doc2.name,
+              description=doc2.description,
+              extra=doc.extra
+            )
 
-          try:
-            doc.add_tag(self.imported_tag)
-          except IntegrityError, e:
-            LOG.exception("Failed to add imported_tag to doc %s with error %s" % (doc2.name, e))
-            pass
+            try:
+              doc.add_tag(self.imported_tag)
+            except IntegrityError, e:
+              LOG.exception("Failed to add imported_tag to doc %s with error %s" % (doc2.name, e))
+              pass
 
-          doc.save()
+            doc.save()
 
     except ImportError, e:
       LOG.warn('Cannot convert Saved Query documents: beeswax app is not installed')

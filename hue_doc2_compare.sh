@@ -1,5 +1,6 @@
 #!/bin/bash
-#Test to search for doc1 and doc2
+#Checks to make sure certain document for user
+#has been converted to doc2
 
 #parse command line arguments
 parse_arguments()
@@ -14,10 +15,11 @@ parse_arguments()
   # Parse short and long option parameters.
   OVERRIDE=
   USERNAME=
-  TEXT=
+  ID1=
+  ID2=
   VERBOSE=
-  GETOPT=`getopt -n $0 -o o,u:,v,h \
-      -l override,username:,verbose,help \
+  GETOPT=`getopt -n $0 -o o,u:,a:,b:,v,h \
+      -l override,username:,id1:,id2:,verbose,help \
       -- "$@"`
   eval set -- "$GETOPT"
   while true;
@@ -29,6 +31,14 @@ parse_arguments()
       ;;
     -u|--username)
       USERNAME=$2
+      shift 2
+      ;;
+    -a|--id1)
+      ID1=$2
+      shift 2
+      ;;
+    -b|--id2)
+      ID2=$2
       shift 2
       ;;
     -v|--verbose)
@@ -54,12 +64,13 @@ usage()
 cat << EOF
 usage: $0 [options]
 
-Checks Hue DB for doc2 entry for specified user:
+Compare 2 docs:
 
 OPTIONS
    -o|--override           Allow script to run as non-root, must set HUE_CONF_DIR manually before running
    -u|--username <user>    User to check for doc2 entry
-   -t|--text <text>        Text to search for such as query name, text in query, workflow name etc
+   -a|--id1 <ID>           ID to compare
+   -b|--id2 <ID>           ID to compare
    -v|--verbose            Verbose logging, off by default
    -h|--help               Show this message.
 EOF
@@ -67,7 +78,6 @@ EOF
 
 main()
 {
-
 
   parse_arguments "$@"
 
@@ -79,6 +89,20 @@ main()
   then
     echo "-u <user> required"
     usage
+    exit 1
+  fi
+
+  if [[ -z ${ID1} ]]
+  then
+    usage
+    echo "-a <id1> required"
+    exit 1
+  fi
+
+  if [[ -z ${ID2} ]]
+  then
+    usage
+    echo "-b <id2> required"
     exit 1
   fi
 
@@ -107,8 +131,6 @@ main()
   fi
 
   LOG_FILE=${DESKTOP_LOG_DIR}/`basename "$0" | awk -F\. '{print $1}'`.log
-  echo "SCRIPT_DIR: ${SCRIPT_DIR}" | tee -a ${LOG_FILE}
-  echo "PYTHONPATH: ${PYTHONPATH}" | tee -a ${LOG_FILE}
   
   PARCEL_DIR=/opt/cloudera/parcels/CDH
   if [ ! -d "/usr/lib/hadoop" ]
@@ -123,7 +145,7 @@ main()
     COMMAND="${CDH_HOME}/lib/hue/build/env/bin/hue shell"
     TEST_COMMAND="${CDH_HOME}/lib/hue/build/env/bin/hue dbshell"
   else
-    COMMAND="PYTHONPATH=${SCRIPT_DIR}/lib:${PYTHONPATH} ${CDH_HOME}/share/hue/build/env/bin/hue shell"
+    COMMAND="${CDH_HOME}/share/hue/build/env/bin/hue shell"
     TEST_COMMAND="${CDH_HOME}/share/hue/build/env/bin/hue dbshell"
   fi
 
@@ -142,53 +164,85 @@ main()
     fi
     if [[ -z ${ORACLE_HOME} ]]
     then
-      echo "It looks like you are using Oracle as your backend" | tee -a ${LOG_FILE}
-      echo "ORACLE_HOME must be set to the correct Oracle client" | tee -a ${LOG_FILE}
-      echo "before running this script" | tee -a ${LOG_FILE}
+      echo "It looks like you are using Oracle as your backend"
+      echo "ORACLE_HOME must be set to the correct Oracle client"
+      echo "before running this script"
       exit 1
     fi
+  fi
+
+  QUIT_COMMAND="quit"
+  PG_ENGINE_CHECK=$(grep engine ${HUE_CONF_DIR}/hue* | grep -i postgres)
+  if [[ ! -z ${PG_ENGINE_CHECK} ]]
+  then
+    QUIT_COMMAND='\q'
   fi
 
   HUE_IGNORE_PASSWORD_SCRIPT_ERRORS=1
   if [[ -z ${HUE_DATABASE_PASSWORD} ]]
   then
-    echo "CDH 5.5 and above requires that you set the environment variable:" | tee -a ${LOG_FILE}
-    echo "HUE_DATABASE_PASSWORD=<dbpassword>" | tee -a ${LOG_FILE}
+    echo "CDH 5.5 and above requires that you set the environment variable:"
+    echo "HUE_DATABASE_PASSWORD=<dbpassword>"
     exit 1
   fi
-  export CDH_HOME COMMAND HUE_IGNORE_PASSWORD_SCRIPT_ERRORS
+  PGPASSWORD=${HUE_DATABASE_PASSWORD}
+  export CDH_HOME COMMAND HUE_IGNORE_PASSWORD_SCRIPT_ERRORS PGPASSWORD
 
-  echo "HUE_CONF_DIR: ${HUE_CONF_DIR}" | tee -a ${LOG_FILE}
+  echo "HUE_CONF_DIR: ${HUE_CONF_DIR}"
 
-  echo "Validating DB connectivity" | tee -a ${LOG_FILE}
-#  echo "COMMAND: echo \"from django.db import connection; cursor = connection.cursor(); cursor.execute('select count(*) from auth_user')\" | ${TEST_COMMAND}" | tee -a ${LOG_FILE}
-#  echo "from django.db import connection; cursor = connection.cursor(); cursor.execute('select count(*) from auth_user')" | ${TEST_COMMAND} | tee -a ${LOG_FILE}
+  echo "Validating DB connectivity"
+  echo "COMMAND: echo ${QUIT_COMMAND} | ${TEST_COMMAND}"
+  echo ${QUIT_COMMAND} | ${TEST_COMMAND}
   if [[ $? -ne 0 ]]
   then
-    echo "DB connect test did not work, HUE_DATABASE_PASSWORD may not be correct" | tee -a ${LOG_FILE}
-    echo "If the next query test fails check password in CM: http://<cmhostname>:7180/api/v5/cm/deployment and search for HUE_SERVER and database to find correct password" | tee -a ${LOG_FILE}
+    echo "HUE_DATABASE_PASSWORD is incorrect.  Please check CM: http://${HOSTNAME}:7180/api/v5/cm/deployment and search for HUE_SERVER and database to find correct password"
+    exit 1
   fi
 
-  echo "COMMAND: ${COMMAND}" | tee -a ${LOG_FILE}
+  echo "COMMAND: ${COMMAND}"
 
-  ${COMMAND} 2>&1 <<EOF | tee -a ${LOG_FILE}
+${COMMAND} 2>&1 <<EOF | tee ${LOG_FILE}
+import os
+import logging
+import json
+from desktop.models import Document2
 from django.contrib.auth.models import User
-from hue_converters import DocumentConverterHueScripts
-
-DOC2_NAME_INVALID_CHARS = "[<>/~\`u'\xe9'u'\xfa'u'\xf3'u'\xf1'u'\xed']"
+import doc2_utils
+from doc2_utils import findMatchingQuery
 
 username = "${USERNAME}"
-#text = "${TEXT}"
+id1 = "${ID1}"
+id2 = "${ID2}"
 user = User.objects.get(username=username)
 
-doc_count = 0
-converter = DocumentConverterHueScripts(user)
-converter.convertfailed()
+logging.warn("Comparing doc2 entries for %s and %s:" % (id1,id2))
+doc1 = Document2.objects.document( user = user, doc_id = id1 )
+doc2 = Document2.objects.document( user = user, doc_id = id2 )
+
+name1 = doc1.name
+name2 = doc2.name
+
+data1 = json.loads(doc1.data)
+data2 = json.loads(doc2.data)
+
+statement1 = data1['snippets'][0]['statement_raw']
+statement2 = data2['snippets'][0]['statement_raw']
+
+#logging.warn("ID: %s : Name: %s : Statement: %s" % (doc1.id, doc1.name, statement1))
+#logging.warn("ID: %s : Name: %s : Statement: %s" % (doc2.id, doc2.name, statement2))
+if statement1 == statement2:
+  logging.warn("Yay they match")
+else:
+  logging.warn("Boo they suck")
+
+logging.warn("OS PYTHONPATH: %s" % os.environ['PYTHONPATH'])
+matchdocs = findMatchingQuery(user=user, name=name1, query=statement1, include_history=True)
+logging.warn("Count from findMatchingQuery: %s" % matchdocs)
 
 
 EOF
 
-echo "" | tee -a ${LOG_FILE}
+unset PGPASSWORD
 
 }
 
