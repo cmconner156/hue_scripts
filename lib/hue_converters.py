@@ -1,19 +1,15 @@
 import json
 import logging
-import re
 import time
 
 from django.db import transaction
-from django.utils.translation import ugettext as _
 
 from desktop.lib.exceptions_renderable import PopupException
 from django.core.exceptions import FieldError
 from desktop.models import Document, DocumentPermission, DocumentTag, Document2, Directory, Document2Permission
 from notebook.models import import_saved_beeswax_query
-from doc2_utils import findMatchingQuery
+from doc2_utils import findMatchingQuery, removeInvalidChars
 
-#DOC2_NAME_INVALID_CHARS = "[<>/~`]"
-DOC2_NAME_INVALID_CHARS = "[<>/{}[\]~`u'\xe9'u'\xfa'u'\xf3'u'\xf1'u'\xed']"
 LOG = logging.getLogger(__name__)
 
 class DocumentConverterHueScripts(object):
@@ -38,21 +34,15 @@ class DocumentConverterHueScripts(object):
       docs = self._get_unconverted_docs(SavedQuery).filter(extra__in=[HQL, IMPALA, RDBMS])
       for doc in docs:
         if doc.content_object:
-          logging.warn("SavedQuery conversion: doc.content_type_id: %s" % doc.content_type_id)
-          logging.warn("SavedQuery conversion: doc.dict: %s" % doc.__dict__)
-          logging.warn("SavedQuery conversion: doc.content_object.data: %s" % doc.content_object.data)
-          logging.warn("SavedQuery conversion: doc.tags: %s" % doc.tags.all())
-
+          id_temp = doc.to_dict()
+          id = id_temp['id']
           notebook = import_saved_beeswax_query(doc.content_object)
           data = notebook.get_data()
-
           name = data['name']
           query = data['snippets'][0]['statement_raw']
-          if self.allowdupes:
-            matchdocs = []
-          else:
-            matchdocs = findMatchingQuery(user=self.user, name=name, query=query, include_history=False)
-          if not matchdocs:
+          matchdocs = findMatchingQuery(user=self.user, id=id, name=name, query=query, include_history=False)
+          if not matchdocs or self.allowdupes:
+            LOG.debug("converting doc id: %s : name: %s" % (id, name))
             if doc.is_historic():
               data['isSaved'] = False
 
@@ -70,7 +60,7 @@ class DocumentConverterHueScripts(object):
             self.imported_docs.append(doc2)
 
     except ImportError:
-      LOG.warn('Cannot convert Saved Query documents: beeswax app is not installed')
+      LOG.debug('Cannot convert Saved Query documents: beeswax app is not installed')
 
     # Convert SQL Query history documents
     try:
@@ -80,21 +70,15 @@ class DocumentConverterHueScripts(object):
 
       for doc in docs:
         if doc.content_object:
-          logging.warn("QueryHistory conversion: doc.content_type_id: %s" % doc.content_type_id)
-          logging.warn("QueryHistory conversion: doc.dict: %s" % doc.__dict__)
-          logging.warn("QueryHistory conversion: doc.content_object.data: %s" % doc.content_object.data)
-          logging.warn("QueryHistory conversion: doc.tags: %s" % doc.tags.all())
-
+          id_temp = doc.to_dict()
+          id = id_temp['id']
           notebook = import_saved_beeswax_query(doc.content_object)
           data = notebook.get_data()
-
           name = data['name']
           query = data['snippets'][0]['statement_raw']
-          if self.allowdupes:
-            matchdocs = []
-          else:
-            matchdocs = findMatchingQuery(user=self.user, name=name, query=query, include_history=False)
-          if not matchdocs:
+          matchdocs = findMatchingQuery(user=self.user, id=id, name=name, query=query, include_history=True)
+          if not matchdocs or self.allowdupes:
+            LOG.debug("converting doc id: %s : name: %s" % (id, name))
             data['isSaved'] = False
             data['snippets'][0]['lastExecuted'] = time.mktime(doc.last_modified.timetuple()) * 1000
 
@@ -123,13 +107,13 @@ class DocumentConverterHueScripts(object):
               pass
 
             doc.save()
-
+         
     except ImportError, e:
-      LOG.warn('Cannot convert Saved Query documents: beeswax app is not installed')
+      LOG.debug('Cannot convert Saved Query documents: beeswax app is not installed')
 
     # Add converted docs to root directory
     if self.imported_docs:
-      LOG.info('Successfully imported %d documents' % len(self.imported_docs))
+      LOG.debug('Successfully imported %d documents' % len(self.imported_docs))
 
     # Set is_trashed field for old documents with is_trashed=None
     try:
@@ -142,7 +126,7 @@ class DocumentConverterHueScripts(object):
         except Exception, e:
           LOG.exception("Failed to set is_trashed field with exception: %s" % e)
     except FieldError, e:
-      LOG.warn("Skipping is_trashed as does not exist in this version") 
+      LOG.debug("Skipping is_trashed as does not exist in this version") 
 
 
   def _get_unconverted_docs(self, content_type, with_history=False):
@@ -195,7 +179,7 @@ class DocumentConverterHueScripts(object):
     try:
       with transaction.atomic():
         name = name if name else document.name
-        name = re.sub(DOC2_NAME_INVALID_CHARS, '', name)
+        name = removeInvalidChars(name)
 
         document2 = Document2.objects.create(
           owner=self.user,
@@ -226,7 +210,7 @@ class DocumentConverterHueScripts(object):
   def _historify(self, notebook, user):
     query_type = notebook['type']
     name = notebook['name'] if (notebook['name'] and notebook['name'].strip() != '') else DEFAULT_HISTORY_NAME
-    name = re.sub(DOC2_NAME_INVALID_CHARS, '', name)
+    name = removeInvalidChars(name)
 
     try:
       history_doc = Document2.objects.create(

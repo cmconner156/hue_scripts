@@ -32,10 +32,6 @@ parse_arguments()
       USERNAME=$2
       shift 2
       ;;
-    -d|--duplicates)
-      ALLOWDUPES=True
-      shift
-      ;;
     -v|--verbose)
       VERBOSE=true
       DESKTOP_DEBUG=true
@@ -165,7 +161,7 @@ main()
     echo "HUE_DATABASE_PASSWORD=<dbpassword>" | tee -a ${LOG_FILE}
     exit 1
   fi
-  export CDH_HOME COMMAND HUE_IGNORE_PASSWORD_SCRIPT_ERRORS
+  export CDH_HOME COMMAND HUE_IGNORE_PASSWORD_SCRIPT_ERRORS DESKTOP_DEBUG
 
   echo "HUE_CONF_DIR: ${HUE_CONF_DIR}" | tee -a ${LOG_FILE}
 
@@ -178,13 +174,17 @@ main()
     echo "If the next query test fails check password in CM: http://<cmhostname>:7180/api/v5/cm/deployment and search for HUE_SERVER and database to find correct password" | tee -a ${LOG_FILE}
   fi
 
+  env
   echo "COMMAND: ${COMMAND}" | tee -a ${LOG_FILE}
-  echo ".sh: ALLOWDUPES: ${ALLOWDUPES}" | tee -a ${LOG_FILE}
 
   ${COMMAND} 2>&1 <<EOF | tee -a ${LOG_FILE}
 import logging
+import json
+
 from django.contrib.auth.models import User
-from hue_converters import DocumentConverterHueScripts
+from desktop.models import Document2
+from doc2_utils import findMatchingQuery, getSavedQueries
+
 LOG = logging.getLogger(__name__)
 
 username = "${USERNAME}"
@@ -193,11 +193,24 @@ if not username:
 else:
   users = User.objects.filter(username=username)
 
+total_count = 0
 for user in users:
-  LOG.debug("converting docs for user: %s" % user.username)
-  doc_count = 0
-  converter = DocumentConverterHueScripts(user, allowdupes = ${ALLOWDUPES})
-  converter.convertfailed()
+  queries = getSavedQueries(user=user, include_history=True)
+  LOG.debug("user: %s: total queries to go through: %s" % (user.username, queries.count()))
+  for query in queries:
+    total_count = total_count + 1
+    try:
+      matchdata = json.loads(query.data)
+      matchname = query.name
+      matchid = query.id
+      if 'snippets' in matchdata:
+        matchquery = matchdata['snippets'][0]['statement_raw']
+        matchdocs = findMatchingQuery(user=user, id=matchid, name=matchname, query=matchquery, include_history=True, all=True, values=True)
+        if matchdocs:
+          Document2.objects.filter(id__in=matchdocs).delete()
+          LOG.debug("finished query number: %s" % total_count)
+    except Document2.DoesNotExist, e:
+      pass
 
 
 EOF
