@@ -13,12 +13,13 @@ parse_arguments()
 
   # Parse short and long option parameters.
   OVERRIDE=
+  PURGENEW=False
   USERNAME=
   ALLOWDUPES=False
   VERBOSE=
   DESKTOP_DEBUG=false
-  GETOPT=`getopt -n $0 -o o,u:,d,v,h \
-      -l override,username:,duplicates,verbose,help \
+  GETOPT=`getopt -n $0 -o o,n,u:,d,v,h \
+      -l override,purgenew,username:,duplicates,verbose,help \
       -- "$@"`
   eval set -- "$GETOPT"
   while true;
@@ -26,6 +27,10 @@ parse_arguments()
     case "$1" in
     -o|--override)
       OVERRIDE=true
+      shift
+      ;;
+    -n|--PURGENEW)
+      PURGENEW=True
       shift
       ;;
     -u|--username)
@@ -60,6 +65,7 @@ Migrates missing queries and docs:
 
 OPTIONS
    -o|--override           Allow script to run as non-root, must set HUE_CONF_DIR manually before running
+   -n|--purgenew	   Will purge all queries that have '(new)' in their name.
    -u|--username <user>    User to check for doc2 entry if not set, then runs for all users.  Slower.
    -d|--duplicates	   Allows duplicate entries to be created.  This will run faster.
    -v|--verbose            Verbose logging, off by default
@@ -195,6 +201,13 @@ else:
 
 total_count = 0
 for user in users:
+  if ${PURGENEW}:
+    matchdocs = []
+    queries = getSavedQueries(user=user, name='(new)', include_history=True)
+    for query in queries:
+      matchdocs.append(query.id)
+    LOG.debug("deleting %s queries that contain (new)" % queries.count())
+    Document2.objects.filter(id__in=matchdocs).delete()
   queries = getSavedQueries(user=user, include_history=True)
   LOG.debug("user: %s: total queries to go through: %s" % (user.username, queries.count()))
   for query in queries:

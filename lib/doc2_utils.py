@@ -1,14 +1,18 @@
 import json
 import re
 import logging
+import difflib
 
 from desktop.models import Document2
-DOC2_NAME_INVALID_CHARS = "[<>/{}[\]~`u'\xe9'u'\xfa'u'\xf3'u'\xf1'u'\xed']"
+#DOC2_NAME_INVALID_CHARS = "[<>/{}[\]~`u'\xe9'u'\xfa'u'\xf3'u'\xf1'u'\xed']"
+DOC2_NAME_INVALID_CHARS = "[<>/{}\[\]]"
 
 LOG = logging.getLogger(__name__)
 
 def removeInvalidChars(fixString):
-  return re.sub(DOC2_NAME_INVALID_CHARS, '', fixString) 
+  fixString = re.sub(r'[^\x00-\x7f]',r'', fixString)
+  return re.sub(DOC2_NAME_INVALID_CHARS, '', fixString)
+
 
 def findMatchingQuery(user, id, name, query, include_history=False, all=False, values=False):
 #Returns list of matching queries.  If all = False
@@ -23,9 +27,12 @@ def findMatchingQuery(user, id, name, query, include_history=False, all=False, v
     if all == True or not matchdocs:
       matchdata = json.loads(doc.data)
       matchname = removeInvalidChars(doc.name)
+      LOG.debug("found name: matchname: %s" % matchname)
       if 'snippets' in matchdata:
         matchquery = matchdata['snippets'][0]['statement_raw']
-        if name == matchname and id != doc.id:
+        if re.match(name, matchname) and id != doc.id:
+          LOG.debug("Query name: %s and matchname: %s are similar" % (name, matchname))
+          LOG.debug("Comparing queries:")
           if query == matchquery:
             LOG.debug("MATCHED QUERY: name: %s: id: %s" % (name, id))
             matchdocs.append(doc) 
@@ -45,17 +52,28 @@ def getSavedQueries(user, name=None, include_history=False):
   include_trashed = False
   flatten = True
   if name:
-    documents = Document2.objects.filter(name=name, owner=user, type__in=['query-hive', 'query-impala'], is_history=include_history)
     LOG.debug("getting queries that match name: %s" % name)
+    if include_history:
+      documents = Document2.objects.filter(name__iregex=r'%s.*' %name, owner=user, type__in=['query-hive', 'query-impala'])
+    else:
+      documents = Document2.objects.filter(name__iregex=r'%s.*' %name, owner=user, type__in=['query-hive', 'query-impala'], is_history=include_history)
   else:
-    documents = Document2.objects.documents(
-      user=user,
-      perms=perms,
-      include_history=include_history,
-      include_trashed=include_trashed
-    )
-    LOG.debug("getting all queries, history is %s" % include_history)
+    LOG.debug("getting all queries")
+    if include_history:
+      documents = Document2.objects.documents(
+        user=user,
+        perms=perms,
+        include_trashed=include_trashed
+      )
+    else:
+      documents = Document2.objects.documents(
+        user=user,
+        perms=perms,
+        include_history=include_history,
+        include_trashed=include_trashed
+      )
 
+  LOG.debug("returning queries, total count: %s" % len(documents))
   return documents
 
 
