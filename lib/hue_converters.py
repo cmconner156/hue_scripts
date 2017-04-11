@@ -168,11 +168,14 @@ class DocumentConverterHueScripts(object):
     """
     doc_permissions = DocumentPermission.objects.filter(doc=document)
     for perm in doc_permissions:
-      doc2_permission, created = Document2Permission.objects.get_or_create(doc=document2, perms=perm.perms)
-      if perm.users:
-        doc2_permission.users.add(*perm.users.all())
-      if perm.groups:
-        doc2_permission.groups.add(*perm.groups.all())
+      try:
+        doc2_permission, created = Document2Permission.objects.get_or_create(doc=document2, perms=perm.perms)
+        if perm.users:
+          doc2_permission.users.add(*perm.users.all())
+        if perm.groups:
+          doc2_permission.groups.add(*perm.groups.all())
+      except:
+        pass
 
 
   def _create_doc2(self, document, doctype, name=None, description=None, data=None):
