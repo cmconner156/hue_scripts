@@ -15,10 +15,11 @@ parse_arguments()
   OVERRIDE=
   USERNAME=
   ALLOWDUPES=False
+  START_QUERY_NAME=
   VERBOSE=
   DESKTOP_DEBUG=false
-  GETOPT=`getopt -n $0 -o o,u:,d,v,h \
-      -l override,username:,duplicates,verbose,help \
+  GETOPT=`getopt -n $0 -o o,u:,d,q:,v,h \
+      -l override,username:,duplicates,startquery:,verbose,help \
       -- "$@"`
   eval set -- "$GETOPT"
   while true;
@@ -35,6 +36,10 @@ parse_arguments()
     -d|--duplicates)
       ALLOWDUPES=True
       shift
+      ;;
+    -q|--startquery)
+      START_QUERY_NAME=$2
+      shift 2
       ;;
     -v|--verbose)
       VERBOSE=true
@@ -66,6 +71,7 @@ OPTIONS
    -o|--override           Allow script to run as non-root, must set HUE_CONF_DIR manually before running
    -u|--username <user>    User to check for doc2 entry if not set, then runs for all users.  Slower.
    -d|--duplicates	   Allows duplicate entries to be created.  This will run faster.
+   -q|--startquery <queryname> Specify name of query to start at to avoid running through all queries.
    -v|--verbose            Verbose logging, off by default
    -h|--help               Show this message.
 EOF
@@ -116,8 +122,8 @@ main()
     mkdir -p ${DESKTOP_LOG_DIR}
   fi
   LOG_FILE=${DESKTOP_LOG_DIR}/`basename "$0" | awk -F\. '{print $1}'`.log
-  echo "SCRIPT_DIR: ${SCRIPT_DIR}" | tee -a ${LOG_FILE}
-  echo "PYTHONPATH: ${PYTHONPATH}" | tee -a ${LOG_FILE}
+  LOG_ROTATE_SIZE=10 #MB before rotating, size in MB before rotating log to .1
+  LOG_ROTATE_COUNT=5 #number of log files, so 20MB max
   
   PARCEL_DIR=/opt/cloudera/parcels/CDH
   if [ ! -d "/usr/lib/hadoop" ]
@@ -151,9 +157,9 @@ main()
     fi
     if [[ -z ${ORACLE_HOME} ]]
     then
-      echo "It looks like you are using Oracle as your backend" | tee -a ${LOG_FILE}
-      echo "ORACLE_HOME must be set to the correct Oracle client" | tee -a ${LOG_FILE}
-      echo "before running this script" | tee -a ${LOG_FILE}
+      echo "It looks like you are using Oracle as your backend"
+      echo "ORACLE_HOME must be set to the correct Oracle client"
+      echo "before running this script"
       exit 1
     fi
   fi
@@ -161,48 +167,64 @@ main()
   HUE_IGNORE_PASSWORD_SCRIPT_ERRORS=1
   if [[ -z ${HUE_DATABASE_PASSWORD} ]]
   then
-    echo "CDH 5.5 and above requires that you set the environment variable:" | tee -a ${LOG_FILE}
-    echo "HUE_DATABASE_PASSWORD=<dbpassword>" | tee -a ${LOG_FILE}
+    echo "CDH 5.5 and above requires that you set the environment variable:"
+    echo "HUE_DATABASE_PASSWORD=<dbpassword>"
     exit 1
   fi
   export CDH_HOME COMMAND HUE_IGNORE_PASSWORD_SCRIPT_ERRORS
 
-  echo "HUE_CONF_DIR: ${HUE_CONF_DIR}" | tee -a ${LOG_FILE}
+  echo "HUE_CONF_DIR: ${HUE_CONF_DIR}"
 
-  echo "Validating DB connectivity" | tee -a ${LOG_FILE}
+  echo "Validating DB connectivity"
 #  echo "COMMAND: echo \"from django.db import connection; cursor = connection.cursor(); cursor.execute('select count(*) from auth_user')\" | ${TEST_COMMAND}" | tee -a ${LOG_FILE}
 #  echo "from django.db import connection; cursor = connection.cursor(); cursor.execute('select count(*) from auth_user')" | ${TEST_COMMAND} | tee -a ${LOG_FILE}
   if [[ $? -ne 0 ]]
   then
-    echo "DB connect test did not work, HUE_DATABASE_PASSWORD may not be correct" | tee -a ${LOG_FILE}
-    echo "If the next query test fails check password in CM: http://<cmhostname>:7180/api/v5/cm/deployment and search for HUE_SERVER and database to find correct password" | tee -a ${LOG_FILE}
+    echo "DB connect test did not work, HUE_DATABASE_PASSWORD may not be correct"
+    echo "If the next query test fails check password in CM: http://<cmhostname>:7180/api/v5/cm/deployment and search for HUE_SERVER and database to find correct password"
   fi
 
-  echo "COMMAND: ${COMMAND}" | tee -a ${LOG_FILE}
-  echo ".sh: ALLOWDUPES: ${ALLOWDUPES}" | tee -a ${LOG_FILE}
+  ${COMMAND} <<EOF 2>&1 > /dev/null
+usernames = "${USERNAME}"
+startqueryname = "${START_QUERY_NAME}"
+allowdupes = ${ALLOWDUPES}
+LOGFILE = "${LOG_FILE}"
+logrotatesize=${LOG_ROTATE_SIZE}
+backupcount=${LOG_ROTATE_COUNT}
 
-  ${COMMAND} 2>&1 <<EOF | tee -a ${LOG_FILE}
 import logging
+import logging.handlers
 from django.contrib.auth.models import User
 from hue_converters import DocumentConverterHueScripts
-LOG = logging.getLogger(__name__)
 
-username = "${USERNAME}"
-if not username:
+LOG = logging.getLogger()
+format = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+fh = logging.handlers.RotatingFileHandler(LOGFILE, maxBytes = (1048576*logrotatesize), backupCount = backupcount)
+fh.setFormatter(format)
+LOG.addHandler(fh)
+LOG.setLevel(logging.INFO)
+
+if not usernames:
   users = User.objects.filter()
 else:
-  users = User.objects.filter(username=username)
+  userlist = usernames.split(",")
+  users = User.objects.filter(username__in = userlist)
+
+if startqueryname:
+  processdocs = False
+else:
+  processdocs = True
 
 for user in users:
   LOG.debug("converting docs for user: %s" % user.username)
   doc_count = 0
-  converter = DocumentConverterHueScripts(user, allowdupes = ${ALLOWDUPES})
-  converter.convertfailed()
+  converter = DocumentConverterHueScripts(user, allowdupes = allowdupes, startqueryname = startqueryname, processdocs = processdocs)
+  processdocs = converter.convertfailed()
 
 
 EOF
 
-echo "" | tee -a ${LOG_FILE}
+echo ""
 echo "Logs can be found in ${DESKTOP_LOG_DIR}"
 
 }

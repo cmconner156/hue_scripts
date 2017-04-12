@@ -18,7 +18,7 @@ def findMatchingQuery(user, id, name, query, include_history=False, all=False, v
 #Returns list of matching queries.  If all = False
 #returns at first found for speed
   name = removeInvalidChars(name)
-  LOG.debug("finding queries that match name: %s" % name)
+  LOG.info("finding queries that match name: %s" % name)
   documents = getSavedQueries(user=user, name=name, include_history=include_history)
   matchdocs = []
   matchvalues = []
@@ -27,22 +27,22 @@ def findMatchingQuery(user, id, name, query, include_history=False, all=False, v
     if all == True or not matchdocs:
       matchdata = json.loads(doc.data)
       matchname = removeInvalidChars(doc.name)
-      LOG.debug("found name: matchname: %s" % matchname)
+      LOG.info("found name: matchname: %s" % matchname)
       if 'snippets' in matchdata:
         matchquery = matchdata['snippets'][0]['statement_raw']
         if re.match(name, matchname) and id != doc.id:
-          LOG.debug("Query name: %s and matchname: %s are similar" % (name, matchname))
-          LOG.debug("Comparing queries:")
+          LOG.info("Query name: %s and matchname: %s are similar" % (name, matchname))
+          LOG.info("Comparing queries:")
           if query == matchquery:
-            LOG.debug("MATCHED QUERY: name: %s: id: %s" % (name, id))
+            LOG.info("MATCHED QUERY: name: %s: id: %s" % (name, id))
             matchdocs.append(doc) 
             matchvalues.append(doc.id)
 
   if values == False:
-    LOG.debug("returning %s matching docs" % len(matchdocs))
+    LOG.info("returning %s matching docs" % len(matchdocs))
     return matchdocs
   else:
-    LOG.debug("returning %s matching doc ids" % len(matchdocs))
+    LOG.info("returning %s matching doc ids" % len(matchdocs))
     return matchvalues
 
 
@@ -52,13 +52,13 @@ def getSavedQueries(user, name=None, include_history=False):
   include_trashed = False
   flatten = True
   if name:
-    LOG.debug("getting queries that match name: %s" % name)
+    LOG.info("getting queries that match name: %s" % name)
     if include_history:
       documents = Document2.objects.filter(name__iregex=r'%s.*' %name, owner=user, type__in=['query-hive', 'query-impala'])
     else:
       documents = Document2.objects.filter(name__iregex=r'%s.*' %name, owner=user, type__in=['query-hive', 'query-impala'], is_history=include_history)
   else:
-    LOG.debug("getting all queries")
+    LOG.info("getting all queries")
     if include_history:
       documents = Document2.objects.documents(
         user=user,
@@ -73,7 +73,7 @@ def getSavedQueries(user, name=None, include_history=False):
         include_trashed=include_trashed
       )
 
-  LOG.debug("returning queries, total count: %s" % len(documents))
+  LOG.info("returning queries, total count: %s" % len(documents))
   return documents
 
 
