@@ -52,7 +52,7 @@ class DocumentConverterHueScripts(object):
             matchdocs = findMatchingQuery(user=self.user, id=id, name=name, query=query, include_history=False)
             if not matchdocs or self.allowdupes:
               try:
-                LOG.info("converting doc id: %s : name: %s" % (id, name))
+#                LOG.info("converting doc id: %s : name: %s" % (id, name))
                 if doc.is_historic():
                   data['isSaved'] = False
   
@@ -96,7 +96,7 @@ class DocumentConverterHueScripts(object):
             matchdocs = findMatchingQuery(user=self.user, id=id, name=name, query=query, include_history=True)
             if not matchdocs or self.allowdupes:
               try:
-                LOG.info("converting doc id: %s : name: %s" % (id, name))
+#                LOG.info("converting doc id: %s : name: %s" % (id, name))
                 data['isSaved'] = False
                 data['snippets'][0]['lastExecuted'] = time.mktime(doc.last_modified.timetuple()) * 1000
 
