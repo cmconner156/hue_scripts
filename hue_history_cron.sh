@@ -42,15 +42,15 @@ parse_arguments()
   do
     case "$1" in
     -b|--nobeeswax)
-      BEESWAX=
+      BEESWAX=$2
       shift
       ;;
     -o|--nooozie)
-      OOZIE=
+      OOZIE=$2
       shift
       ;;
     -d|--days)
-      KEEP_DAYS=
+      KEEP_DAYS=$2
       shift 2
       ;;
     -v|--verbose)
