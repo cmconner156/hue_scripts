@@ -54,23 +54,25 @@ def getSavedQueries(user, name=None, include_history=False):
   if name:
 #    LOG.info("getting queries that match name: %s" % name)
     if include_history:
-      documents = Document2.objects.filter(name__iregex=r'%s.*' %name, owner=user, type__in=['query-hive', 'query-impala'])
+      documents = Document2.objects.filter(name__contains=name, owner=user, type__in=['query-hive', 'query-impala'])
+#      documents = Document2.objects.filter(name__iregex=r'%s.*' %name, owner=user, type__in=['query-hive', 'query-impala'])
     else:
-      documents = Document2.objects.filter(name__iregex=r'%s.*' %name, owner=user, type__in=['query-hive', 'query-impala'], is_history=include_history)
+      documents = Document2.objects.filter(name__contains=name, owner=user, type__in=['query-hive', 'query-impala'], is_history=include_history)
+#      documents = Document2.objects.filter(name__iregex=r'%s.*' %name, owner=user, type__in=['query-hive', 'query-impala'], is_history=include_history)
   else:
 #    LOG.info("getting all queries")
     if include_history:
-      documents = Document2.objects.documents(
+      documents = Document2.objects.filter(
         user=user,
-        perms=perms,
-        include_trashed=include_trashed
+        include_trashed=include_trashed,
+        type__in=['query-hive', 'query-impala']
       )
     else:
-      documents = Document2.objects.documents(
+      documents = Document2.objects.filter(
         user=user,
-        perms=perms,
         include_history=include_history,
-        include_trashed=include_trashed
+        include_trashed=include_trashed,
+        type__in=['query-hive', 'query-impala']
       )
 
 #  LOG.info("returning queries, total count: %s" % len(documents))

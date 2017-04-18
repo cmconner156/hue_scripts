@@ -211,6 +211,7 @@ backupcount=${LOG_ROTATE_COUNT}
 import time
 import logging
 import logging.handlers
+import desktop.conf
 from django.contrib.auth.models import User
 from hue_converters import DocumentConverterHueScripts
 
@@ -244,10 +245,11 @@ for user in users:
   LOG.info("Converting docs for user: %s" % user.username)
   doc_count = 0
   converter = DocumentConverterHueScripts(user, allowdupes = allowdupes, startqueryname = startqueryname, processdocs = processdocs)
-  try:
-    processdocs = converter.convertfailed()
-  except:
-      LOG.warn("Conversions failed for user: %s" % user.username)
+  processdocs = converter.convertfailed()
+#  try:
+#    processdocs = converter.convertfailed()
+#  except:
+#      LOG.warn("Conversions failed for user: %s" % user.username)
   end = time.time()
   elapsed = (end - start) / 60
   LOG.info("Finished user: %s : elapsed time: %s" % (user.username, elapsed))
