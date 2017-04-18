@@ -1,23 +1,5 @@
 #!/bin/bash
-# Licensed to Cloudera, Inc. under one
-# or more contributor license agreements.  See the NOTICE file
-# distributed with this work for additional information
-# regarding copyright ownership.  Cloudera, Inc. licenses this file
-# to you under the Apache License, Version 2.0 (the
-# "License"); you may not use this file except in compliance
-# with the License.  You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
-#Cleans up old oozie workflow and beeswax savedqueries to
-#prevent the DB from getting too large.
-
+#Clean up old history to keep DB from growing too large
 
 #parse command line arguments
 parse_arguments()
@@ -30,17 +12,23 @@ parse_arguments()
   fi
 
   # Parse short and long option parameters.
+  OVERRIDE=
   BEESWAX=true
   OOZIE=true
-  VERBOSE=
   KEEP_DAYS=14
-  GETOPT=`getopt -n $0 -o b,o,d:,v,h \
-      -l beeswax,oozie,days:,verbose,help \
+  VERBOSE=
+  DESKTOP_DEBUG=false
+  GETOPT=`getopt -n $0 -o b,z,o,d:,v,h \
+      -l nobeeswax,nooozie,override,days:,verbose,help \
       -- "$@"`
   eval set -- "$GETOPT"
   while true;
   do
     case "$1" in
+    -o|--override)
+      OVERRIDE=true
+      shift
+      ;;
     -b|--nobeeswax)
       BEESWAX=$2
       shift
@@ -78,6 +66,7 @@ usage: $0 [options]
 Cleans up the oozie_job, beeswax_queryhistory, beeswax_savedquery tables:
 
 OPTIONS
+   -o|--override           Allow script to run as non-root, must set HUE_CONF_DIR manually before running
    -b|--nobeeswax          Disables cleaning of beeswax tables.
    -o|--nooozie            Disables cleaning of the oozie tables.
    -d|--days		   Number of days of old data to keep.  Default 14.
@@ -97,94 +86,124 @@ debug()
 main()
 {
 
-   parse_arguments "$@"
+  parse_arguments "$@"
 
-   if [[ ! ${USER} =~ .*root* ]]
-   then
+  SCRIPT_DIR="$( cd -P "$( dirname "$0" )" && pwd )"
+  PYTHONPATH=${SCRIPT_DIR}/lib:${PYTHONPATH}
+  export SCRIPT_DIR PYTHONPATH
+
+  #SET IMPORTANT ENV VARS
+  if [[ -z ${HUE_CONF_DIR} ]]
+  then
+    if [ -d "/var/run/cloudera-scm-agent/process" ]
+    then
+      HUE_CONF_DIR="/var/run/cloudera-scm-agent/process/`ls -1 /var/run/cloudera-scm-agent/process | grep HUE_SERVER | sort -n | tail -1 `"
+    else
+      HUE_CONF_DIR="/etc/hue/conf"
+    fi
+    export HUE_CONF_DIR
+  fi
+
+  if [[ ! ${USER} =~ .*root* ]]
+  then
+    if [[ -z ${OVERRIDE} ]]
+    then
       echo "Script must be run as root: exiting"
       exit 1
-   fi
+    fi
+  else
+    if [[ $(ps -ef | grep [r]unc) ]]
+    then
+      DESKTOP_LOG_DIR=$(strings /proc/$(ps -ef | grep [r]unc | awk '{print $2}')/environ | grep DESKTOP_LOG_DIR | awk -F\= '{print $2}')
+    fi
+  fi
 
-   CDH_VERSION=`hadoop version | grep "Hadoop.*cdh.*" | awk -Fcdh '{print $2}'`
-   CDH_MAJOR_VER=${CDH_VERSION%%.*}
-   CDH_MINOR_VER=${CDH_VERSION:2:1}
+  if [[ -z ${DESKTOP_LOG_DIR} ]]
+  then
+    DESKTOP_LOG_DIR=${HUE_CONF_DIR}/logs
+  fi
+  if [[ ! -f ${DESKTOP_LOG_DIR} ]]
+  then
+    mkdir -p ${DESKTOP_LOG_DIR}
+  fi
+  LOG_FILE=${DESKTOP_LOG_DIR}/`basename "$0" | awk -F\. '{print $1}'`.log
+  LOG_ROTATE_SIZE=10 #MB before rotating, size in MB before rotating log to .1
+  LOG_ROTATE_COUNT=5 #number of log files, so 20MB max
 
-   if [[ ${CDH_MAJOR_VER} -ge 5 ]] && [[ ${CDH_MINOR_VER} -ge 5 ]]
-   then
-      HUE_IGNORE_PASSWORD_SCRIPT_ERRORS=1
-      if [[ -z ${HUE_DATABASE_PASSWORD} ]]
+  PARCEL_DIR=/opt/cloudera/parcels/CDH
+  if [ ! -d "/usr/lib/hadoop" ]
+  then
+    CDH_HOME=$PARCEL_DIR
+  else
+    CDH_HOME=/usr
+  fi
+
+  if [ -d "${CDH_HOME}/lib/hue/build/env/bin" ]
+  then
+    COMMAND="${CDH_HOME}/lib/hue/build/env/bin/hue shell"
+    TEST_COMMAND="${CDH_HOME}/lib/hue/build/env/bin/hue dbshell"
+  else
+    COMMAND="${CDH_HOME}/share/hue/build/env/bin/hue shell"
+    TEST_COMMAND="${CDH_HOME}/share/hue/build/env/bin/hue dbshell"
+  fi
+
+  ORACLE_ENGINE_CHECK=$(grep engine ${HUE_CONF_DIR}/hue* | grep -i oracle)
+  if [[ ! -z ${ORACLE_ENGINE_CHECK} ]]
+  then
+    if [[ -z ${ORACLE_HOME} ]]
+    then
+      ORACLE_PARCEL=/opt/cloudera/parcels/ORACLE_INSTANT_CLIENT/instantclient_11_2
+      if [[ -d ${ORACLE_PARCEL} ]]
       then
-         echo "CDH 5.5 and above requires that you set the environment variable:"
-         echo "HUE_DATABASE_PASSWORD=<dbpassword>"
-         exit 1
+        ORACLE_HOME=${ORACLE_PARCEL}
+        LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${ORACLE_HOME}
+        export LD_LIBRARY_PATH ORACLE_HOME
       fi
-   fi
-   PGPASSWORD=${HUE_DATABASE_PASSWORD} 
+    fi
+    if [[ -z ${ORACLE_HOME} ]]
+    then
+      echo "It looks like you are using Oracle as your backend"
+      echo "ORACLE_HOME must be set to the correct Oracle client"
+      echo "before running this script"
+      exit 1
+    fi
+  fi
 
-   PARCEL_DIR=/opt/cloudera/parcels/CDH
-   LOG_DIR=/var/log/hue
-   if [[ ! -d ${LOG_DIR} ]]
-   then
-      mkdir -p ${LOG_DIR}
-      chown -R hue:hue ${LOG_DIR}
-   fi
-   LOG_FILE=${LOG_DIR}/`basename "$0" | awk -F\. '{print $1}'`.log
-   LOG_ROTATE_SIZE=10 #MB before rotating, size in MB before rotating log to .1
-   LOG_ROTATE_COUNT=2 #number of log files, so 20MB max
-   DATE=`date '+%Y%m%d-%H%M'`
-#   KEEP_DAYS=7    #Number of days of beeswax and oozie history to keep
-   BEESWAX_DELETE_RECORDS=999 #number of beeswax records to delete at a time
+  HUE_IGNORE_PASSWORD_SCRIPT_ERRORS=1
+  if [[ -z ${HUE_DATABASE_PASSWORD} ]]
+  then
+    echo "CDH 5.5 and above requires that you set the environment variable:"
+    echo "HUE_DATABASE_PASSWORD=<dbpassword>"
+    exit 1
+  fi
+  PGPASSWORD=${HUE_DATABASE_PASSWORD}
+  export CDH_HOME COMMAND HUE_IGNORE_PASSWORD_SCRIPT_ERRORS PGPASSWORD
+
+  debug "Validating DB connectivity"
+#  echo "COMMAND: echo \"from django.db import connection; cursor = connection.cursor(); cursor.execute('select count(*) from auth_user')\" | ${TEST_COMMAND}" | tee -a ${LOG_FILE}
+#  echo "from django.db import connection; cursor = connection.cursor(); cursor.execute('select count(*) from auth_user')" | ${TEST_COMMAND} | tee -a ${LOG_FILE}
+
+  QUIT_COMMAND="quit"
+  PG_ENGINE_CHECK=$(grep engine ${HUE_CONF_DIR}/hue* | grep -i postgres)
+  if [[ ! -z ${PG_ENGINE_CHECK} ]]
+  then
+    QUIT_COMMAND='\q'
+  fi
+
+#  echo "Running echo ${QUIT_COMMAND} | ${TEST_COMMAND}"
+#  echo ${QUIT_COMMAND} | ${TEST_COMMAND}
+  if [[ $? -ne 0 ]]
+  then
+    echo "HUE_DATABASE_PASSWORD is incorrect.  Please check CM: http://${HOSTNAME}:7180/api/v5/cm/deployment and search for HUE_SERVER and database to find correct password"
+    exit 1
+  fi
+
+  BEESWAX_DELETE_RECORDS=999 #number of beeswax records to delete at a time
                                 #to avoid Non Fatal Exception: DatabaseError: too many SQL variables
-   WORKFLOW_DELETE_RECORDS=999 #number of workflow records to delete at a time
+  WORKFLOW_DELETE_RECORDS=999 #number of workflow records to delete at a time
                                 #to avoid Non Fatal Exception: DatabaseError: too many SQL variables
-   RESET_COUNT=15              #number of deletion attempts before trying max again
-   RESET_MAX=5                 #number of resets permitted
-
-   if [ ! -d "/usr/lib/hadoop" ]
-   then
-      CDH_HOME=$PARCEL_DIR
-   else
-      CDH_HOME=/usr
-   fi
-
-   if [ -d "/var/run/cloudera-scm-agent/process" ]
-   then
-      HUE_CONF_DIR="/var/run/cloudera-scm-agent/process/`ls -1 /var/run/cloudera-scm-agent/process | grep HUE_SERVER | sort -n | tail -1 `"
-   else
-      HUE_CONF_DIR="/etc/hue/conf"
-   fi
-
-   if [ -d "${CDH_HOME}/lib/hue/build/env/bin" ]
-   then
-      COMMAND="${CDH_HOME}/lib/hue/build/env/bin/hue shell"
-      TEST_COMMAND="${CDH_HOME}/lib/hue/build/env/bin/hue dbshell"
-   else
-      COMMAND="${CDH_HOME}/share/hue/build/env/bin/hue shell"
-      TEST_COMMAND="${CDH_HOME}/share/hue/build/env/bin/hue dbshell"
-   fi
-
-   ORACLE_HOME=/opt/cloudera/parcels/ORACLE_INSTANT_CLIENT/instantclient_11_2/
-   LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${ORACLE_HOME}
-   export CDH_HOME HUE_CONF_DIR ORACLE_HOME LD_LIBRARY_PATH COMMAND DEBUG=true PGPASSWORD
-   if [[ ! -z ${VERBOSE} ]]
-   then
-      export DESKTOP_DEBUG=true
-   fi
-
-QUIT_COMMAND="quit"
-PG_ENGINE_CHECK=$(grep engine ${HUE_CONF_DIR}/hue* | grep -i postgres)
-if [[ ! -z ${PG_ENGINE_CHECK} ]]
-then
-   QUIT_COMMAND='\q'
-fi
-
-debug "Running echo ${QUIT_COMMAND} | ${TEST_COMMAND}"
-echo ${QUIT_COMMAND} | ${TEST_COMMAND}
-if [[ $? -ne 0 ]]
-then
-   echo "HUE_DATABASE_PASSWORD is incorrect.  Please check CM: http://${HOSTNAME}:7180/api/v5/cm/deployment and search for HUE_SERVER and database to find correct password"
-   exit 1
-fi
+  RESET_COUNT=15              #number of deletion attempts before trying max again
+  RESET_MAX=5                 #number of resets permitted
 
 debug "Running ${COMMAND}"
 ${COMMAND} >> /dev/null 2>&1 <<EOF
@@ -210,7 +229,7 @@ log = logging.getLogger('')
 log.setLevel(logging.INFO)
 format = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 
-fh = logging.handlers.RotatingFileHandler(LOGFILE, maxBytes=(1048576*${LOG_ROTATE_SIZE}), backupCount=${LOG_ROTATE_COUNT})
+fh = logging.handlers.RotatingFileHandler(LOGFILE, maxBytes = (1048576*logrotatesize), backupCount = backupcount)
 fh.setFormatter(format)
 log.addHandler(fh)
 
@@ -220,7 +239,7 @@ log.info("DB Name: %s" % desktop.conf.DATABASE.NAME.get())
 log.info("DB User: %s" % desktop.conf.DATABASE.USER.get())
 log.info("DB Host: %s" % desktop.conf.DATABASE.HOST.get())
 log.info("DB Port: %s" % str(desktop.conf.DATABASE.PORT.get()))
-log.info("Cleaning up anything in the Hue tables oozie*, desktop* and beeswax* older than ${KEEP_DAYS} old")
+log.info("Cleaning up anything in the Hue tables oozie*, desktop* and beeswax* older than %s old" % keepDays)
 
 if "${BEESWAX}" == "true":
    totalQuerys = SavedQuery.objects.filter(is_auto=True, mtime__lte=date.today() - timedelta(days=keepDays)).values_list("id", flat=True)
@@ -310,6 +329,9 @@ if "${OOZIE}" == "true":
       totalWorkflows = Workflow.objects.filter(name='', last_modified__lte=date.today() - timedelta(days=keepDays)).values_list("id", flat=True)
 
 EOF
+
+echo ""
+echo "Logs can be found in ${DESKTOP_LOG_DIR}"
 
 unset PGPASSWORD
 

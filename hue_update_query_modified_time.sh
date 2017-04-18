@@ -1,5 +1,5 @@
 #!/bin/bash
-#Migrates missing doc1 to doc2
+#Fixes bad modified time in queries
 
 #parse command line arguments
 parse_arguments()
@@ -13,13 +13,10 @@ parse_arguments()
 
   # Parse short and long option parameters.
   OVERRIDE=
-  USERNAME=
-  ALLOWDUPES=False
-  START_QUERY_NAME=
   VERBOSE=
   DESKTOP_DEBUG=false
-  GETOPT=`getopt -n $0 -o o,u:,d,q:,v,h \
-      -l override,username:,duplicates,startquery:,verbose,help \
+  GETOPT=`getopt -n $0 -o o,v,h \
+      -l override,verbose,help \
       -- "$@"`
   eval set -- "$GETOPT"
   while true;
@@ -28,18 +25,6 @@ parse_arguments()
     -o|--override)
       OVERRIDE=true
       shift
-      ;;
-    -u|--username)
-      USERNAME=$2
-      shift 2
-      ;;
-    -d|--duplicates)
-      ALLOWDUPES=True
-      shift
-      ;;
-    -q|--startquery)
-      START_QUERY_NAME=$2
-      shift 2
       ;;
     -v|--verbose)
       VERBOSE=true
@@ -65,13 +50,10 @@ usage()
 cat << EOF
 usage: $0 [options]
 
-Migrates missing queries and docs:
+Fixes bad modified timestamps in queries
 
 OPTIONS
    -o|--override           Allow script to run as non-root, must set HUE_CONF_DIR manually before running
-   -u|--username <user>    User to check for doc2 entry if not set, then runs for all users.  Slower.
-   -d|--duplicates	   Allows duplicate entries to be created.  This will run faster.
-   -q|--startquery <queryname> Specify name of query to start at to avoid running through all queries.
    -v|--verbose            Verbose logging, off by default
    -h|--help               Show this message.
 EOF
@@ -201,18 +183,16 @@ main()
   fi
 
   ${COMMAND} >> /dev/null 2>&1 <<EOF
-usernames = "${USERNAME}"
-startqueryname = "${START_QUERY_NAME}"
-allowdupes = ${ALLOWDUPES}
 LOGFILE = "${LOG_FILE}"
 logrotatesize=${LOG_ROTATE_SIZE}
 backupcount=${LOG_ROTATE_COUNT}
 
-import time
 import logging
 import logging.handlers
-from django.contrib.auth.models import User
-from hue_converters import DocumentConverterHueScripts
+import json
+import time
+from datetime import datetime
+from desktop.models import Document2
 
 LOG = logging.getLogger()
 format = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
@@ -227,34 +207,39 @@ LOG.info("DB User: %s" % desktop.conf.DATABASE.USER.get())
 LOG.info("DB Host: %s" % desktop.conf.DATABASE.HOST.get())
 LOG.info("DB Port: %s" % str(desktop.conf.DATABASE.PORT.get()))
 
-overallstart = time.time()
-if not usernames:
-  users = User.objects.all()
-else:
-  userlist = usernames.split(",")
-  users = User.objects.filter(username__in = userlist)
+query_docs = Document2.objects.filter(is_history=True)
+count = query_docs.count()
+LOG.info("Found %d query documents" % count)
 
-if startqueryname:
-  processdocs = False
-else:
-  processdocs = True
-
-for user in users:
-  start = time.time()
-  LOG.info("Converting docs for user: %s" % user.username)
-  doc_count = 0
-  converter = DocumentConverterHueScripts(user, allowdupes = allowdupes, startqueryname = startqueryname, processdocs = processdocs)
-  try:
-    processdocs = converter.convertfailed()
-  except:
-      LOG.warn("Conversions failed for user: %s" % user.username)
-  end = time.time()
-  elapsed = (end - start) / 60
-  LOG.info("Finished user: %s : elapsed time: %s" % (user.username, elapsed))
-
-overallend = time.time()
-elapsed = (overallend - overallstart) / 60
-LOG.info("Time elapsed (minutes): %.2f" % elapsed)
+if count > 0:
+    start = time.time()
+    LOG.info("Starting update for %d documents at %s" % (count, str(datetime.now())))
+    update_ctr = 0
+    for doc in query_docs.all().iterator():
+        try:
+            data = json.loads(doc.data)
+        except:
+            LOG.info("Failed to load JSON for doc ID: %d" % doc.id)
+        snippets = data.get('snippets')
+        if snippets:
+            try:
+                snippet = snippets[0]
+            except:
+                LOG.info("Failed to get first snippet for doc ID: %d" % doc.id)
+            last_executed_timestamp = snippet.get('lastExecuted')
+            if last_executed_timestamp:
+                last_modified = doc.last_modified
+                last_executed_dtm = datetime.fromtimestamp(int(last_executed_timestamp/1000))
+                Document2.objects.filter(id=doc.id).update(last_modified=last_executed_dtm)
+                update_ctr += 1
+            else:
+                LOG.info("Failed to get lastExecuted timestamp for doc ID: %d")
+        else:
+            LOG.info("Failed to get snippets for doc ID: %d" % doc.id)
+    LOG.info("Updated the last_modified date for %d documents" % update_ctr)
+    end = time.time()
+    elapsed = (end - start) / 60
+    LOG.info("Time elapsed (minutes): %.2f" % elapsed)
 
 
 EOF
