@@ -7,7 +7,7 @@ from django.db import transaction
 
 from desktop.lib.exceptions_renderable import PopupException
 from django.core.exceptions import FieldError
-from desktop.models import Document, DocumentPermission, DocumentTag, Document2, Directory, Document2Permission
+from desktop.models import Document, DocumentPermission, DocumentTag, Document2, Directory, Document2Permission, FilesystemException
 from notebook.models import import_saved_beeswax_query
 from doc2_utils import findMatchingQuery, removeInvalidChars
 
@@ -18,16 +18,21 @@ class DocumentConverterHueScripts(object):
   Given a user, converts any existing Document objects to Document2 objects
   """
 
-  def __init__(self, user, allowdupes=False, startqueryname=None, processdocs=None):
+  def __init__(self, user, allowdupes=False, startqueryname=None, startuser=None, processdocs=None):
     self.user = user
     self.allowdupes = allowdupes
     self.startqueryname = startqueryname
-    if self.startqueryname and not processdocs:
+    self.startuser = startuser
+    if (self.startqueryname or self.startuser) and not processdocs:
       self.processdocs = False
     else:
       self.processdocs = True
     # If user does not have a home directory, we need to create one and import any orphan documents to it
-    self.home_dir = Document2.objects.create_user_directories(self.user)
+    try:
+      self.home_dir = Document2.objects.create_user_directories(self.user)
+    except FilesystemException, e:
+      LOG.warn("User: %s failed: Exception: %s" % (self.user, e))
+      raise
     self.imported_tag = DocumentTag.objects.get_imported2_tag(user=self.user)
     self.imported_docs = []
 
@@ -36,7 +41,7 @@ class DocumentConverterHueScripts(object):
     # Convert SavedQuery documents
     try:
       from beeswax.models import SavedQuery, HQL, IMPALA, RDBMS
-
+  
       docs = self._get_unconverted_docs(SavedQuery).filter(extra__in=[HQL, IMPALA, RDBMS])
       for doc in docs:
         if doc.content_object:
@@ -46,16 +51,15 @@ class DocumentConverterHueScripts(object):
           data = notebook.get_data()
           name = data['name']
           query = data['snippets'][0]['statement_raw']
-          if re.match(self.startqueryname, name):
+          if re.match(self.startqueryname, name) and not self.startuser:
             self.processdocs = True
           if self.processdocs:
             matchdocs = findMatchingQuery(user=self.user, id=id, name=name, query=query, include_history=False)
             if not matchdocs or self.allowdupes:
               try:
-#                LOG.info("converting doc id: %s : name: %s" % (id, name))
                 if doc.is_historic():
                   data['isSaved'] = False
-  
+
                 doc2 = self._create_doc2(
                     document=doc,
                     doctype=data['type'],
@@ -83,57 +87,57 @@ class DocumentConverterHueScripts(object):
       docs = self._get_unconverted_docs(SavedQuery, with_history=True).filter(extra__in=[HQL, IMPALA, RDBMS]).order_by('-last_modified')
 
       for doc in docs:
-        if doc.content_object:
+  	if not doc.content_object:
+          LOG.error("Content object is missing")
+        elif doc.content_object:
           id_temp = doc.to_dict()
           id = id_temp['id']
           notebook = import_saved_beeswax_query(doc.content_object)
           data = notebook.get_data()
           name = data['name']
           query = data['snippets'][0]['statement_raw']
-          if re.match(self.startqueryname, name):
+          if re.match(self.startqueryname, name) and not self.startuser:
             self.processdocs = True
           if self.processdocs:
-            matchdocs = findMatchingQuery(user=self.user, id=id, name=name, query=query, include_history=True)
-            if not matchdocs or self.allowdupes:
-              try:
-#                LOG.info("converting doc id: %s : name: %s" % (id, name))
-                data['isSaved'] = False
-                data['snippets'][0]['lastExecuted'] = time.mktime(doc.last_modified.timetuple()) * 1000
+            try:
+              data['isSaved'] = False
+              data['snippets'][0]['lastExecuted'] = time.mktime(doc.last_modified.timetuple()) * 1000
 
-                doc2 = self._historify(data, self.user)
-                doc2.last_modified = doc.last_modified
+              doc2 = self._historify(data, self.user)
+              doc2.last_modified = doc.last_modified
 
-                # save() updates the last_modified to current time. Resetting it using update()
-                doc2.save()
-                Document2.objects.filter(id=doc2.id).update(last_modified=doc.last_modified)
-  
-                self.imported_docs.append(doc2)
+              # save() updates the last_modified to current time. Resetting it using update()
+              doc2.save()
+              Document2.objects.filter(id=doc2.id).update(last_modified=doc.last_modified)
+ 
+              self.imported_docs.append(doc2)
   
                 # Tag for not re-importing
-                Document.objects.link(
-                  doc2,
-                  owner=doc2.owner,
-                  name=doc2.name,
-                  description=doc2.description,
-                  extra=doc.extra
-                )
+              Document.objects.link(
+                doc2,
+                owner=doc2.owner,
+                name=doc2.name,
+                description=doc2.description,
+                extra=doc.extra
+              )
   
-                try:
-                  doc.add_tag(self.imported_tag)
-                except IntegrityError, e:
-                  LOG.exception("Failed to add imported_tag to doc %s with error %s" % (doc2.name, e))
-                  pass
+              try:
+                doc.add_tag(self.imported_tag)
+              except IntegrityError, e:
+                LOG.exception("Failed to add imported_tag to doc %s with error %s" % (doc2.name, e))
+                pass
 
-                doc.save()
+              doc.save()
 
-              except:
-                pass  
+            except:
+              LOG.exception("Doc name: %s" % (doc.name))
+              pass  
          
     except ImportError, e:
       LOG.info('Cannot convert Saved Query documents: beeswax app is not installed')
       pass
 
-    # Add converted docs to root directory
+      # Add converted docs to root directory
     if self.imported_docs:
       LOG.info('Successfully imported %d documents' % len(self.imported_docs))
 

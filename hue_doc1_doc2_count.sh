@@ -16,11 +16,10 @@ parse_arguments()
   USERNAME=
   ALLOWDUPES=False
   START_QUERY_NAME=
-  STARTUSER=
   VERBOSE=
   DESKTOP_DEBUG=false
-  GETOPT=`getopt -n $0 -o o,u:,d,q:,s:,v,h \
-      -l override,username:,duplicates,startquery:,startuser:,verbose,help \
+  GETOPT=`getopt -n $0 -o o,u:,d,q:,v,h \
+      -l override,username:,duplicates,startquery:,verbose,help \
       -- "$@"`
   eval set -- "$GETOPT"
   while true;
@@ -40,10 +39,6 @@ parse_arguments()
       ;;
     -q|--startquery)
       START_QUERY_NAME=$2
-      shift 2
-      ;;
-    -s|--startuser)
-      STARTUSER=$2
       shift 2
       ;;
     -v|--verbose)
@@ -74,10 +69,9 @@ Migrates missing queries and docs:
 
 OPTIONS
    -o|--override           Allow script to run as non-root, must set HUE_CONF_DIR manually before running
-   -u|--username <comma,sep,list>   Comma separated list of users to process
+   -u|--username <user>    User to check for doc2 entry if not set, then runs for all users.  Slower.
    -d|--duplicates	   Allows duplicate entries to be created.  This will run faster.
    -q|--startquery <queryname> Specify name of query to start at to avoid running through all queries.
-   -s|--startuser <username>  User to start at
    -v|--verbose            Verbose logging, off by default
    -h|--help               Show this message.
 EOF
@@ -208,9 +202,6 @@ main()
 
   ${COMMAND} >> /dev/null 2>&1 <<EOF
 usernames = "${USERNAME}"
-startqueryname = "${START_QUERY_NAME}"
-startuser = "${STARTUSER}"
-allowdupes = ${ALLOWDUPES}
 LOGFILE = "${LOG_FILE}"
 logrotatesize=${LOG_ROTATE_SIZE}
 backupcount=${LOG_ROTATE_COUNT}
@@ -218,8 +209,10 @@ backupcount=${LOG_ROTATE_COUNT}
 import time
 import logging
 import logging.handlers
+import sys
 import desktop.conf
-from conversion_runner import DocumentConversionRunner
+from django.contrib.auth.models import User
+from doc_count_util import DocumentCounts
 
 LOG = logging.getLogger()
 format = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
@@ -227,19 +220,25 @@ fh = logging.handlers.RotatingFileHandler(LOGFILE, maxBytes = (1048576*logrotate
 fh.setFormatter(format)
 LOG.addHandler(fh)
 LOG.setLevel(logging.INFO)
-LOG.info('HUE_CONF_DIR: ${HUE_CONF_DIR}')
-LOG.info("DB Engine: %s" % desktop.conf.DATABASE.ENGINE.get())
-LOG.info("DB Name: %s" % desktop.conf.DATABASE.NAME.get())
-LOG.info("DB User: %s" % desktop.conf.DATABASE.USER.get())
-LOG.info("DB Host: %s" % desktop.conf.DATABASE.HOST.get())
-LOG.info("DB Port: %s" % str(desktop.conf.DATABASE.PORT.get()))
 
 overallstart = time.time()
-conversionrunner = DocumentConversionRunner(usernames=usernames, allowdupes = allowdupes, startqueryname = startqueryname, startuser = startuser)
-conversionrunner.runconversions()
-overallend = time.time()
-elapsed = (overallend - overallstart) / 60
-LOG.info("Time elapsed (minutes): %.2f" % elapsed)
+if not usernames:
+  users = User.objects.all()
+else:
+  userlist = usernames.split(",")
+  users = User.objects.filter(username__in = userlist)
+
+if startqueryname:
+  processdocs = False
+else:
+  processdocs = True
+
+sys.stdout = open('counts.txt', 'a')
+print("username     savedquery      queryhistory")
+
+for user in users:
+  doc_counts = DocumentCounts(user)
+  doc_counts.printCounts()
 
 
 EOF

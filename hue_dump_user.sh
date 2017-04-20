@@ -1,5 +1,5 @@
 #!/bin/bash
-#Migrates missing doc1 to doc2
+#Test to search for doc1 and doc2
 
 #parse command line arguments
 parse_arguments()
@@ -14,13 +14,10 @@ parse_arguments()
   # Parse short and long option parameters.
   OVERRIDE=
   USERNAME=
-  ALLOWDUPES=False
-  START_QUERY_NAME=
-  STARTUSER=
   VERBOSE=
   DESKTOP_DEBUG=false
-  GETOPT=`getopt -n $0 -o o,u:,d,q:,s:,v,h \
-      -l override,username:,duplicates,startquery:,startuser:,verbose,help \
+  GETOPT=`getopt -n $0 -o o,u:,v,h \
+      -l override,username:,verbose,help \
       -- "$@"`
   eval set -- "$GETOPT"
   while true;
@@ -32,18 +29,6 @@ parse_arguments()
       ;;
     -u|--username)
       USERNAME=$2
-      shift 2
-      ;;
-    -d|--duplicates)
-      ALLOWDUPES=True
-      shift
-      ;;
-    -q|--startquery)
-      START_QUERY_NAME=$2
-      shift 2
-      ;;
-    -s|--startuser)
-      STARTUSER=$2
       shift 2
       ;;
     -v|--verbose)
@@ -70,29 +55,19 @@ usage()
 cat << EOF
 usage: $0 [options]
 
-Migrates missing queries and docs:
+Exports all user objects:
 
 OPTIONS
    -o|--override           Allow script to run as non-root, must set HUE_CONF_DIR manually before running
-   -u|--username <comma,sep,list>   Comma separated list of users to process
-   -d|--duplicates	   Allows duplicate entries to be created.  This will run faster.
-   -q|--startquery <queryname> Specify name of query to start at to avoid running through all queries.
-   -s|--startuser <username>  User to start at
+   -u|--username <user>    User to export objects from.
    -v|--verbose            Verbose logging, off by default
    -h|--help               Show this message.
 EOF
 }
 
-debug()
-{
-   if [[ ! -z $VERBOSE ]]
-   then
-      echo "$1" >> ${LOG_FILE}
-   fi
-}
-
 main()
 {
+
 
   parse_arguments "$@"
 
@@ -184,42 +159,27 @@ main()
     echo "HUE_DATABASE_PASSWORD=<dbpassword>"
     exit 1
   fi
-  PGPASSWORD=${HUE_DATABASE_PASSWORD}
-  export CDH_HOME COMMAND HUE_IGNORE_PASSWORD_SCRIPT_ERRORS PGPASSWORD
+  export CDH_HOME COMMAND HUE_IGNORE_PASSWORD_SCRIPT_ERRORS
 
-  debug "Validating DB connectivity"
 #  echo "COMMAND: echo \"from django.db import connection; cursor = connection.cursor(); cursor.execute('select count(*) from auth_user')\" | ${TEST_COMMAND}" | tee -a ${LOG_FILE}
 #  echo "from django.db import connection; cursor = connection.cursor(); cursor.execute('select count(*) from auth_user')" | ${TEST_COMMAND} | tee -a ${LOG_FILE}
-
-  QUIT_COMMAND="quit"
-  PG_ENGINE_CHECK=$(grep engine ${HUE_CONF_DIR}/hue* | grep -i postgres)
-  if [[ ! -z ${PG_ENGINE_CHECK} ]]
-  then
-    QUIT_COMMAND='\q'
-  fi
-
-#  echo "Running echo ${QUIT_COMMAND} | ${TEST_COMMAND}"
-#  echo ${QUIT_COMMAND} | ${TEST_COMMAND}
   if [[ $? -ne 0 ]]
   then
-    echo "HUE_DATABASE_PASSWORD is incorrect.  Please check CM: http://${HOSTNAME}:7180/api/v5/cm/deployment and search for HUE_SERVER and database to find correct password"
-    exit 1
+    echo "DB connect test did not work, HUE_DATABASE_PASSWORD may not be correct"
+    echo "If the next query test fails check password in CM: http://<cmhostname>:7180/api/v5/cm/deployment and search for HUE_SERVER and database to find correct password"
   fi
 
-  ${COMMAND} >> /dev/null 2>&1 <<EOF
-usernames = "${USERNAME}"
-startqueryname = "${START_QUERY_NAME}"
-startuser = "${STARTUSER}"
-allowdupes = ${ALLOWDUPES}
+#  ${COMMAND} <<EOF 2>&1 > /dev/null
+  ${COMMAND} <<EOF
+username = "${USERNAME}"
 LOGFILE = "${LOG_FILE}"
 logrotatesize=${LOG_ROTATE_SIZE}
 backupcount=${LOG_ROTATE_COUNT}
 
-import time
 import logging
 import logging.handlers
-import desktop.conf
-from conversion_runner import DocumentConversionRunner
+from django.contrib.auth.models import User
+import customdumpdata
 
 LOG = logging.getLogger()
 format = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
@@ -227,27 +187,14 @@ fh = logging.handlers.RotatingFileHandler(LOGFILE, maxBytes = (1048576*logrotate
 fh.setFormatter(format)
 LOG.addHandler(fh)
 LOG.setLevel(logging.INFO)
-LOG.info('HUE_CONF_DIR: ${HUE_CONF_DIR}')
-LOG.info("DB Engine: %s" % desktop.conf.DATABASE.ENGINE.get())
-LOG.info("DB Name: %s" % desktop.conf.DATABASE.NAME.get())
-LOG.info("DB User: %s" % desktop.conf.DATABASE.USER.get())
-LOG.info("DB Host: %s" % desktop.conf.DATABASE.HOST.get())
-LOG.info("DB Port: %s" % str(desktop.conf.DATABASE.PORT.get()))
 
-overallstart = time.time()
-conversionrunner = DocumentConversionRunner(usernames=usernames, allowdupes = allowdupes, startqueryname = startqueryname, startuser = startuser)
-conversionrunner.runconversions()
-overallend = time.time()
-elapsed = (overallend - overallstart) / 60
-LOG.info("Time elapsed (minutes): %.2f" % elapsed)
+user = User.objects.get(username = username)
 
+print ""
+print ""
 
+customdumpdata.Command().handle_noargs('desktop.Document', 'desktop.Document2', 'beeswax.SavedQuery', 'beeswax.QueryHistory', format='json', indent=2, exclude=[], use_natural_keys=True, use_base_manager=False, user=user)
 EOF
-
-echo ""
-echo "Logs can be found in ${DESKTOP_LOG_DIR}"
-
-unset PGPASSWORD
 
 }
 
