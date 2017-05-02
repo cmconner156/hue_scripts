@@ -208,6 +208,8 @@ LOG.info("DB Host: %s" % desktop.conf.DATABASE.HOST.get())
 LOG.info("DB Port: %s" % str(desktop.conf.DATABASE.PORT.get()))
 
 query_docs = Document2.objects.filter(is_history=True)
+query_docs += Document2.objects.filter(type='query-hive', is_history=False)
+query_docs += Document2.objects.filter(type='query-impala', is_history=False)
 count = query_docs.count()
 LOG.info("Found %d query documents" % count)
 
