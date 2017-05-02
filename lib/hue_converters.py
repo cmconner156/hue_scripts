@@ -137,7 +137,56 @@ class DocumentConverterHueScripts(object):
       LOG.info('Cannot convert Saved Query documents: beeswax app is not installed')
       pass
 
-      # Add converted docs to root directory
+    # Convert Job Designer documents
+    try:
+      from oozie.models import Workflow
+
+      # TODO: Change this logic to actually embed the workflow data in Doc2 instead of linking to old job design
+      docs = self._get_unconverted_docs(Workflow)
+      for doc in docs:
+        try:
+          if doc.content_object:
+            data = doc.content_object.data_dict
+            data.update({'content_type': doc.content_type.model, 'object_id': doc.object_id})
+            doc2 = self._create_doc2(
+                document=doc,
+                doctype='link-workflow',
+                description=doc.description,
+                data=json.dumps(data)
+            )
+            self.imported_docs.append(doc2)
+        except Exception, e:
+          self.failed_docs.append(doc)
+          LOG.exception('Failed to import Job Designer document id: %d' % doc.id)
+    except ImportError, e:
+      LOG.warn('Cannot convert Job Designer documents: oozie app is not installed')
+
+
+    # Convert PigScript documents
+    try:
+      from pig.models import PigScript
+
+      # TODO: Change this logic to actually embed the pig data in Doc2 instead of linking to old pig script
+      docs = self._get_unconverted_docs(PigScript)
+      for doc in docs:
+        try:
+          if doc.content_object:
+            data = doc.content_object.dict
+            data.update({'content_type': doc.content_type.model, 'object_id': doc.object_id})
+            doc2 = self._create_doc2(
+                document=doc,
+                doctype='link-pigscript',
+                description=doc.description,
+                data=json.dumps(data)
+            )
+            self.imported_docs.append(doc2)
+        except Exception, e:
+          self.failed_docs.append(doc)
+          LOG.exception('Failed to import Pig document id: %d' % doc.id)
+    except ImportError, e:
+      LOG.warn('Cannot convert Pig documents: pig app is not installed')
+
+    # Add converted docs to root directory
     if self.imported_docs:
       LOG.info('Successfully imported %d documents' % len(self.imported_docs))
 
@@ -147,8 +196,12 @@ class DocumentConverterHueScripts(object):
       for doc in docs:
         try:
           if doc.path and doc.path != '/.Trash':
+            doc_last_modified = doc.last_modified
             doc.is_trashed = doc.path.startswith('/.Trash')
             doc.save()
+
+            # save() updates the last_modified to current time. Resetting it using update()
+            Document2.objects.filter(id=doc.id).update(last_modified=doc_last_modified)
         except Exception, e:
           LOG.exception("Failed to set is_trashed field with exception: %s" % e)
     except FieldError, e:
