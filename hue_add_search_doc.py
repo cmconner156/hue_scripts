@@ -208,35 +208,38 @@ LOG.info("DB Host: %s" % desktop.conf.DATABASE.HOST.get())
 LOG.info("DB Port: %s" % str(desktop.conf.DATABASE.PORT.get()))
 
 history_docs = Document2.objects.filter(is_history=True)
+history_docs += Document2.objects.filter(type='query-hive', is_history=False)
+history_docs += Document2.objects.filter(type='query-impala', is_history=False)
 count = history_docs.count()
 LOG.info("Found %d query documents" % count)
 if count > 0:
-    start = time.time()
-    LOG.info("Starting search field update for %d documents at %s" % (count, str(datetime.now())))
-    update_ctr = 0
-    for doc in history_docs.all().iterator():
-        try:
-            data = json.loads(doc.data)
-        except:
-            LOG.info("Failed to load JSON for doc ID: %d" % doc.id)
-        snippets = data.get('snippets')
-        if snippets:
-            try:
-                snippet = snippets[0]
-            except:
-                LOG.info("Failed to get first snippet for doc ID: %d" % doc.id)
-            statement_raw = snippet.get('statement_raw')
-            if statement_raw:
-                Document2.objects.filter(id=doc.id).update(search=statement_raw)
-                update_ctr += 1
-            else:
-                LOG.info("Failed to get raw SQL statement for doc ID: %d")
-        else:
-            LOG.info("Failed to get snippets for doc ID: %d" % doc.id)
-    LOG.info("Updated the search field for %d documents" % update_ctr)
-    end = time.time()
-    elapsed = (end - start) / 60
-    LOG.info("Time elapsed (minutes): %.2f" % elapsed)
+    start = time.time()
+    LOG.info("Starting search field update for %d documents at %s" % (count, str(datetime.now())))
+    update_ctr = 0
+    for doc in history_docs.all().iterator():
+        try:
+            data = json.loads(doc.data)
+        except:
+            LOG.info("Failed to load JSON for doc ID: %d" % doc.id)
+        snippets = data.get('snippets')
+        if snippets:
+            try:
+                snippet = snippets[0]
+            except:
+                LOG.info("Failed to get first snippet for doc ID: %d" % doc.id)
+            statement_raw = snippet.get('statement_raw')
+            if statement_raw:
+                Document2.objects.filter(id=doc.id).update(search=statement_raw)
+                update_ctr += 1
+            else:
+                LOG.info("Failed to get raw SQL statement for doc ID: %d")
+        else:
+            LOG.info("Failed to get snippets for doc ID: %d" % doc.id)
+    LOG.info("Updated the search field for %d documents" % update_ctr)
+    end = time.time()
+    elapsed = (end - start) / 60
+    LOG.info("Time elapsed (minutes): %.2f" % elapsed)
+
 
 EOF
 
