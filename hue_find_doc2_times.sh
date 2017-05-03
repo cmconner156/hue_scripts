@@ -1,5 +1,5 @@
 #!/bin/bash
-#Fixes bad modified time in queries
+#Find times for queries
 
 #parse command line arguments
 parse_arguments()
@@ -14,9 +14,10 @@ parse_arguments()
   # Parse short and long option parameters.
   OVERRIDE=
   VERBOSE=
+  USERNAME=
   DESKTOP_DEBUG=false
-  GETOPT=`getopt -n $0 -o o,v,h \
-      -l override,verbose,help \
+  GETOPT=`getopt -n $0 -o o,u:,v,h \
+      -l override,username:,verbose,help \
       -- "$@"`
   eval set -- "$GETOPT"
   while true;
@@ -25,6 +26,10 @@ parse_arguments()
     -o|--override)
       OVERRIDE=true
       shift
+      ;;
+    -u|--username)
+      USERNAME=$2
+      shift 2
       ;;
     -v|--verbose)
       VERBOSE=true
@@ -50,10 +55,11 @@ usage()
 cat << EOF
 usage: $0 [options]
 
-Fixes bad modified timestamps in queries
+Display query modified times
 
 OPTIONS
    -o|--override           Allow script to run as non-root, must set HUE_CONF_DIR manually before running
+   -u|--username	   Comma separated list of usernames
    -v|--verbose            Verbose logging, off by default
    -h|--help               Show this message.
 EOF
@@ -183,6 +189,7 @@ main()
   fi
 
   ${COMMAND} >> /dev/null 2>&1 <<EOF
+usernames = "${USERNAME}"
 LOGFILE = "${LOG_FILE}"
 logrotatesize=${LOG_ROTATE_SIZE}
 backupcount=${LOG_ROTATE_COUNT}
@@ -192,8 +199,9 @@ import logging.handlers
 import json
 import time
 from datetime import datetime
-import desktop.conf
 from desktop.models import Document2
+import desktop.conf
+from django.contrib.auth.models import User
 
 LOG = logging.getLogger()
 format = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
@@ -208,38 +216,46 @@ LOG.info("DB User: %s" % desktop.conf.DATABASE.USER.get())
 LOG.info("DB Host: %s" % desktop.conf.DATABASE.HOST.get())
 LOG.info("DB Port: %s" % str(desktop.conf.DATABASE.PORT.get()))
 
-history_docs = Document2.objects.filter(is_history=True)
-hive_docs = Document2.objects.filter(type='query-hive', is_history=False)
-impala_docs = Document2.objects.filter(type='query-impala', is_history=False)
-query_docs = history_docs | hive_docs | impala_docs
-count = query_docs.count()
-LOG.info("Found %d query documents" % count)
 
-if count > 0:
+if not usernames:
+  users = User.objects.all()
+else:
+  userlist = usernames.split(",")
+  users = User.objects.filter(username__in = userlist)
+
+for user in users:
+  history_docs = Document2.objects.filter(is_history=True, owner_id = user.id)
+  hive_docs = Document2.objects.filter(type='query-hive', is_history=False, owner_id = user.id)
+  impala_docs = Document2.objects.filter(type='query-impala', is_history=False, owner_id = user.id)
+  query_docs = history_docs | hive_docs | impala_docs
+  count = query_docs.count()
+  LOG.info("Found %d query documents" % count)
+  if count > 0:
     start = time.time()
     LOG.info("Starting update for %d documents at %s" % (count, str(datetime.now())))
     update_ctr = 0
     for doc in query_docs.all().iterator():
+      try:
+        data = json.loads(doc.data)
+      except:
+        LOG.info("Failed to load JSON for doc ID: %d" % doc.id)
+      snippets = data.get('snippets')
+      if snippets:
         try:
-            data = json.loads(doc.data)
+          snippet = snippets[0]
         except:
-            LOG.info("Failed to load JSON for doc ID: %d" % doc.id)
-        snippets = data.get('snippets')
-        if snippets:
-            try:
-                snippet = snippets[0]
-            except:
-                LOG.info("Failed to get first snippet for doc ID: %d" % doc.id)
-            last_executed_timestamp = snippet.get('lastExecuted')
-            if last_executed_timestamp:
-                last_modified = doc.last_modified
-                last_executed_dtm = datetime.fromtimestamp(int(last_executed_timestamp/1000))
-                Document2.objects.filter(id=doc.id).update(last_modified=last_executed_dtm)
-                update_ctr += 1
-            else:
-                LOG.info("Failed to get lastExecuted timestamp for doc ID: %d")
+          LOG.info("Failed to get first snippet for doc ID: %d" % doc.id)
+        last_executed_timestamp = snippet.get('lastExecuted')
+        if last_executed_timestamp:
+          last_modified = doc.last_modified
+          last_executed_dtm = datetime.fromtimestamp(int(last_executed_timestamp/1000))
+          LOG.info("Query: %s: last_modified: %s: last_executed_dtm: %s" % (doc.name, last_modified, last_executed_dtm))
+#          Document2.objects.filter(id=doc.id).update(last_modified=last_executed_dtm)
+          update_ctr += 1
         else:
-            LOG.info("Failed to get snippets for doc ID: %d" % doc.id)
+          LOG.info("Failed to get lastExecuted timestamp for doc ID: %d")
+      else:
+        LOG.info("Failed to get snippets for doc ID: %d" % doc.id)
     LOG.info("Updated the last_modified date for %d documents" % update_ctr)
     end = time.time()
     elapsed = (end - start) / 60
