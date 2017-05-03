@@ -1,5 +1,5 @@
 #!/bin/bash
-#Migrates missing doc1 to doc2
+#Counts diff between doc1 and doc2
 
 #parse command line arguments
 parse_arguments()
@@ -14,12 +14,11 @@ parse_arguments()
   # Parse short and long option parameters.
   OVERRIDE=
   USERNAME=
-  ALLOWDUPES=False
-  START_QUERY_NAME=
+  DIFFER=False
   VERBOSE=
   DESKTOP_DEBUG=false
-  GETOPT=`getopt -n $0 -o o,u:,d,q:,v,h \
-      -l override,username:,duplicates,startquery:,verbose,help \
+  GETOPT=`getopt -n $0 -o o,u:,d,v,h \
+      -l override,username:,differ,verbose,help \
       -- "$@"`
   eval set -- "$GETOPT"
   while true;
@@ -33,13 +32,9 @@ parse_arguments()
       USERNAME=$2
       shift 2
       ;;
-    -d|--duplicates)
-      ALLOWDUPES=True
+    -d|--differ)
+      DIFFER=True
       shift
-      ;;
-    -q|--startquery)
-      START_QUERY_NAME=$2
-      shift 2
       ;;
     -v|--verbose)
       VERBOSE=true
@@ -70,8 +65,7 @@ Migrates missing queries and docs:
 OPTIONS
    -o|--override           Allow script to run as non-root, must set HUE_CONF_DIR manually before running
    -u|--username <user>    User to check for doc2 entry if not set, then runs for all users.  Slower.
-   -d|--duplicates	   Allows duplicate entries to be created.  This will run faster.
-   -q|--startquery <queryname> Specify name of query to start at to avoid running through all queries.
+   -d|--differ		   Only print users with differences.  This will run faster.
    -v|--verbose            Verbose logging, off by default
    -h|--help               Show this message.
 EOF
@@ -202,6 +196,7 @@ main()
 
   ${COMMAND} >> /dev/null 2>&1 <<EOF
 usernames = "${USERNAME}"
+differ = ${DIFFER}
 LOGFILE = "${LOG_FILE}"
 logrotatesize=${LOG_ROTATE_SIZE}
 backupcount=${LOG_ROTATE_COUNT}
@@ -237,8 +232,11 @@ sys.stdout = open('counts.txt', 'a')
 print("username     savedquery      queryhistory")
 
 for user in users:
-  doc_counts = DocumentCounts(user)
-  doc_counts.printCounts()
+  try:
+    doc_counts = DocumentCounts(user, differ=differ)
+    doc_counts.printCounts()
+  except:
+    logging.warn("Could not process user: %s" % user.username)
 
 
 EOF

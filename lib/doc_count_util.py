@@ -15,9 +15,10 @@ class DocumentCounts(object):
   Given a user, prints the count of doc1 and doc2 documents 
   """
 
-  def __init__(self, user):
+  def __init__(self, user, differ=False):
     LOG.info("Sai")
     self.user = user
+    self.differ = differ
     self.home_dir = Document2.objects.create_user_directories(self.user)
     sys.stdout = open('counts.txt', 'a')
     
@@ -51,9 +52,11 @@ class DocumentCounts(object):
       LOG.info('Cannot convert Saved Query documents: beeswax app is not installed')
       pass
     
-#    if self.saved_query_doc2 != self.saved_query_doc1 or self.query_history_doc2 != self.query_history_doc1:
-#      print("%-20s  %s/%s \t  %s/%s" %(self.user.username, self.saved_query_doc2, self.saved_query_doc1, self.query_history_doc2, self.query_history_doc1))
-    print("%-20s  %s/%s \t  %s/%s" %(self.user.username, self.saved_query_doc2, self.saved_query_doc1, self.query_history_doc2, self.query_history_doc1))
+    if self.differ:
+      if self.saved_query_doc2 != self.saved_query_doc1 or self.query_history_doc2 != self.query_history_doc1:
+        print("%-20s  %s/%s \t  %s/%s" %(self.user.username, self.saved_query_doc2, self.saved_query_doc1, self.query_history_doc2, self.query_history_doc1))
+    else: 
+      print("%-20s  %s/%s \t  %s/%s" %(self.user.username, self.saved_query_doc2, self.saved_query_doc1, self.query_history_doc2, self.query_history_doc1))
     sys.stdout.close()
 
 
