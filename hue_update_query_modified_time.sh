@@ -82,10 +82,11 @@ main()
     if [ -d "/var/run/cloudera-scm-agent/process" ]
     then
       HUE_CONF_DIR="/var/run/cloudera-scm-agent/process/`ls -1 /var/run/cloudera-scm-agent/process | grep HUE_SERVER | sort -n | tail -1 `"
+      HUE_SUPERVISOR_CONF=$(echo ${HUE_CONF_DIR} | sed "s/process/supervisor\/include/g").conf
     else
       HUE_CONF_DIR="/etc/hue/conf"
     fi
-    export HUE_CONF_DIR
+    export HUE_CONF_DIR HUE_SUPERVISOR_CONF
   fi
 
   if [[ ! ${USER} =~ .*root* ]]
@@ -113,8 +114,9 @@ main()
   LOG_FILE=${DESKTOP_LOG_DIR}/`basename "$0" | awk -F\. '{print $1}'`.log
   LOG_ROTATE_SIZE=10 #MB before rotating, size in MB before rotating log to .1
   LOG_ROTATE_COUNT=5 #number of log files, so 20MB max
-  
-  PARCEL_DIR=/opt/cloudera/parcels/CDH
+ 
+  export $(sed "s/,/\\n/g" ${HUE_SUPERVISOR_CONF} | grep PARCELS_ROOT | sed "s/'//g")
+  PARCEL_DIR=${PARCELS_ROOT}/CDH
   if [ ! -d "/usr/lib/hadoop" ]
   then
     CDH_HOME=$PARCEL_DIR
