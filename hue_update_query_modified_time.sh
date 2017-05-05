@@ -210,10 +210,11 @@ LOG.info("DB User: %s" % desktop.conf.DATABASE.USER.get())
 LOG.info("DB Host: %s" % desktop.conf.DATABASE.HOST.get())
 LOG.info("DB Port: %s" % str(desktop.conf.DATABASE.PORT.get()))
 
-history_docs = Document2.objects.filter(is_history=True)
-hive_docs = Document2.objects.filter(type='query-hive', is_history=False)
-impala_docs = Document2.objects.filter(type='query-impala', is_history=False)
-query_docs = history_docs | hive_docs | impala_docs
+#history_docs = Document2.objects.filter(is_history=True)
+#hive_docs = Document2.objects.filter(type='query-hive', is_history=False)
+#impala_docs = Document2.objects.filter(type='query-impala', is_history=False)
+#query_docs = history_docs | hive_docs | impala_docs
+query_docs = Document2.objects.filter(type__startswith='query-')
 count = query_docs.count()
 LOG.info("Found %d query documents" % count)
 
@@ -234,12 +235,11 @@ if count > 0:
                 LOG.info("Failed to get first snippet for doc ID: %d" % doc.id)
             last_executed_timestamp = snippet.get('lastExecuted')
             if last_executed_timestamp:
-                last_modified = doc.last_modified
                 last_executed_dtm = datetime.fromtimestamp(int(last_executed_timestamp/1000))
                 Document2.objects.filter(id=doc.id).update(last_modified=last_executed_dtm)
                 update_ctr += 1
             else:
-                LOG.info("Failed to get lastExecuted timestamp for doc ID: %d")
+                LOG.info("Failed to get lastExecuted timestamp for doc ID: %d" % doc.id)
         else:
             LOG.info("Failed to get snippets for doc ID: %d" % doc.id)
     LOG.info("Updated the last_modified date for %d documents" % update_ctr)
