@@ -15,13 +15,23 @@ parse_arguments()
   OVERRIDE=
   VERBOSE=
   DESKTOP_DEBUG=
-  GETOPT=`getopt -n $0 -o o,v,h \
-      -l override,verbose,help \
+  QUERY="select count(*) from default.sample_07"
+  USERNAME="admin"
+  GETOPT=`getopt -n $0 -o q:,u:o,v,h \
+      -l query:,username:,override,verbose,help \
       -- "$@"`
   eval set -- "$GETOPT"
   while true;
   do
     case "$1" in
+    -q|--query)
+      QUERY=$2
+      shift 2
+      ;;
+    -u|--username)
+      USERNAME=$2
+      shift 2
+      ;;
     -o|--override)
       OVERRIDE=true
       shift
@@ -53,6 +63,8 @@ usage: $0 [options]
 Run query using Hue code outside of Hue
 
 OPTIONS
+   -u|--username	   Username of a user to run the query as, default: admin
+   -q|--query              Query to run, should spawn MR job, default: select count(*) from default.sample_07;
    -o|--override           Allow script to run as non-root, must set HUE_CONF_DIR manually before running
    -v|--verbose            Verbose logging, off by default
    -h|--help               Show this message.
@@ -127,12 +139,14 @@ main()
 
   if [ -d "${CDH_HOME}/lib/hue/build/env/bin" ]
   then
-    COMMAND="${CDH_HOME}/lib/hue/build/env/bin/hue shell"
-    TEST_COMMAND="${CDH_HOME}/lib/hue/build/env/bin/hue dbshell"
+    HUE_HOME="${CDH_HOME}/lib/hue"
   else
-    COMMAND="${CDH_HOME}/share/hue/build/env/bin/hue shell"
-    TEST_COMMAND="${CDH_HOME}/share/hue/build/env/bin/hue dbshell"
+    HUE_HOME="${CDH_HOME}/share/hue"
   fi
+  HUE_BIN="${HUE_HOME}/build/env/bin"
+  COMMAND="${HUE_BIN}/hue shell"
+  TEST_COMMAND="${HUE_BIN}/hue dbshell"
+  PYTHON="${HUE_BIN}/python"
 
   ORACLE_ENGINE_CHECK=$(grep engine ${HUE_CONF_DIR}/hue* | grep -i oracle)
   if [[ ! -z ${ORACLE_ENGINE_CHECK} ]]
@@ -170,10 +184,10 @@ main()
   do
     export $ENV
   done < <(grep environment ${HUE_SUPERVISOR_CONF} | awk -Fenvironment\= '{print $2}' | sed "s/,/\\n/g" | grep -v CM_STATUS | sed "s/'//g")
-  sudo -E -u hue /bin/bash -c "DESKTOP_DEBUG=true ${SCRIPT_DIR}/hue_run_query.py"
+  sudo -E -u hue /bin/bash -c "DESKTOP_DEBUG=true ${PYTHON} ${SCRIPT_DIR}/hue_run_query.py ${HUE_HOME} ${USERNAME} ${QUERY}"
 
   echo ""
-  echo "Logs can be found in ${DESKTOP_LOG_DIR}/logs"
+  echo "Logs can be found in ${DESKTOP_LOG_DIR}"
 
   unset PGPASSWORD
 

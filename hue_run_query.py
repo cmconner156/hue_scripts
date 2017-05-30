@@ -1,19 +1,31 @@
-#!/opt/cloudera/parcels/CDH/lib/hue/build/env/bin/python
 import os, sys, time
-sys.path.insert(0, '/opt/cloudera/parcels/CDH/lib/hue')
-#sys.path.append('/opt/cloudera/parcels/CDH/lib/hue')
+if len(sys.argv) > 1:
+  sys.path.insert(0, sys.argv[1])
+else:
+  sys.path.insert(0, '/opt/cloudera/parcels/CDH/lib/hue')
+
+if len(sys.argv) > 2:
+  username = sys.argv[2]
+else:
+  username = 'admin'
+
+if len(sys.argv) > 3:
+  query = sys.argv[3]
+else:
+  query = 'select count(*) from default.sample_07'
+
 from django.conf import settings
 
 os.environ['DJANGO_SETTINGS_MODULE']='desktop.settings'
 
 from beeswax.server import dbms
 from django.contrib.auth.models import User
-hue, created = User.objects.get_or_create(username='admin')
+hue, created = User.objects.get_or_create(username=username)
 
 db = dbms.get(hue)
 db.get_tables()
 
-query = db.execute_statement('select * from sample_07')
+query = db.execute_statement(query)
 
 while True:
   ret = db.get_state(query.get_handle())
