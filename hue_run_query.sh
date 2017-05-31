@@ -204,6 +204,8 @@ main()
       ${LSOF} -P -p ${PID} ${ARGS} >> ${DESKTOP_LOG_DIR}/lsof_${DATE}.log
     fi
 
+    ${SCRIPT_DIR}/hue_large_object_check.sh -s 1 > ${DESKTOP_LOG_DIR}/hue_large_object_check_${DATE}.log
+
     sudo -E -u hue /bin/bash -c "DESKTOP_DEBUG=true ${PYTHON} ${SCRIPT_DIR}/hue_run_query.py ${LOG_FILE}_${DATE} ${HUE_HOME} ${USERNAME} '${TABLE}'" > /dev/null 2>&1
 
     sleep 300
