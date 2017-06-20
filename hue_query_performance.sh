@@ -1,5 +1,5 @@
 #!/bin/bash
-#Run query using Hue code outside of Hue
+#Run query using Hue code outside of Hue and gather performance metrics
 
 #parse command line arguments
 parse_arguments()
@@ -60,7 +60,7 @@ usage()
 cat << EOF
 usage: $0 [options]
 
-Run query using Hue code outside of Hue
+Run query using Hue code outside of Hue and gather performance metrics
 
 OPTIONS
    -u|--username	   Username of a user to run the query as, default: admin
@@ -192,6 +192,19 @@ main()
 
     DATE=$(date '+%Y%m%d-%H%M%S')
     PID=$(ps -ef | grep [r]unc | awk '{print $2}')
+    top -b -n 1 -u hue > ${DESKTOP_LOG_DIR}/top_${DATE}.log
+
+    netstat -anp | grep ${PID} >> ${DESKTOP_LOG_DIR}/netstat_${DATE}.log
+
+    timeout 15s /usr/bin/strace -f -v -p ${PID} -o ${DESKTOP_LOG_DIR}/strace_${DATE}.log -T -t &
+
+    LSOF=$(which lsof)
+    if [ -f ${LSOF} ]
+    then
+      ${LSOF} -P -p ${PID} ${ARGS} >> ${DESKTOP_LOG_DIR}/lsof_${DATE}.log
+    fi
+
+    ${SCRIPT_DIR}/hue_large_object_check.sh -s 1 > ${DESKTOP_LOG_DIR}/hue_large_object_check_${DATE}.log
 
     sudo -E -u hue /bin/bash -c "DESKTOP_DEBUG=true ${PYTHON} ${SCRIPT_DIR}/hue_run_query.py ${LOG_FILE}_${DATE} ${HUE_HOME} ${USERNAME} '${TABLE}'" > /dev/null 2>&1
 
