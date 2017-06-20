@@ -15,17 +15,17 @@ parse_arguments()
   OVERRIDE=
   VERBOSE=
   DESKTOP_DEBUG=
-  TABLE="default.sample_07"
+  QUERY="default.sample_07"
   USERNAME="admin"
-  GETOPT=`getopt -n $0 -o t:,u:o,v,h \
-      -l table:,username:,override,verbose,help \
+  GETOPT=`getopt -n $0 -o q:,u:o,v,h \
+      -l query:,username:,override,verbose,help \
       -- "$@"`
   eval set -- "$GETOPT"
   while true;
   do
     case "$1" in
-    -t|--table)
-      TABLE=$2
+    -q|--query)
+      QUERY=$2
       shift 2
       ;;
     -u|--username)
@@ -193,7 +193,7 @@ main()
     DATE=$(date '+%Y%m%d-%H%M%S')
     PID=$(ps -ef | grep [r]unc | awk '{print $2}')
 
-    sudo -E -u hue /bin/bash -c "DESKTOP_DEBUG=true ${PYTHON} ${SCRIPT_DIR}/hue_run_query.py ${LOG_FILE}_${DATE} ${HUE_HOME} ${USERNAME} '${TABLE}'" > /dev/null 2>&1
+    sudo -E -u hue /bin/bash -c "DESKTOP_DEBUG=true ${PYTHON} ${SCRIPT_DIR}/hue_run_query.py ${LOG_FILE}_${DATE} ${HUE_HOME} ${USERNAME} '${QUERY}'" > /dev/null 2>&1
 
     chown -R hue:hue ${DESKTOP_LOG_DIR}
     sleep 300

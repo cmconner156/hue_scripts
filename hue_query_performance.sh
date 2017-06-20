@@ -206,7 +206,7 @@ main()
 
     ${SCRIPT_DIR}/hue_large_object_check.sh -s 1 > ${DESKTOP_LOG_DIR}/hue_large_object_check_${DATE}.log
 
-    sudo -E -u hue /bin/bash -c "DESKTOP_DEBUG=true ${PYTHON} ${SCRIPT_DIR}/hue_run_query.py ${LOG_FILE}_${DATE} ${HUE_HOME} ${USERNAME} '${TABLE}'" > /dev/null 2>&1
+    sudo -E -u hue /bin/bash -c "DESKTOP_DEBUG=true ${PYTHON} ${SCRIPT_DIR}/hue_query_performance.py ${LOG_FILE}_${DATE} ${HUE_HOME} ${USERNAME} '${TABLE}'" > /dev/null 2>&1
 
     chown -R hue:hue ${DESKTOP_LOG_DIR}
     sleep 300
