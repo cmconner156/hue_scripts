@@ -17,8 +17,10 @@ parse_arguments()
   DESKTOP_DEBUG=
   QUERY="default.sample_07"
   USERNAME="admin"
-  GETOPT=`getopt -n $0 -o q:,u:o,v,h \
-      -l query:,username:,override,verbose,help \
+  SLEEPTIME=300
+  ITERATIONS=
+  GETOPT=`getopt -n $0 -o q:,u:,t:,i:,o,v,h \
+      -l query:,username:,time:,iterations:,override,verbose,help \
       -- "$@"`
   eval set -- "$GETOPT"
   while true;
@@ -30,6 +32,14 @@ parse_arguments()
       ;;
     -u|--username)
       USERNAME=$2
+      shift 2
+      ;;
+    -t|--time)
+      SLEEPTIME=$2
+      shift 2
+      ;;
+    -i|--iterations)
+      ITERATIONS=$2
       shift 2
       ;;
     -o|--override)
@@ -65,6 +75,8 @@ Run query using Hue code outside of Hue
 OPTIONS
    -u|--username	   Username of a user to run the query as, default: admin
    -q|--query              Query to run, should spawn MR job, default: select count(*) from default.sample_07;
+   -t|--time		   Sleep time between iterations
+   -i|--iterations	   Number of times to run
    -o|--override           Allow script to run as non-root, must set HUE_CONF_DIR manually before running
    -v|--verbose            Verbose logging, off by default
    -h|--help               Show this message.
@@ -89,9 +101,9 @@ main()
   export SCRIPT_DIR PYTHONPATH
 
   rm -f /var/lib/hue/hue_run_query.end
-  while [ ! -f "/var/lib/hue/hue_run_query.end" ]
+  COUNT=0
+  while [[ ! -f "/var/lib/hue/hue_run_query.end" && ${COUNT} -lt ${ITERATIONS} ]] || [[ ! -f "/var/lib/hue/hue_run_query.end" && -z ${ITERATIONS} ]]
   do
-  
     #SET IMPORTANT ENV VARS
     if [ -d "/var/run/cloudera-scm-agent/process" ]
     then
@@ -189,15 +201,14 @@ main()
       export $ENV
     done < <(grep environment ${HUE_SUPERVISOR_CONF} | awk -Fenvironment\= '{print $2}' | sed "s/,/\\n/g" | grep -v CM_STATUS | sed "s/'//g")
 
-
     DATE=$(date '+%Y%m%d-%H%M%S')
     PID=$(ps -ef | grep [r]unc | awk '{print $2}')
 
     sudo -E -u hue /bin/bash -c "DESKTOP_DEBUG=true ${PYTHON} ${SCRIPT_DIR}/hue_run_query.py ${LOG_FILE}_${DATE} ${HUE_HOME} ${USERNAME} '${QUERY}'" > /dev/null 2>&1
 
     chown -R hue:hue ${DESKTOP_LOG_DIR}
-    sleep 300
-
+    sleep ${SLEEPTIME}
+    COUNT=$(expr ${COUNT} + 1)
   done
 
   unset PGPASSWORD
