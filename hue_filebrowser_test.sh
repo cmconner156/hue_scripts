@@ -99,14 +99,26 @@ main()
    else
       HUE_HTTP="https"
    fi
+   URLENCODEPOUND='\%23'
    HUE_PASS_URL="${HUE_HTTP}://${HUE_SERVER}:${HUE_PORT}/accounts/login/"
-   HUE_FILEBROWSER_URL="${HUE_HTTP}://${HUE_SERVER}:${HUE_PORT}/filebrowser/?pagesize=45&pagenum=1&filter=&sortby=name&descending=false&format=json"
-   
+   #HUE_FILEBROWSER_URL="${HUE_HTTP}://${HUE_SERVER}:${HUE_PORT}/filebrowser/?pagesize=45&pagenum=1&filter=&sortby=name&descending=false&format=json"
+   HUE_FILEBROWSER_URL="${HUE_HTTP}://${HUE_SERVER}:${HUE_PORT}/filebrowser/view=/user/hue/oozie/workspaces?pagesize=45&pagenum=1&filter=&sortby=name&descending=false&format=json"
+   HUE_FILEBROWSER_URL1="${HUE_HTTP}://${HUE_SERVER}:${HUE_PORT}/filebrowser/copy?next=/filebrowser/view=/user/masahiro_kiura"
+
    hue_login
-   echo "Testing fielbrowser"
+   echo "Testing filebrowser"
+   echo "$HUE_FILEBROWSER_URL"
    do_curl \
         GET \
         "${HUE_FILEBROWSER_URL}" 
+
+   echo "Testing filebrowser"
+   echo "$HUE_FILEBROWSER_URL1"
+   do_curl \
+        POST \
+        "${HUE_FILEBROWSER_URL1}" \
+	--form dest_path="/user/masahiro_kiura/test$(date '+%Y%m%d-%H%M%S')" \
+        --form src_path="/user/masahiro_kiura/test1"
 
 }
 
