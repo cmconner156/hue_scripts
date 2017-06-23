@@ -103,7 +103,7 @@ main()
    HUE_PASS_URL="${HUE_HTTP}://${HUE_SERVER}:${HUE_PORT}/accounts/login/"
    #HUE_FILEBROWSER_URL="${HUE_HTTP}://${HUE_SERVER}:${HUE_PORT}/filebrowser/?pagesize=45&pagenum=1&filter=&sortby=name&descending=false&format=json"
    HUE_FILEBROWSER_URL="${HUE_HTTP}://${HUE_SERVER}:${HUE_PORT}/filebrowser/view=/user/hue/oozie/workspaces?pagesize=45&pagenum=1&filter=&sortby=name&descending=false&format=json"
-   HUE_FILEBROWSER_URL1="${HUE_HTTP}://${HUE_SERVER}:${HUE_PORT}/filebrowser/copy?next=/filebrowser/view=/user/masahiro_kiura"
+   HUE_FILEBROWSER_URL1="${HUE_HTTP}://${HUE_SERVER}:${HUE_PORT}/filebrowser/copy?next=/filebrowser/view=/user/${HUE_USER}"
 
    hue_login
    echo "Testing filebrowser"
@@ -117,8 +117,8 @@ main()
    do_curl \
         POST \
         "${HUE_FILEBROWSER_URL1}" \
-	--form dest_path="/user/masahiro_kiura/test$(date '+%Y%m%d-%H%M%S')" \
-        --form src_path="/user/masahiro_kiura/test1"
+	--form dest_path="/user/${HUE_USER}/test$(date '+%Y%m%d-%H%M%S')" \
+        --form src_path="/user/${HUE_USER}/test1"
 
 }
 
