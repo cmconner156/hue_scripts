@@ -11,8 +11,8 @@ parse_arguments()
   fi
 
   HUE_AUTH_SERVER="LDAP"
-  GETOPT=`getopt -n $0 -o u:,w:,s:,p:,e,v,h \
-      -l user:,password:,server:,port:,enablessl,verbose,help \
+  GETOPT=`getopt -n $0 -o u:,w:,s:,p:,i:,e,v,h \
+      -l user:,password:,server:,workflowid:,port:,enablessl,verbose,help \
       -- "$@"`
   eval set -- "$GETOPT"
   while true;
@@ -32,6 +32,10 @@ parse_arguments()
       ;;
     -p|--port)
       HUE_PORT=$2
+      shift 2
+      ;;
+    -i|--workflowid)
+      WORKFLOW_ID=$2
       shift 2
       ;;
     -e|--enablessl)
@@ -69,6 +73,10 @@ parse_arguments()
   then
     HUE_PORT="8888"
   fi
+  if [[ -z ${WORKFLOW_ID} ]]
+  then
+    WORKFLOW_ID="0000005-170608063715515-oozie-oozi-W"
+  fi
 
 }
 
@@ -84,6 +92,7 @@ OPTIONS
    -w|--password	   Hue password - default admin.
    -s|--server	           Hue server host - localhost.
    -p|--port               Hue server port - 8888.
+   -i|--workflowid	   ID of a workflow that can be checked. Format: 0000005-170608063715515-oozie-oozi-W
    -h|--help               Show this message.
 EOF
 }
@@ -101,7 +110,7 @@ main()
    fi
    URLENCODEPOUND='\%23'
    HUE_PASS_URL="${HUE_HTTP}://${HUE_SERVER}:${HUE_PORT}/accounts/login/"
-   HUE_OOZIE_URL="${HUE_HTTP}://${HUE_SERVER}:${HUE_PORT}/oozie/list_oozie_workflow/0000005-170608063715515-oozie-oozi-W/"
+   HUE_OOZIE_URL="${HUE_HTTP}://${HUE_SERVER}:${HUE_PORT}/oozie/list_oozie_workflow/${WORKFLOW_ID}/"
 
    hue_login
    echo "Testing oozie"
