@@ -110,7 +110,8 @@ main()
    fi
    URLENCODEPOUND='\%23'
    HUE_PASS_URL="${HUE_HTTP}://${HUE_SERVER}:${HUE_PORT}/accounts/login/"
-   HUE_OOZIE_URL="${HUE_HTTP}://${HUE_SERVER}:${HUE_PORT}/oozie/list_oozie_workflow/${WORKFLOW_ID}/"
+   HUE_OOZIE_URL="${HUE_HTTP}://${HUE_SERVER}:${HUE_PORT}/oozie/?format=json&offset=1&status=SUCCEEDED&status=KILLED&status=FAILED"
+#   HUE_OOZIE_URL="${HUE_HTTP}://${HUE_SERVER}:${HUE_PORT}/oozie/list_oozie_workflow/${WORKFLOW_ID}/"
 
    hue_login
    echo "Testing oozie"

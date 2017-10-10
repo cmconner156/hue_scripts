@@ -11,8 +11,8 @@ parse_arguments()
   fi
 
   HUE_AUTH_SERVER="LDAP"
-  GETOPT=`getopt -n $0 -o u:,w:,s:,p:,e,v,h \
-      -l user:,password:,server:,port:,enablessl,verbose,help \
+  GETOPT=`getopt -n $0 -o u:,w:,s:,p:,f:,d:,e,v,h \
+      -l user:,password:,server:,port:,enablessl,srcfile:,dstfile:,verbose,help \
       -- "$@"`
   eval set -- "$GETOPT"
   while true;
@@ -37,6 +37,14 @@ parse_arguments()
     -e|--enablessl)
       ENABLESSL=1
       shift
+      ;;
+    -f|--srcfile)
+      SRC_FILE=$2
+      shift 2
+      ;;
+    -d|--dstfile)
+      DST_FILE=$2
+      shift 2
       ;;
     -v|--verbose)
       VERBOSE=1
@@ -69,6 +77,14 @@ parse_arguments()
   then
     HUE_PORT="8888"
   fi
+  if [[ -z ${DST_FILE} ]]
+  then
+    DST_FILE="/user/${HUE_USER}/test$(date '+%Y%m%d-%H%M%S')"
+  fi
+  if [[ -z ${SRC_FILE} ]]
+  then
+    SRC_FILE="/user/${HUE_USER}/test1"
+  fi
 
 }
 
@@ -84,6 +100,8 @@ OPTIONS
    -w|--password	   Hue password - default admin.
    -s|--server	           Hue server host - localhost.
    -p|--port               Hue server port - 8888.
+   -f|--srcfile		   Source file to copy in HDFS, must exist in HDFS
+   -d|--dstfile		   Destination file to copy Source file to in HDFS, must not exist
    -h|--help               Show this message.
 EOF
 }
@@ -117,8 +135,8 @@ main()
    do_curl \
         POST \
         "${HUE_FILEBROWSER_URL1}" \
-	--form dest_path="/user/${HUE_USER}/test$(date '+%Y%m%d-%H%M%S')" \
-        --form src_path="/user/${HUE_USER}/test1"
+	--form dest_path="${DST_FILE}" \
+        --form src_path="${SRC_FILE}"
 
 }
 
