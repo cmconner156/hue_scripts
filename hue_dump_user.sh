@@ -95,9 +95,9 @@ main()
       exit 1
     fi
   else
-    if [[ $(ps -ef | grep [r]unc) ]]
+    if [[ $(ps -ef | grep "[h]ue runc" | awk '{print }') ]]
     then
-      DESKTOP_LOG_DIR=$(strings /proc/$(ps -ef | grep [r]unc | awk '{print $2}')/environ | grep DESKTOP_LOG_DIR | awk -F\= '{print $2}')
+      DESKTOP_LOG_DIR=$(strings /proc/$(ps -ef | grep "[h]ue runc" | awk '{print }' | awk '{print $2}')/environ | grep DESKTOP_LOG_DIR | awk -F\= '{print $2}')
     fi
   fi
 

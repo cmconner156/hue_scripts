@@ -113,9 +113,9 @@ main()
         exit 1
       fi
     else
-      if [[ $(ps -ef | grep [r]unc) ]]
+      if [[ $(ps -ef | grep "[h]ue runc" | awk '{print }') ]]
       then
-        DESKTOP_LOG_DIR=$(strings /proc/$(ps -ef | grep [r]unc | awk '{print $2}')/environ | grep DESKTOP_LOG_DIR | awk -F\= '{print $2}')
+        DESKTOP_LOG_DIR=$(strings /proc/$(ps -ef | grep "[h]ue\ runc" | awk '{print $2}')/environ | grep DESKTOP_LOG_DIR | awk -F\= '{print $2}')
         export $(sed "s/,/\\n/g" ${HUE_SUPERVISOR_CONF} | grep DESKTOP_LOG_DIR | sed "s/'//g")
       fi
     fi
@@ -191,7 +191,7 @@ main()
 
 
     DATE=$(date '+%Y%m%d-%H%M%S')
-    PID=$(ps -ef | grep [r]unc | awk '{print $2}')
+    PID=$(ps -ef | grep "[h]ue runc" | awk '{print }' | awk '{print $2}')
     top -b -n 1 -u hue > ${DESKTOP_LOG_DIR}/top_${DATE}.log
 
     netstat -anp | grep ${PID} >> ${DESKTOP_LOG_DIR}/netstat_${DATE}.log

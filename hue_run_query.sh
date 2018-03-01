@@ -125,9 +125,9 @@ main()
         exit 1
       fi
     else
-      if [[ $(ps -ef | grep [r]unc) ]]
+      if [[ $(ps -ef | grep "[h]ue runc" | awk '{print }') ]]
       then
-        DESKTOP_LOG_DIR=$(strings /proc/$(ps -ef | grep [r]unc | awk '{print $2}')/environ | grep DESKTOP_LOG_DIR | awk -F\= '{print $2}')
+        DESKTOP_LOG_DIR=$(strings /proc/$(ps -ef | grep "[h]ue\ runc" | awk '{print $2}')/environ | grep DESKTOP_LOG_DIR | awk -F\= '{print $2}')
         export $(sed "s/,/\\n/g" ${HUE_SUPERVISOR_CONF} | grep DESKTOP_LOG_DIR | sed "s/'//g")
       fi
     fi
@@ -202,7 +202,7 @@ main()
     done < <(grep environment ${HUE_SUPERVISOR_CONF} | awk -Fenvironment\= '{print $2}' | sed "s/,/\\n/g" | grep -v CM_STATUS | sed "s/'//g")
 
     DATE=$(date '+%Y%m%d-%H%M%S')
-    PID=$(ps -ef | grep [r]unc | awk '{print $2}')
+    PID=$(ps -ef | grep "[h]ue runc" | awk '{print }' | awk '{print $2}')
 
     sudo -E -u hue /bin/bash -c "DESKTOP_DEBUG=true ${PYTHON} ${SCRIPT_DIR}/hue_run_query.py ${LOG_FILE}_${DATE} ${HUE_HOME} ${USERNAME} '${QUERY}'" > /dev/null 2>&1
 
