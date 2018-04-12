@@ -1,0 +1,35 @@
+#!/usr/bin/env python
+
+import os, sys
+script_dir = os.path.dirname(os.path.realpath(__file__))
+sys.path.insert(0, script_dir + '/lib')
+
+from cm_environment import Configurator
+Configurator().set_cm_environment()
+
+hue_bin_dir = os.environ["PARCELS_ROOT"] + "/CDH/lib/hue/build/env/bin"
+activate_file = hue_bin_dir + "/activate_this.py"
+hue_bin = hue_bin_dir + "/hue"
+
+import os; activate_this=os.path.join(os.path.dirname(os.path.realpath(activate_file)), 'activate_this.py'); exec(compile(open(activate_this).read(), activate_this, 'exec'), dict(__file__=activate_this)); del activate_this
+
+with open(hue_bin, 'rU') as f:
+  for line in f:
+     if "__requires__" in line:
+       desktop_ver = line.split("'")
+
+__requires__ = desktop_ver[1]
+
+import sys
+from pkg_resources import load_entry_point
+from django.conf import settings
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'desktop.settings')
+
+from custom_commands.settings import *
+settings.INSTALLED_APPS.append('custom_commands')
+
+if __name__ == '__main__':
+    sys.exit(
+        load_entry_point('desktop==3.9.0', 'console_scripts', 'hue')()
+    )
