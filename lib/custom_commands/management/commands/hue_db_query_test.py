@@ -25,21 +25,27 @@ class Command(BaseCommand):
   option_list = BaseCommand.option_list + (
       make_option("--read-log-file", help=_t("Log file to scan for queries to be run "
                           "from database_logging = true."),
-                          action="store_true",
+                          action="store",
                           default='/var/log/hue/runcpserver.log'),
+      make_option("--start-url", help=_t("NOT WORKING: Hue URL to search for in the logs as a starting"
+                          "point, uses the most recent instance. Requires --end-url"),
+                          action="store"),
+      make_option("--end-url", help=_t("NOT WORKING: Hue URL to search for in the logs as an ending"
+                          "point, uses the most recent instance. Requires --start-url"),
+                          action="store"),
       make_option("--start-time", help=_t("Start time to search for queries in log, format:"
                           '%d/%b/%Y %H:%M:%S IE: 01/Jan/2018 00:00:00: This is'
                           'standard Hue log format'),
-                           action="store_true",
+                           action="store",
                            default=(datetime.datetime.now() - datetime.timedelta(minutes=2))),
       make_option("--end-time", help=_t("End time to search for queries in log, format:"
                           '%d/%b/%Y %H:%M:%S IE: 01/Jan/2018 00:00:00: This is'
                           'standard Hue log format'),
-                           action="store_true",
+                           action="store",
                            default=(datetime.datetime.now())),
    )
 
-  def handle(self, **options):
+  def handle(self, *args, **options):
     LOG.warn("HUE_CONF_DIR: %s" % os.environ['HUE_CONF_DIR'])
     LOG.info("DB Engine: %s" % desktop.conf.DATABASE.ENGINE.get())
     LOG.info("DB Name: %s" % desktop.conf.DATABASE.NAME.get())
@@ -53,6 +59,8 @@ class Command(BaseCommand):
 
     oracleDatetimeRegex = re.compile(r"Oracle_datetime\([0-9,\ ]*\)")
     paramsFixRegex = re.compile(r",\ ")
+    trueFixRegex = re.compile(r"True")
+    falseFixRegex = re.compile(r"False")
 
     count = 1
     with open(options['read_log_file'], 'rU') as f:
@@ -60,8 +68,16 @@ class Command(BaseCommand):
          if "QUERY" in line:
            junk, dateTemp = line.split('[')
            dateTemp = dateTemp.split(" ")
+           if isinstance(options['start_time'], basestring):
+             start_time = datetime.datetime.strptime(options['start_time'], "%d/%b/%Y %H:%M:%S")
+           else:
+             start_time = options['start_time']
+           if isinstance(options['end_time'], basestring):
+             end_time = datetime.datetime.strptime(options['end_time'], "%d/%b/%Y %H:%M:%S")
+           else:
+             end_time = options['end_time']
            log_time = datetime.datetime.strptime(dateTemp[0] + " " + dateTemp[1], "%d/%b/%Y %H:%M:%S")
-           if options['start_time'] <= log_time <= options['end_time']:
+           if start_time <= log_time <= end_time:
              queryStart = time.time()
              line = oracleDatetimeRegex.sub("PLACEHOLDER", line)
              junk, query = line.split("QUERY = u'")
@@ -77,8 +93,11 @@ class Command(BaseCommand):
              for i in range(len(params)):
                updateArgsRegex = re.compile(r":arg%d" % i)
                if params[i] == "PLACEHOLDER":
-                 query = updateArgsRegex.sub("'%s'" %Oracle_datetime.from_datetime(datetime.datetime.now()), query)
+                 query = updateArgsRegex.sub("'%s'" % Oracle_datetime.from_datetime(datetime.datetime.now()), query)
                else:
+                 if "oracle" in desktop.conf.DATABASE.ENGINE.get():
+                   params[i] = trueFixRegex.sub("1", params[i], re.IGNORECASE)  
+                   params[i] = falseFixRegex.sub("0", params[i], re.IGNORECASE)  
                  query = updateArgsRegex.sub(params[i], query)
 
              cursor = connection.cursor()
@@ -96,11 +115,11 @@ class Command(BaseCommand):
              count = count + 1
              queryEnd = time.time()
              queryElapsed = (queryEnd - queryStart)
-             LOG.debug("Query time elapsed: %s: query: %s" % (queryElapsed, query))
+             LOG.debug("Query time elapsed (seconds): %s: query: %s" % (queryElapsed, query))
              LOG.debug("")
 
     end = time.time()
-    elapsed = (end - start) / 60
-    LOG.debug("Total queries: %s: time elapsed (minutes): %.2f" % (count, elapsed))
+    elapsed = (end - start)
+    LOG.debug("Total queries: %s: time elapsed (seconds): %.2f" % (count, elapsed))
 
 
