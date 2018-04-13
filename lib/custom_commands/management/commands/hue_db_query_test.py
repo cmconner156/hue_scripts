@@ -52,7 +52,6 @@ class Command(BaseCommand):
     LOG.info("DB User: %s" % desktop.conf.DATABASE.USER.get())
     LOG.info("DB Host: %s" % desktop.conf.DATABASE.HOST.get())
     LOG.info("DB Port: %s" % str(desktop.conf.DATABASE.PORT.get()))
-
     LOG.warn("Running database queries in file: %s: starting from: %s" % (options['read_log_file'], options['start_time']))
 
     start = time.time()
@@ -89,8 +88,11 @@ class Command(BaseCommand):
 
              params = paramsFixRegex.sub(",", params)
              params = params.split(',')
-
-             for i in range(len(params)):
+             
+             loopCount = len(params) - 1
+             while(loopCount >= 0):
+               i = loopCount
+               loopCount = loopCount - 1
                updateArgsRegex = re.compile(r":arg%d" % i)
                if params[i] == "PLACEHOLDER":
                  query = updateArgsRegex.sub("'%s'" % Oracle_datetime.from_datetime(datetime.datetime.now()), query)
@@ -98,8 +100,8 @@ class Command(BaseCommand):
                  if "oracle" in desktop.conf.DATABASE.ENGINE.get():
                    params[i] = trueFixRegex.sub("1", params[i], re.IGNORECASE)  
                    params[i] = falseFixRegex.sub("0", params[i], re.IGNORECASE)  
-                 query = updateArgsRegex.sub(params[i], query)
-
+               query = updateArgsRegex.sub(params[i], query)
+             
              cursor = connection.cursor()
              cursor.execute(query)
              try:
