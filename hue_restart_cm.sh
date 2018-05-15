@@ -114,7 +114,7 @@ main() {
       then
          message "CM Admin user password required on first run"
          read -s -p "Please enter password:" CM_PASSWORD_INPUT
-         log "New password provided"
+         echo "New password provided"
          echo ${CM_PASSWORD_INPUT} | base64 > ${ENC_PASSWORD_FILE}
          chown root:root ${ENC_PASSWORD_FILE}
          chmod 600 ${ENC_PASSWORD_FILE}
