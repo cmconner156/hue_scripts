@@ -20,8 +20,8 @@ parse_arguments()
   CM_PASSWORD_INPUT=
   ENCODE_LOCATION=/var/lib/hue
 
-  GETOPT=`getopt -n $0 -o c:,p:,u:,w:,n,l:,h \
-      -l cmhost:,cmport:,cmuser:,cmpass:,newpass,encodeloc:,help \
+  GETOPT=`getopt -n $0 -o c:,p:,u:,w:,n,s,l:,h \
+      -l cmhost:,cmport:,cmuser:,cmpass:,newpass,ssl,encodeloc:,help \
       -- "$@"`
   eval set -- "$GETOPT"
   while true;
@@ -45,6 +45,10 @@ parse_arguments()
       ;;
     -n|--newpass)
       NEW_PASS=1
+      shift
+      ;;
+    -s|--ssl)
+      CM_HTTP="https"
       shift
       ;;
     -l|--encodeloc)
@@ -79,6 +83,7 @@ OPTIONS
    -w|--cmpass <user_pass>     Admin User password in CM, required on first run, no default. Will prompt
                                if not provided through this flag. Future runs will use
                                encrypted version in <enc_loc>/`basename "$0" | awk -F\. '{print $1}'`.enc
+   -s|--ssl                    Enable SSL.
    -n|--newpass                Prompt for a new password.
    -l|--encodeloc <enc_loc>    Location to store encoded password in file - default /var/lib/hue.
    -v|--verbose                Enable verbose logging.
@@ -90,7 +95,7 @@ main() {
 
    parse_arguments "$@"
 
-   if [[ ! ${USER} =~ .*root* ]]
+   if [[ ! ${USER} =~ .*root.* ]]
    then
       echo "Script must be run as root: exiting"
       exit 1
@@ -129,6 +134,14 @@ main() {
       exit 1
    else
       CM_PASSWORD=`cat ${ENC_PASSWORD_FILE} | base64 --decode`
+   fi
+
+   if [[ ${CM_HTTP} =~ .*https.* ]]
+   then
+      if [[ ${CM_PORT} =~ .*7180.* ]]
+      then
+         CM_PORT=7183
+      fi
    fi
 
    CLUSTERNAME=$(urlencode "$(curl -L -s -k -X GET -u ${CM_USERNAME}:${CM_PASSWORD} "${CM_HTTP}://${CM_HOSTNAME}:${CM_PORT}/api/${CM_API}/clusters" | grep '"name" :' | awk -F\" '{print $4}')")
