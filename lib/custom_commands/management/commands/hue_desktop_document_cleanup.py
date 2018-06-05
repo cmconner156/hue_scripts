@@ -29,7 +29,8 @@ class Command(BaseCommand):
     option_list = BaseCommand.option_list + (
         make_option("--keep-days", help=_t("Number of days of history data to keep."),
                     action="store",
-                    default='30'),
+                    type=int,
+                    default=30),
     )
 
     def handle(self, *args, **options):
