@@ -53,9 +53,13 @@ class Configurator(object):
           if "HADOOP_C" in envvar or "PARCEL" in envvar or "DESKTOP" in envvar or "ORACLE" in envvar or "LIBRARY" in envvar:
             envkey, envval = envvar.split("=")
             envval = envval.replace("'", "").rstrip()
-            os.environ[envkey] = envval 
+            os.environ[envkey] = envval
 
-      parcel_dir = os.environ["PARCELS_ROOT"]
+      if "PARCELS_ROOT" in os.environ:
+        parcel_dir = os.environ["PARCELS_ROOT"]
+      else:
+        parcel_dir = "/opt/cloudera/parcels"
+
       oracle_instant_client = "%s/ORACLE_INSTANT_CLIENT" % parcel_dir
       ld_library_path = "%s/instantclient_11_2" % oracle_instant_client
       os.environ["ORACLE_HOME"] = ld_library_path
