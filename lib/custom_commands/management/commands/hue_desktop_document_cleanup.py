@@ -7,6 +7,7 @@ from optparse import make_option
 from django.core.management.base import BaseCommand, CommandError
 from django.utils.translation import ugettext_lazy as _t, ugettext as _
 from beeswax.models import SavedQuery
+from beeswax.models import Session
 from datetime import date, timedelta
 from oozie.models import Workflow
 from django.db.utils import DatabaseError
@@ -23,7 +24,7 @@ LOG = logging.getLogger(__name__)
 
 class Command(BaseCommand):
     """
-    Handler for running queries from Hue log with database_logging queries
+    Handler for purging old Query History, Workflow documents and Session data
     """
 
     option_list = BaseCommand.option_list + (
@@ -141,9 +142,6 @@ class Command(BaseCommand):
             LOG.info("Decreasing max delete records for Workflows to: %s" % deleteRecords)
           totalWorkflows = Workflow.objects.filter(name='', last_modified__lte=date.today() - timedelta(days=options['keep_days'])).values_list("id", flat=True)
 
-        end = time.time()
-        elapsed = (end - start)
-        LOG.debug("Total time elapsed (seconds): %.2f" % elapsed)
 
         LOG.info("Cleaning up anything in the Hue tables desktop_document2 older than %s old" % options['keep_days'])
 
@@ -151,3 +149,37 @@ class Command(BaseCommand):
         LOG.info("Deleting %s doc2 entries from desktop_document2." % history_docs.count())
         Document2.objects.filter(pk__in = list(history_docs)).delete()
 
+        errorCount = 0
+        checkCount = 0
+        resets = 0
+        deleteRecords = deleteRecordsBase
+
+        totalSessions = Session.objects.filter(last_used__lte=date.today() - timedelta(days=options['keep_days'])).values_list("id", flat=True)
+        LOG.info("Looping through old Query Sessions. %s sessions to be deleted." % totalSessions.count())
+        while totalSessions.count():
+          if deleteRecords < 30 and resets < resetMax:
+            checkCount += 1
+          if checkCount == resetCount:
+            deleteRecords = deleteRecordsBase
+            resets += 1
+            checkCount = 0
+          LOG.info("Sessions left: %s" % totalSessions.count())
+          deleteSessions = Session.objects.filter(last_used__lte=date.today() - timedelta(days=options['keep_days'])).values_list("id", flat=True)[:deleteRecords]
+          try:
+            Session.objects.filter(pk__in = list(deleteSessions)).delete()
+            errorCount = 0
+          except DatabaseError, e:
+            LOG.info("Non Fatal Exception: %s: %s" % (e.__class__.__name__, e))
+            errorCount += 1
+            if errorCount > 9 and deleteRecords == 1:
+              raise
+            if deleteRecords > 100:
+              deleteRecords = max(deleteRecords - 100, 1)
+            else:
+              deleteRecords = max(deleteRecords - 10, 1)
+            LOG.info("Decreasing max delete records for Sessions to: %s" % deleteRecords)
+          totalSessions = Session.objects.filter(name='', last_modified__lte=date.today() - timedelta(days=options['keep_days'])).values_list("id", flat=True)
+
+        end = time.time()
+        elapsed = (end - start)
+        LOG.debug("Total time elapsed (seconds): %.2f" % elapsed)
