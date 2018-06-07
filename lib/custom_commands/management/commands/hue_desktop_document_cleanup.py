@@ -178,7 +178,7 @@ class Command(BaseCommand):
             else:
               deleteRecords = max(deleteRecords - 10, 1)
             LOG.info("Decreasing max delete records for Sessions to: %s" % deleteRecords)
-          totalSessions = Session.objects.filter(last_modified__lte=date.today() - timedelta(days=options['keep_days'])).values_list("id", flat=True)
+          totalSessions = Session.objects.filter(last_used__lte=date.today() - timedelta(days=options['keep_days'])).values_list("id", flat=True)
 
         end = time.time()
         elapsed = (end - start)

@@ -40,7 +40,7 @@
         <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/hue_desktop_document_cleanup.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="442">
-              <caret line="180" column="49" lean-forward="false" selection-start-line="180" selection-start-column="49" selection-end-line="180" selection-end-column="49" />
+              <caret line="180" column="43" lean-forward="false" selection-start-line="180" selection-start-column="43" selection-end-line="180" selection-end-column="43" />
               <folding>
                 <element signature="e#22#31#0" expanded="true" />
               </folding>
@@ -447,7 +447,14 @@
       <option name="project" value="LOCAL" />
       <updated>1528361808004</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Added delete user">
+      <created>1528365052201</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1528365052201</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -817,7 +824,7 @@
     <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/hue_desktop_document_cleanup.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="442">
-          <caret line="180" column="49" lean-forward="false" selection-start-line="180" selection-start-column="49" selection-end-line="180" selection-end-column="49" />
+          <caret line="180" column="43" lean-forward="false" selection-start-line="180" selection-start-column="43" selection-end-line="180" selection-end-column="43" />
           <folding>
             <element signature="e#22#31#0" expanded="true" />
           </folding>
