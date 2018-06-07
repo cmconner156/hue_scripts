@@ -7,7 +7,12 @@ sys.path.insert(0, script_dir + '/lib')
 from cm_environment import Configurator
 Configurator().set_cm_environment()
 
-hue_bin_dir = os.environ["PARCELS_ROOT"] + "/CDH/lib/hue/build/env/bin"
+if "PARCELS_ROOT" in os.environ:
+    parcel_dir = os.environ["PARCELS_ROOT"]
+else:
+    parcel_dir = "/opt/cloudera/parcels"
+
+hue_bin_dir = parcel_dir + "/CDH/lib/hue/build/env/bin"
 activate_file = hue_bin_dir + "/activate_this.py"
 hue_bin = hue_bin_dir + "/hue"
 
