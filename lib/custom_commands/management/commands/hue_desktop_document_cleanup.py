@@ -35,13 +35,13 @@ class Command(BaseCommand):
     )
 
 
-    def objectCleanup(self, objClass, filterType, filterValue):
+    def objectCleanup(self, objClass, filterType, filterValue, dateField):
         errorCount = 0
         checkCount = 0
         resets = 0
         deleteRecords = self.deleteRecordsBase
 
-        totalObjects = objClass.objects.filter(**{ '%s' % filterType: filterValue, 'last_modified__lte': self.timeDeltaObj, })\
+        totalObjects = objClass.objects.filter(**{ '%s' % filterType: filterValue, '%s__lte' % dateField: self.timeDeltaObj, })\
                                                 .values_list("id", flat=True)
         LOG.info("Looping through %s objects. %s objects to be deleted." % (objClass.__name__, totalObjects.count()))
         while totalObjects.count():
@@ -52,7 +52,7 @@ class Command(BaseCommand):
                 resets += 1
                 checkCount = 0
             LOG.info("%s objects left: %s" % (objClass.__name__, totalObjects.count()))
-            deleteObjects = objClass.objects.filter(**{ '%s' % filterType: filterValue, 'last_modified__lte': self.timeDeltaObj, })\
+            deleteObjects = objClass.objects.filter(**{ '%s' % filterType: filterValue, '%s__lte' % dateField: self.timeDeltaObj, })\
                                                     .values_list("id", flat=True)[:deleteRecords]
             try:
                 objClass.objects.filter(pk__in=list(deleteObjects)).delete()
@@ -67,7 +67,7 @@ class Command(BaseCommand):
                 else:
                     deleteRecords = max(deleteRecords - 10, 1)
                 LOG.info("Decreasing max delete records to: %s" % deleteRecords)
-            totalObjects = objClass.objects.filter(**{'%s' % filterType: filterValue, 'last_modified__lte': self.timeDeltaObj, })\
+            totalObjects = objClass.objects.filter(**{'%s' % filterType: filterValue, '%s__lte' % dateField: self.timeDeltaObj, })\
                                                     .values_list("id", flat=True)
 
 
@@ -93,19 +93,19 @@ class Command(BaseCommand):
 
 
         #Clean out Hive / Impala Query History
-        self.objectCleanup(SavedQuery, 'is_auto', True)
+        self.objectCleanup(SavedQuery, 'is_auto', True, 'mtime')
 
         #Clear out old Hive/Impala sessions
-        self.objectCleanup(Session, 'status_code__gte', -10000)
+        self.objectCleanup(Session, 'status_code__gte', -10000, 'last_used')
 
         #Clean out Trashed Workflows
-        self.objectCleanup(Workflow, 'is_trashed', True)
+        self.objectCleanup(Workflow, 'is_trashed', True, 'last_modified')
 
         #Clean out Workflows without a name
-        self.objectCleanup(Workflow, 'name', '')
+        self.objectCleanup(Workflow, 'name', '', 'last_modified')
 
         #Clean out history Doc2 objects
-        self.objectCleanup(Document2, 'is_history', True)
+        self.objectCleanup(Document2, 'is_history', True, 'last_modified')
 
         end = time.time()
         elapsed = (end - start)
