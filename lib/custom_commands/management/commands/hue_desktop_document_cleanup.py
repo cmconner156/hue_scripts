@@ -75,7 +75,7 @@ class Command(BaseCommand):
 
 
         self.keepDays = options['keep_days']
-        self.timeDeltaObj = date.today() - timedelta(days=self.keep_days)
+        self.timeDeltaObj = date.today() - timedelta(days=self.keepDays)
         self.resetCount = 15
         self.resetMax = 5
         self.deleteRecordsBase = 999  #number of documents to delete in a batch
