@@ -8,7 +8,7 @@ script_dir = os.path.dirname(os.path.realpath(__file__))
 sys.path.insert(0, script_dir + '/lib')
 
 if os.path.isfile('/usr/lib64/cmf/service/common/cloudera-config.sh'):
-  locate_java = subprocess.Popen(['bash', '-c', '. /usr/lib64/cmf/service/common/cloudera-config.sh; locate_java_home'], stdout=subprocess.PIPE)
+  locate_java = subprocess.Popen(['bash', '-c', '. /usr/lib64/cmf/service/common/cloudera-config.sh; locate_java_home'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 elif os.path.isfile('/opt/cloudera/cm-agent/service/common/cloudera-config.sh'):
   locate_java = subprocess.Popen(['bash', '-c', '. /opt/cloudera/cm-agent/service/common/cloudera-config.sh; locate_java_home'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
@@ -16,7 +16,7 @@ JAVA_HOME = "UNKNOWN"
 
 for line in iter(locate_java.stdout.readline,''):
    if 'JAVA_HOME' in line:
-     JAVA_HOME = line.split('=')[1]
+     JAVA_HOME = line.rstrip().split('=')[1]
 
 if JAVA_HOME != "UNKNOWN":
   os.environ["JAVA_HOME"] = JAVA_HOME

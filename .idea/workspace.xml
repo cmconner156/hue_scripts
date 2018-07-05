@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="8e164a0d-d95e-4980-bca7-863b8efae3da" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change beforePath="$PROJECT_DIR$/script_runner" afterPath="$PROJECT_DIR$/script_runner" />
     </list>
     <ignored path="hue_scripts.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -50,8 +51,8 @@
       <file leaf-file-name="script_runner" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/script_runner">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="330">
-              <caret line="22" column="0" lean-forward="true" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
+            <state relative-caret-position="150">
+              <caret line="10" column="167" lean-forward="false" selection-start-line="10" selection-start-column="167" selection-end-line="10" selection-end-column="167" />
               <folding>
                 <element signature="e#23#37#0" expanded="true" />
               </folding>
@@ -552,7 +553,14 @@
       <option name="project" value="LOCAL" />
       <updated>1530822413487</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="Added delete user">
+      <created>1530822729779</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1530822729779</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -942,8 +950,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/script_runner">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="22" column="0" lean-forward="true" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
+        <state relative-caret-position="150">
+          <caret line="10" column="167" lean-forward="false" selection-start-line="10" selection-start-column="167" selection-end-line="10" selection-end-column="167" />
           <folding>
             <element signature="e#23#37#0" expanded="true" />
           </folding>
