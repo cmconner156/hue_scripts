@@ -39,8 +39,8 @@
       <file leaf-file-name="hue_desktop_document_cleanup.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/hue_desktop_document_cleanup.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="305">
-              <caret line="55" column="0" lean-forward="false" selection-start-line="55" selection-start-column="0" selection-end-line="55" selection-end-column="0" />
+            <state relative-caret-position="989">
+              <caret line="89" column="117" lean-forward="false" selection-start-line="89" selection-start-column="113" selection-end-line="89" selection-end-column="117" />
               <folding>
                 <element signature="e#22#31#0" expanded="true" />
               </folding>
@@ -82,6 +82,7 @@
       <find>handl</find>
       <find>PARCELS</find>
       <find>workflows</find>
+      <find>keep</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -515,7 +516,14 @@
       <option name="project" value="LOCAL" />
       <updated>1530813293402</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="Added delete user">
+      <created>1530813421537</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1530813421537</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -899,8 +907,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/hue_desktop_document_cleanup.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="305">
-          <caret line="55" column="0" lean-forward="false" selection-start-line="55" selection-start-column="0" selection-end-line="55" selection-end-column="0" />
+        <state relative-caret-position="989">
+          <caret line="89" column="117" lean-forward="false" selection-start-line="89" selection-start-column="113" selection-end-line="89" selection-end-column="117" />
           <folding>
             <element signature="e#22#31#0" expanded="true" />
           </folding>
