@@ -39,8 +39,8 @@
       <file leaf-file-name="hue_desktop_document_cleanup.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/hue_desktop_document_cleanup.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="260">
-              <caret line="52" column="30" lean-forward="true" selection-start-line="52" selection-start-column="30" selection-end-line="52" selection-end-column="30" />
+            <state relative-caret-position="305">
+              <caret line="55" column="0" lean-forward="false" selection-start-line="55" selection-start-column="0" selection-end-line="55" selection-end-column="0" />
               <folding>
                 <element signature="e#22#31#0" expanded="true" />
               </folding>
@@ -508,7 +508,14 @@
       <option name="project" value="LOCAL" />
       <updated>1530806512125</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="Added delete user">
+      <created>1530813293401</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1530813293402</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -892,8 +899,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/hue_desktop_document_cleanup.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="260">
-          <caret line="52" column="30" lean-forward="true" selection-start-line="52" selection-start-column="30" selection-end-line="52" selection-end-column="30" />
+        <state relative-caret-position="305">
+          <caret line="55" column="0" lean-forward="false" selection-start-line="55" selection-start-column="0" selection-end-line="55" selection-end-column="0" />
           <folding>
             <element signature="e#22#31#0" expanded="true" />
           </folding>

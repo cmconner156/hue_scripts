@@ -52,7 +52,7 @@ class Command(BaseCommand):
                 resets += 1
                 checkCount = 0
             LOG.info("%s objects left: %s" % (objClass.__name__, totalObjects.count()))
-            deleteObjects = objClass.objects.filter(**{ '%s' % filterType: filterValue, 'last_modified__lte': self.timeDeltaObj, })
+            deleteObjects = objClass.objects.filter(**{ '%s' % filterType: filterValue, 'last_modified__lte': self.timeDeltaObj, })\
                                                     .values_list("id", flat=True)[:deleteRecords]
             try:
                 objClass.objects.filter(pk__in=list(deleteObjects)).delete()
