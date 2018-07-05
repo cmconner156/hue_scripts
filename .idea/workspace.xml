@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="8e164a0d-d95e-4980-bca7-863b8efae3da" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/script_runner" afterPath="$PROJECT_DIR$/script_runner" />
+      <change beforePath="$PROJECT_DIR$/hue_history_cron.sh" afterPath="$PROJECT_DIR$/hue_history_cron.sh" />
     </list>
     <ignored path="hue_scripts.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -60,6 +60,16 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="hue_history_cron.sh" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/hue_history_cron.sh">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="45">
+              <caret line="3" column="83" lean-forward="true" selection-start-line="3" selection-start-column="83" selection-end-line="3" selection-end-column="83" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="cm_environment.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/cm_environment.py">
           <provider selected="true" editor-type-id="text-editor">
@@ -100,6 +110,7 @@
         <option value="$PROJECT_DIR$/lib/cm_environment.py" />
         <option value="$PROJECT_DIR$/lib/custom_commands/management/commands/hue_desktop_document_cleanup.py" />
         <option value="$PROJECT_DIR$/script_runner" />
+        <option value="$PROJECT_DIR$/hue_history_cron.sh" />
       </list>
     </option>
   </component>
@@ -560,7 +571,14 @@
       <option name="project" value="LOCAL" />
       <updated>1530822729779</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="Added delete user">
+      <created>1530823538601</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1530823538601</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -906,13 +924,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/hue_history_cron.sh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="254">
-          <caret line="321" column="22" lean-forward="false" selection-start-line="321" selection-start-column="17" selection-end-line="321" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/hue_db_query_test.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-307">
@@ -935,6 +946,14 @@
           <folding>
             <element signature="e#0#9#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hue_history_cron.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="45">
+          <caret line="3" column="83" lean-forward="true" selection-start-line="3" selection-start-column="83" selection-end-line="3" selection-end-column="83" />
+          <folding />
         </state>
       </provider>
     </entry>
