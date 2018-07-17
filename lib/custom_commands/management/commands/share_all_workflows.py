@@ -117,7 +117,6 @@ class Command(BaseCommand):
                         users = User.objects.in_bulk(write_users)
                         groups = Group.objects.in_bulk(write_groups)
 
-                    LOG.warn("oozie_doc: %s" % oozie_doc)
-                    LOG.warn("doc.share(owner = %s, name=%s, users=%s, groups=%s" % (owner, perm, users, groups))
+                    LOG.warn("Setting %s on %s for users: %s : groups: %s" % (perm, oozie_doc.name, users, groups))
                     oozie_doc.share(owner, name=perm, users=users, groups=groups)
 
