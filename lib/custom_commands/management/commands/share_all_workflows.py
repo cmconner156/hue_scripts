@@ -70,5 +70,5 @@ class Command(BaseCommand):
                     owner = User.objects.get(id = oozie_doc.owner_id)
                     print "oozie_doc: %s" % oozie_doc
                     print "doc.share(owner = %s, name=%s, users=%s, groups=%s" % (owner, perm, users, groups)
-                        oozie_doc.share(owner, name=perm, users=users, groups=groups)
+                    oozie_doc.share(owner, name=perm, users=users, groups=groups)
 
