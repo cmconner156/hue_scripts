@@ -73,7 +73,6 @@ class Command(BaseCommand):
 
         for perm in perms:
             if perm in ['read', 'write']:
-                print "perm: %s" % perm
                 for oozie_doc in oozie_docs:
                     owner = User.objects.get(id = oozie_doc.owner_id)
                     read_perms = oozie_doc.to_dict()['perms']['read']
@@ -119,7 +118,7 @@ class Command(BaseCommand):
                         users = User.objects.in_bulk(write_users)
                         groups = Group.objects.in_bulk(write_groups)
 
-                    print "oozie_doc: %s" % oozie_doc
-                    print "doc.share(owner = %s, name=%s, users=%s, groups=%s" % (owner, perm, users, groups)
+                    LOG.warn("oozie_doc: %s" % oozie_doc)
+                    LOG.warn("doc.share(owner = %s, name=%s, users=%s, groups=%s" % (owner, perm, users, groups))
                     oozie_doc.share(owner, name=perm, users=users, groups=groups)
 
