@@ -64,8 +64,8 @@ class Command(BaseCommand):
         LOG.info("Setting permissions %s on all workflows for users: %s" % (perms, users))
         LOG.info("Setting permissions %s on all workflows for groups: %s" % (perms, groups))
 
-        users = User.objects.filter(username__in=users)
-        groups = Group.objects.filter(name__in=groups)
+        shareusers = User.objects.filter(username__in=users)
+        sharegroups = Group.objects.filter(name__in=groups)
 
         doc_types = ['oozie-workflow2', 'oozie-coordinator2', 'oozie-bundle2']
 
@@ -96,7 +96,7 @@ class Command(BaseCommand):
                     for group in write_perms['groups']:
                         write_groups.append(group['id'])
 
-                    for user in users:
+                    for user in shareusers:
                         LOG.warn("user: %s" % user.__dict__)
                         if perm == 'read':
                             read_users.append(user.id)
@@ -104,7 +104,7 @@ class Command(BaseCommand):
                         if perm == 'write':
                             write_users.append(user.id)
 
-                    for group in groups:
+                    for group in sharegroups:
                         if perm == 'read':
                             read_groups.append(group.id)
 
