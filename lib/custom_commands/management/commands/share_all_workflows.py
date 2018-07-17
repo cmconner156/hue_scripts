@@ -27,6 +27,8 @@ class Command(BaseCommand):
                     action="store"),
         make_option("--sharegroups", help=_t("Comma separated list of groups to share all workflows with."),
                     action="store"),
+        make_option("--owner", help=_t("Give permissions to only workflows owned by this user."),
+                    action="store"),
         make_option("--permissions", help=_t("Comma separated list of permissions for the users and groups."
                                              "read, write or read,write"), action="store"),
     )
@@ -68,8 +70,12 @@ class Command(BaseCommand):
         sharegroups = Group.objects.filter(name__in=groups)
 
         doc_types = ['oozie-workflow2', 'oozie-coordinator2', 'oozie-bundle2']
+        workflow_owner = User.objects.get(username = options['owner'])
 
-        oozie_docs = Document2.objects.filter(type__in=doc_types)
+        if options['owner']:
+            oozie_docs = Document2.objects.filter(type__in=doc_types, owner = workflow_owner)
+        else:
+            oozie_docs = Document2.objects.filter(type__in=doc_types)
 
         for perm in perms:
             if perm in ['read', 'write']:
