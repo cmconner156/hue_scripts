@@ -86,7 +86,7 @@ class Command(BaseCommand):
 
                     LOG.warn("read_perms: %s" % read_perms)
                     for user in read_perms['users']:
-                        LOG.warn("user: %s" % user)
+                        LOG.warn("user: %s" % user.__dict__)
                         read_users.append(user['id'])
                         LOG.warn("after")
 
