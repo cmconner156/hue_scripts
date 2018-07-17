@@ -99,6 +99,7 @@ class Command(BaseCommand):
                     for group in write_perms['groups']:
                         write_groups.append(group['id'])
 
+                    LOG.warn("users: %s" % users)
                     for user in users:
                         if perm == 'read':
                             LOG.warn("perm_read_user: %s" % user)
