@@ -99,10 +99,10 @@ class Command(BaseCommand):
                     LOG.warn("users: %s" % users)
                     for user in users:
                         if perm == 'read':
-                            user = User.objects.get(username = user)
+#                            user = User.objects.get(username = user)
                             LOG.warn("user: %s" % user.__dict__)
                             LOG.warn("perm_read_user: %s" % user)
-                            read_users.append(user['id'])
+                            read_users.append(user.id)
 
                         if perm == 'write':
                             write_users.append(user['id'])
