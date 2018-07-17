@@ -96,7 +96,6 @@ class Command(BaseCommand):
                         write_groups.append(group['id'])
 
                     for user in shareusers:
-                        LOG.warn("user: %s" % user.__dict__)
                         if perm == 'read':
                             read_users.append(user.id)
 
