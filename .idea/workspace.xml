@@ -53,8 +53,8 @@
       <file leaf-file-name="share_all_workflows.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/share_all_workflows.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="148">
-              <caret line="104" column="35" lean-forward="false" selection-start-line="104" selection-start-column="35" selection-end-line="104" selection-end-column="35" />
+            <state relative-caret-position="45">
+              <caret line="86" column="20" lean-forward="false" selection-start-line="86" selection-start-column="20" selection-end-line="86" selection-end-column="20" />
               <folding>
                 <element signature="e#22#31#0" expanded="true" />
               </folding>
@@ -690,7 +690,14 @@
       <option name="project" value="LOCAL" />
       <updated>1531842196634</updated>
     </task>
-    <option name="localTasksCounter" value="39" />
+    <task id="LOCAL-00039" summary="Updated history cron to only use script runner and purged old versions.">
+      <created>1531842335551</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1531842335551</updated>
+    </task>
+    <option name="localTasksCounter" value="40" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -1108,8 +1115,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/share_all_workflows.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="148">
-          <caret line="104" column="35" lean-forward="false" selection-start-line="104" selection-start-column="35" selection-end-line="104" selection-end-column="35" />
+        <state relative-caret-position="45">
+          <caret line="86" column="20" lean-forward="false" selection-start-line="86" selection-start-column="20" selection-end-line="86" selection-end-column="20" />
           <folding>
             <element signature="e#22#31#0" expanded="true" />
           </folding>

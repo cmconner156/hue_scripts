@@ -84,11 +84,8 @@ class Command(BaseCommand):
                     read_groups = []
                     write_groups = []
 
-                    LOG.warn("read_perms: %s" % read_perms)
                     for user in read_perms['users']:
-                        LOG.warn("user: %s" % user.__dict__)
                         read_users.append(user['id'])
-                        LOG.warn("after")
 
                     for group in read_perms['groups']:
                         read_groups.append(group['id'])
@@ -103,6 +100,7 @@ class Command(BaseCommand):
                     for user in users:
                         if perm == 'read':
                             user = User.objects.get(username = user)
+                            LOG.warn("user: %s" % user.__dict__)
                             LOG.warn("perm_read_user: %s" % user)
                             read_users.append(user['id'])
 
