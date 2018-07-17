@@ -73,6 +73,7 @@ class Command(BaseCommand):
         workflow_owner = User.objects.get(username = options['owner'])
 
         if options['owner']:
+            LOG.info("Only setting permissions for workflows owned by %s" % options['owner'])
             oozie_docs = Document2.objects.filter(type__in=doc_types, owner = workflow_owner)
         else:
             oozie_docs = Document2.objects.filter(type__in=doc_types)
