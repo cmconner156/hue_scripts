@@ -49,8 +49,16 @@ class Command(BaseCommand):
             print "permissions option required either read, write or read,write"
             sys.exit(1)
 
-        users = options['shareusers'].split(",")
-        groups = options['sharegroups'].split(",")
+        if options['shareusers']:
+            users = options['shareusers'].split(",")
+        else:
+            users = []
+
+        if options['sharegroups']:
+            groups = options['sharegroups'].split(",")
+        else:
+            groups = []
+
         perms = options['permissions'].split(",")
 
         LOG.info("Setting permissions %s on all workflows for users: %s" % (perms, users))
