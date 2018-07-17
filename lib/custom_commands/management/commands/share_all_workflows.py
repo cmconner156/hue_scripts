@@ -84,6 +84,7 @@ class Command(BaseCommand):
                     read_groups = []
                     write_groups = []
 
+                    LOG.warn("read_perms: %s" % read_perms)
                     for user in read_perms['users']:
                         read_users.append(user['id'])
 
