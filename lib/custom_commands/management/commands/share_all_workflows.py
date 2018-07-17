@@ -51,7 +51,7 @@ class Command(BaseCommand):
 
         users = options['shareusers'].split(",")
         groups = options['sharegroups'].split(",")
-        perms = options['permissions'.split(",")
+        perms = options['permissions'].split(",")
 
         LOG.info("Setting permissions %s on all workflows for users: %s" % (perms, users))
         LOG.info("Setting permissions %s on all workflows for groups: %s" % (perms, groups))
