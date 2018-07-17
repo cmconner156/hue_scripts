@@ -57,5 +57,5 @@ settings.INSTALLED_APPS.append('custom_commands')
 
 if __name__ == '__main__':
     sys.exit(
-        load_entry_point('desktop=', 'console_scripts', 'hue')()
+        load_entry_point('desktop', 'console_scripts', 'hue')()
     )
