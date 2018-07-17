@@ -101,6 +101,7 @@ class Command(BaseCommand):
 
                     for user in users:
                         if perm == 'read':
+                            LOG.warn("perm_read_user: %s" % user)
                             read_users.append(user['id'])
 
                         if perm == 'write':
