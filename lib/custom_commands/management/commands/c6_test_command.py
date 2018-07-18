@@ -21,10 +21,20 @@ class Command(BaseCommand):
     Handler for running queries from Hue log with database_logging queries
     """
 
-    def add_arguments(self, parser):
-        parser.add_argument("--username", help=_t("User to delete case sensitive."),
-                            action="store")
-
+    try:
+        from optparse import make_option
+        option_list = BaseCommand.option_list + (
+            make_option("--username", help=_t("User to delete case sensitive. "),
+                        action="store"),
+        )
+    except AttributeError, e:
+        if "AttributeError: type object 'BaseCommand' has no attribute 'option_list'" in e:
+            def add_arguments(self, parser):
+                parser.add_argument("--username", help=_t("User to delete case sensitive."),
+                                    action="store")
+        else:
+            LOG.exception(e)
+            sys.exit(1)
 
     def handle(self, *args, **options):
         LOG.warn("HUE_CONF_DIR: %s" % os.environ['HUE_CONF_DIR'])
