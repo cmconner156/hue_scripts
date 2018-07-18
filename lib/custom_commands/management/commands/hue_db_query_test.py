@@ -6,8 +6,6 @@ import datetime
 import re
 import logging
 
-from optparse import make_option
-
 from django.core.management.base import BaseCommand, CommandError
 from django.utils.translation import ugettext_lazy as _t, ugettext as _
 from django.db.backends.oracle.base import Oracle_datetime
@@ -22,28 +20,58 @@ class Command(BaseCommand):
   Handler for running queries from Hue log with database_logging queries
   """
 
-  option_list = BaseCommand.option_list + (
-      make_option("--read-log-file", help=_t("Log file to scan for queries to be run "
-                          "from database_logging = true."),
-                          action="store",
-                          default='/var/log/hue/runcpserver.log'),
-      make_option("--start-url", help=_t("NOT WORKING: Hue URL to search for in the logs as a starting"
-                          "point, uses the most recent instance. Requires --end-url"),
-                          action="store"),
-      make_option("--end-url", help=_t("NOT WORKING: Hue URL to search for in the logs as an ending"
-                          "point, uses the most recent instance. Requires --start-url"),
-                          action="store"),
-      make_option("--start-time", help=_t("Start time to search for queries in log, format:"
-                          '%d/%b/%Y %H:%M:%S IE: 01/Jan/2018 00:00:00: This is'
-                          'standard Hue log format'),
-                           action="store",
-                           default=(datetime.datetime.now() - datetime.timedelta(minutes=2))),
-      make_option("--end-time", help=_t("End time to search for queries in log, format:"
-                          '%d/%b/%Y %H:%M:%S IE: 01/Jan/2018 00:00:00: This is'
-                          'standard Hue log format'),
-                           action="store",
-                           default=(datetime.datetime.now())),
-   )
+  try:
+      from optparse import make_option
+      option_list = BaseCommand.option_list + (
+          make_option("--read-log-file", help=_t("Log file to scan for queries to be run "
+                                                 "from database_logging = true."),
+                      action="store",
+                      default='/var/log/hue/runcpserver.log'),
+          make_option("--start-url", help=_t("NOT WORKING: Hue URL to search for in the logs as a starting"
+                                             "point, uses the most recent instance. Requires --end-url"),
+                      action="store"),
+          make_option("--end-url", help=_t("NOT WORKING: Hue URL to search for in the logs as an ending"
+                                           "point, uses the most recent instance. Requires --start-url"),
+                      action="store"),
+          make_option("--start-time", help=_t("Start time to search for queries in log, format:"
+                                              '%d/%b/%Y %H:%M:%S IE: 01/Jan/2018 00:00:00: This is'
+                                              'standard Hue log format'),
+                      action="store",
+                      default=(datetime.datetime.now() - datetime.timedelta(minutes=2))),
+          make_option("--end-time", help=_t("End time to search for queries in log, format:"
+                                            '%d/%b/%Y %H:%M:%S IE: 01/Jan/2018 00:00:00: This is'
+                                            'standard Hue log format'),
+                      action="store",
+                      default=(datetime.datetime.now())),
+      )
+
+  except AttributeError, e:
+      baseoption_test = 'BaseCommand' in str(e) and 'option_list' in str(e)
+      if baseoption_test:
+          def add_arguments(self, parser):
+              parser.add_argument("--read-log-file", help=_t("Log file to scan for queries to be run "
+                                                 "from database_logging = true."),
+                      action="store",
+                      default='/var/log/hue/runcpserver.log'),
+              parser.add_argument("--start-url", help=_t("NOT WORKING: Hue URL to search for in the logs as a starting"
+                                             "point, uses the most recent instance. Requires --end-url"),
+                      action="store"),
+              parser.add_argument("--end-url", help=_t("NOT WORKING: Hue URL to search for in the logs as an ending"
+                                           "point, uses the most recent instance. Requires --start-url"),
+                      action="store"),
+              parser.add_argument("--start-time", help=_t("Start time to search for queries in log, format:"
+                                              '%d/%b/%Y %H:%M:%S IE: 01/Jan/2018 00:00:00: This is'
+                                              'standard Hue log format'),
+                      action="store",
+                      default=(datetime.datetime.now() - datetime.timedelta(minutes=2))),
+              parser.add_argument("--end-time", help=_t("End time to search for queries in log, format:"
+                                            '%d/%b/%Y %H:%M:%S IE: 01/Jan/2018 00:00:00: This is'
+                                            'standard Hue log format'),
+                      action="store",
+                      default=(datetime.datetime.now()))
+      else:
+          LOG.exception(str(e))
+          sys.exit(1)
 
   def handle(self, *args, **options):
     LOG.warn("HUE_CONF_DIR: %s" % os.environ['HUE_CONF_DIR'])

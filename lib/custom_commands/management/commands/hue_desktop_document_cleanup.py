@@ -2,8 +2,6 @@
 import os
 import time
 
-from optparse import make_option
-
 from django.core.management.base import BaseCommand, CommandError
 from django.utils.translation import ugettext_lazy as _t, ugettext as _
 from beeswax.models import SavedQuery
@@ -27,12 +25,26 @@ class Command(BaseCommand):
     Handler for purging old Query History, Workflow documents and Session data
     """
 
-    option_list = BaseCommand.option_list + (
-        make_option("--keep-days", help=_t("Number of days of history data to keep."),
+    try:
+        from optparse import make_option
+        option_list = BaseCommand.option_list + (
+            make_option("--keep-days", help=_t("Number of days of history data to keep."),
                     action="store",
                     type=int,
                     default=30),
-    )
+        )
+
+    except AttributeError, e:
+        baseoption_test = 'BaseCommand' in str(e) and 'option_list' in str(e)
+        if baseoption_test:
+            def add_arguments(self, parser):
+                parser.add_argument("--keep-days", help=_t("Number of days of history data to keep."),
+                    action="store",
+                    type=int,
+                    default=30)
+        else:
+            LOG.exception(str(e))
+            sys.exit(1)
 
 
     def objectCleanup(self, objClass, filterType, filterValue, dateField):
