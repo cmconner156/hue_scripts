@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8e164a0d-d95e-4980-bca7-863b8efae3da" name="Default" comment="">
+      <change beforePath="" afterPath="$PROJECT_DIR$/lib/custom_commands/management/commands/promote_to_superuser.py" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/lib/custom_commands/management/commands/c6_test_command.py" afterPath="$PROJECT_DIR$/lib/custom_commands/management/commands/c6_test_command.py" />
     </list>
     <ignored path="hue_scripts.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -77,8 +77,8 @@
       <file leaf-file-name="hue_delete_user.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/hue_delete_user.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="315">
-              <caret line="21" column="0" lean-forward="false" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="0" />
+            <state relative-caret-position="270">
+              <caret line="18" column="7" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="58" selection-end-column="0" />
               <folding>
                 <element signature="e#22#31#0" expanded="true" />
               </folding>
@@ -86,11 +86,23 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="c6_test_command.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="c6_test_command.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/c6_test_command.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="384">
+            <state relative-caret-position="840">
               <caret line="56" column="39" lean-forward="false" selection-start-line="56" selection-start-column="39" selection-end-line="56" selection-end-column="39" />
+              <folding>
+                <element signature="e#22#31#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="promote_to_superuser.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/promote_to_superuser.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="309">
+              <caret line="49" column="72" lean-forward="false" selection-start-line="49" selection-start-column="72" selection-end-line="49" selection-end-column="72" />
               <folding>
                 <element signature="e#22#31#0" expanded="true" />
               </folding>
@@ -134,6 +146,7 @@
         <option value="$PROJECT_DIR$/lib/custom_commands/management/commands/hue_desktop_document_cleanup.py" />
         <option value="$PROJECT_DIR$/lib/custom_commands/management/commands/hue_db_query_test.py" />
         <option value="$PROJECT_DIR$/lib/custom_commands/management/commands/c6_test_command.py" />
+        <option value="$PROJECT_DIR$/lib/custom_commands/management/commands/promote_to_superuser.py" />
       </list>
     </option>
   </component>
@@ -453,13 +466,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1462895277213</updated>
-    </task>
-    <task id="LOCAL-00005" summary="Added delete user">
-      <created>1528212129475</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1528212129475</updated>
     </task>
     <task id="LOCAL-00006" summary="Added delete user">
       <created>1528214150313</created>
@@ -797,7 +803,14 @@
       <option name="project" value="LOCAL" />
       <updated>1531929245298</updated>
     </task>
-    <option name="localTasksCounter" value="54" />
+    <task id="LOCAL-00054" summary="Updated all the commands to fix any BaseCommand issues.">
+      <created>1531929635169</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1531929635170</updated>
+    </task>
+    <option name="localTasksCounter" value="55" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -843,7 +856,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Added delete user" />
     <MESSAGE value="Updated history cron to only use script runner and purged old versions." />
-    <option name="LAST_COMMIT_MESSAGE" value="Updated history cron to only use script runner and purged old versions." />
+    <MESSAGE value="Updated all the commands to fix any BaseCommand issues." />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated all the commands to fix any BaseCommand issues." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -852,16 +866,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/lib/cm_environment.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="870">
-          <caret line="60" column="44" lean-forward="false" selection-start-line="57" selection-start-column="0" selection-end-line="60" selection-end-column="44" />
-          <folding>
-            <element signature="e#0#9#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/hue_history_cron.sh">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="60">
@@ -1180,16 +1184,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/hue_delete_user.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="21" column="0" lean-forward="false" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="0" />
-          <folding>
-            <element signature="e#22#31#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/share_all_workflows.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="300">
@@ -1220,10 +1214,30 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/hue_delete_user.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="18" column="7" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="58" selection-end-column="0" />
+          <folding>
+            <element signature="e#22#31#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/c6_test_command.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="384">
+        <state relative-caret-position="840">
           <caret line="56" column="39" lean-forward="false" selection-start-line="56" selection-start-column="39" selection-end-line="56" selection-end-column="39" />
+          <folding>
+            <element signature="e#22#31#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/promote_to_superuser.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="309">
+          <caret line="49" column="72" lean-forward="false" selection-start-line="49" selection-start-column="72" selection-end-line="49" selection-end-column="72" />
           <folding>
             <element signature="e#22#31#0" expanded="true" />
           </folding>
