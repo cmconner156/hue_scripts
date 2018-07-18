@@ -54,6 +54,6 @@ class Command(BaseCommand):
             LOG.warn("EXCEPTION: deleting user %s failed: %s" % (options['username'], e))
 
 
-        LOG.debug("Done deleting user: %s" % options['username'] )
+        LOG.debug("Done deleting user:  %s" % options['username'] )
 
 

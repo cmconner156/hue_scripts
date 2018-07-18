@@ -3,10 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="8e164a0d-d95e-4980-bca7-863b8efae3da" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/lib/custom_commands/management/commands/hue_db_query_test.py" afterPath="$PROJECT_DIR$/lib/custom_commands/management/commands/hue_db_query_test.py" />
-      <change beforePath="$PROJECT_DIR$/lib/custom_commands/management/commands/hue_delete_user.py" afterPath="$PROJECT_DIR$/lib/custom_commands/management/commands/hue_delete_user.py" />
-      <change beforePath="$PROJECT_DIR$/lib/custom_commands/management/commands/hue_desktop_document_cleanup.py" afterPath="$PROJECT_DIR$/lib/custom_commands/management/commands/hue_desktop_document_cleanup.py" />
-      <change beforePath="$PROJECT_DIR$/lib/custom_commands/management/commands/share_all_workflows.py" afterPath="$PROJECT_DIR$/lib/custom_commands/management/commands/share_all_workflows.py" />
+      <change beforePath="$PROJECT_DIR$/lib/custom_commands/management/commands/c6_test_command.py" afterPath="$PROJECT_DIR$/lib/custom_commands/management/commands/c6_test_command.py" />
     </list>
     <ignored path="hue_scripts.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -41,11 +38,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="hue_db_query_test.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="hue_db_query_test.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/hue_db_query_test.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1050">
-              <caret line="70" column="56" lean-forward="false" selection-start-line="70" selection-start-column="56" selection-end-line="70" selection-end-column="56" />
+            <state relative-caret-position="210">
+              <caret line="14" column="0" lean-forward="true" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
               <folding>
                 <element signature="e#22#31#0" expanded="true" />
               </folding>
@@ -89,11 +86,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="c6_test_command.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="c6_test_command.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/c6_test_command.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="417">
-              <caret line="38" column="23" lean-forward="true" selection-start-line="23" selection-start-column="0" selection-end-line="38" selection-end-column="23" />
+            <state relative-caret-position="384">
+              <caret line="56" column="39" lean-forward="false" selection-start-line="56" selection-start-column="39" selection-end-line="56" selection-end-column="39" />
               <folding>
                 <element signature="e#22#31#0" expanded="true" />
               </folding>
@@ -132,11 +129,11 @@
         <option value="$PROJECT_DIR$/lib/cm_environment.py" />
         <option value="$PROJECT_DIR$/hue_history_cron.sh" />
         <option value="$PROJECT_DIR$/script_runner" />
-        <option value="$PROJECT_DIR$/lib/custom_commands/management/commands/c6_test_command.py" />
         <option value="$PROJECT_DIR$/lib/custom_commands/management/commands/hue_delete_user.py" />
         <option value="$PROJECT_DIR$/lib/custom_commands/management/commands/share_all_workflows.py" />
         <option value="$PROJECT_DIR$/lib/custom_commands/management/commands/hue_desktop_document_cleanup.py" />
         <option value="$PROJECT_DIR$/lib/custom_commands/management/commands/hue_db_query_test.py" />
+        <option value="$PROJECT_DIR$/lib/custom_commands/management/commands/c6_test_command.py" />
       </list>
     </option>
   </component>
@@ -456,13 +453,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1462895277213</updated>
-    </task>
-    <task id="LOCAL-00004" summary="Added delete user">
-      <created>1527086950681</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1527086950681</updated>
     </task>
     <task id="LOCAL-00005" summary="Added delete user">
       <created>1528212129475</created>
@@ -800,11 +790,19 @@
       <option name="project" value="LOCAL" />
       <updated>1531928603983</updated>
     </task>
-    <option name="localTasksCounter" value="53" />
+    <task id="LOCAL-00053" summary="Updated history cron to only use script runner and purged old versions.">
+      <created>1531929245297</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1531929245298</updated>
+    </task>
+    <option name="localTasksCounter" value="54" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="22" width="1440" height="824" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24335106" sideWeight="0.5222222" order="7" side_tool="true" content_ui="tabs" />
@@ -812,7 +810,7 @@
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24335106" sideWeight="0.47777778" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1875" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1875" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="SciView" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -1182,16 +1180,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/c6_test_command.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="417">
-          <caret line="38" column="23" lean-forward="true" selection-start-line="23" selection-start-column="0" selection-end-line="38" selection-end-column="23" />
-          <folding>
-            <element signature="e#22#31#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/hue_delete_user.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="315">
@@ -1224,8 +1212,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/hue_db_query_test.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1050">
-          <caret line="70" column="56" lean-forward="false" selection-start-line="70" selection-start-column="56" selection-end-line="70" selection-end-column="56" />
+        <state relative-caret-position="210">
+          <caret line="14" column="0" lean-forward="true" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
+          <folding>
+            <element signature="e#22#31#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/c6_test_command.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="384">
+          <caret line="56" column="39" lean-forward="false" selection-start-line="56" selection-start-column="39" selection-end-line="56" selection-end-column="39" />
           <folding>
             <element signature="e#22#31#0" expanded="true" />
           </folding>
