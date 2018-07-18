@@ -27,13 +27,15 @@ class Command(BaseCommand):
             make_option("--username", help=_t("User to delete case sensitive. "),
                         action="store"),
         )
+
     except AttributeError, e:
-        if "AttributeError: type object 'BaseCommand' has no attribute 'option_list'" in e:
+        baseoption_test = 'BaseCommand' in str(e) and 'option_list' in str(e)
+        if baseoption_test:
             def add_arguments(self, parser):
                 parser.add_argument("--username", help=_t("User to delete case sensitive."),
                                     action="store")
         else:
-            LOG.exception(e)
+            LOG.exception(str(e))
             sys.exit(1)
 
     def handle(self, *args, **options):

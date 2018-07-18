@@ -75,8 +75,8 @@
       <file leaf-file-name="c6_test_command.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/c6_test_command.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="360">
-              <caret line="24" column="40" lean-forward="false" selection-start-line="24" selection-start-column="40" selection-end-line="24" selection-end-column="40" />
+            <state relative-caret-position="305">
+              <caret line="29" column="8" lean-forward="false" selection-start-line="29" selection-start-column="8" selection-end-line="29" selection-end-column="8" />
               <folding>
                 <element signature="e#22#31#0" expanded="true" />
               </folding>
@@ -439,13 +439,6 @@
       <option name="presentableId" value="Default" />
       <updated>1462895277213</updated>
     </task>
-    <task id="LOCAL-00002" summary="Added delete user">
-      <created>1526414677592</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1526414677592</updated>
-    </task>
     <task id="LOCAL-00003" summary="Added delete user">
       <created>1527086937583</created>
       <option name="number" value="00003" />
@@ -782,7 +775,14 @@
       <option name="project" value="LOCAL" />
       <updated>1531926839840</updated>
     </task>
-    <option name="localTasksCounter" value="51" />
+    <task id="LOCAL-00051" summary="Updated history cron to only use script runner and purged old versions.">
+      <created>1531927426232</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1531927426232</updated>
+    </task>
+    <option name="localTasksCounter" value="52" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -1202,8 +1202,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/c6_test_command.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
-          <caret line="24" column="40" lean-forward="false" selection-start-line="24" selection-start-column="40" selection-end-line="24" selection-end-column="40" />
+        <state relative-caret-position="305">
+          <caret line="29" column="8" lean-forward="false" selection-start-line="29" selection-start-column="8" selection-end-line="29" selection-end-column="8" />
           <folding>
             <element signature="e#22#31#0" expanded="true" />
           </folding>
