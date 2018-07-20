@@ -52,11 +52,11 @@ class Command(BaseCommand):
         LOG.info("DB Port: %s" % str(desktop.conf.DATABASE.PORT.get()))
         LOG.warn("Changing ownership of all docs owned by %s to %s" % (options['olduser'], options['newuser']))
 
-        if 'olduser' not in options:
+        if options['olduser']:
             LOG.exception("--olduser option required")
             sys.exit(1)
 
-        if 'newuser' not in options:
+        if options['newuser']:
             LOG.exception("--newuser option required")
             sys.exit(1)
 
