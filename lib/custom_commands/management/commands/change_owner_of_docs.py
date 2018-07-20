@@ -52,6 +52,14 @@ class Command(BaseCommand):
         LOG.info("DB Port: %s" % str(desktop.conf.DATABASE.PORT.get()))
         LOG.warn("Changing ownership of all docs owned by %s to %s" % (options['olduser'], options['newuser']))
 
+        if 'olduser' not in options:
+            LOG.exception("--olduser option required")
+            sys.exit(1)
+
+        if 'newuser' not in options:
+            LOG.exception("--newuser option required")
+            sys.exit(1)
+
         try:
             newuser = User.objects.get(username = options['newuser'])
             olduser = User.objects.get(username = options['olduser'])
