@@ -17,7 +17,7 @@ LOG = logging.getLogger(__name__)
 
 class Command(BaseCommand):
     """
-    Handler for running queries from Hue log with database_logging queries
+    Handler for promoting a user to superuser
     """
 
     try:

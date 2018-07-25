@@ -18,7 +18,7 @@ LOG = logging.getLogger(__name__)
 
 class Command(BaseCommand):
     """
-    Handler for running queries from Hue log with database_logging queries
+    Handler for changing ownership of docs
     """
 
     try:

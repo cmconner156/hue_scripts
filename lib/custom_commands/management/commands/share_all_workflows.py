@@ -17,7 +17,7 @@ LOG = logging.getLogger(__name__)
 
 class Command(BaseCommand):
     """
-    Handler for purging old Query History, Workflow documents and Session data
+    Handler for sharing workflows
     """
 
     try:
