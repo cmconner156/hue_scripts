@@ -2,6 +2,9 @@
 import os
 import time
 
+from importlib import import_module
+
+from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 from django.utils.translation import ugettext_lazy as _t, ugettext as _
 from beeswax.models import SavedQuery
@@ -119,6 +122,20 @@ class Command(BaseCommand):
         #Clean out history Doc2 objects
         self.objectCleanup(Document2, 'is_history', True, 'last_modified')
 
+        #Clean out expired sessions
+        LOG.debug("Cleaning out expired sessions from django_session table")
+
+        engine = import_module(settings.SESSION_ENGINE)
+        try:
+            engine.SessionStore.clear_expired()
+        except NotImplementedError:
+            LOG.error("Session engine '%s' doesn't support clearing "
+                            "expired sessions.\n" % settings.SESSION_ENGINE)
+
+
         end = time.time()
         elapsed = (end - start)
         LOG.debug("Total time elapsed (seconds): %.2f" % elapsed)
+
+
+
