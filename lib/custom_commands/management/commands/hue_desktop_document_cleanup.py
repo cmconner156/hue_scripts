@@ -102,7 +102,7 @@ class Command(BaseCommand):
         LOG.info("DB User: %s" % desktop.conf.DATABASE.USER.get())
         LOG.info("DB Host: %s" % desktop.conf.DATABASE.HOST.get())
         LOG.info("DB Port: %s" % str(desktop.conf.DATABASE.PORT.get()))
-        LOG.info("Cleaning up anything in the Hue tables oozie*, desktop* and beeswax* older than %s old" % self.keepDays)
+        LOG.info("Cleaning up anything in the Hue tables django_session, oozie*, desktop* and beeswax* older than %s old" % self.keepDays)
 
         start = time.time()
 
