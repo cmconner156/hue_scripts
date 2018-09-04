@@ -12,6 +12,6 @@ cp -pr ${HUE_CONF_DIR} ${TMP_LOC}
 cp -pr /opt/cloudera/security ${TMP_LOC}/
 find /usr/share/cmf/lib/ -name "security*.jar" -exec cp {} ${TMP_LOC}/security.jar \;
 
-cdh /tmp && zip -r ${CONF_DIR_NAME}.zip ${CONF_DIR_NAME}
+cd /tmp && zip -r ${CONF_DIR_NAME}.zip ${CONF_DIR_NAME}
 echo "Created ${TMP_LOC}.zip"
 
