@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8e164a0d-d95e-4980-bca7-863b8efae3da" name="Default" comment="Added django_session cleanup.">
-      <change afterPath="$PROJECT_DIR$/lib/custom_commands/management/commands/remove_duplicate_user_preferences.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="8e164a0d-d95e-4980-bca7-863b8efae3da" name="Default" comment="Added command to remove duplicate UserPreference objects" />
     <ignored path="hue_scripts.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path=".idea/dataSources.local.xml" />
@@ -24,7 +21,7 @@
     <session id="1037010770">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="1" />
+          <entry key="project.closed" value="2" />
           <entry key="project.open.time.7" value="1" />
           <entry key="project.open.time.8" value="1" />
           <entry key="project.opened" value="2" />
@@ -33,10 +30,12 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="py" value="327" />
+          <entry key="txt" value="64" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
+          <entry key="PLAIN_TEXT" value="64" />
           <entry key="Python" value="327" />
         </counts>
       </usages-collector>
@@ -352,13 +351,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1462895277213</updated>
-    </task>
-    <task id="LOCAL-00015" summary="Added delete user">
-      <created>1530813421537</created>
-      <option name="number" value="00015" />
-      <option name="presentableId" value="LOCAL-00015" />
-      <option name="project" value="LOCAL" />
-      <updated>1530813421537</updated>
     </task>
     <task id="LOCAL-00016" summary="Added delete user">
       <created>1530813534715</created>
@@ -696,14 +688,20 @@
       <option name="project" value="LOCAL" />
       <updated>1534535628322</updated>
     </task>
-    <option name="localTasksCounter" value="64" />
+    <task id="LOCAL-00064" summary="Added command to remove duplicate UserPreference objects">
+      <created>1535040368503</created>
+      <option name="number" value="00064" />
+      <option name="presentableId" value="LOCAL-00064" />
+      <option name="project" value="LOCAL" />
+      <updated>1535040368511</updated>
+    </task>
+    <option name="localTasksCounter" value="65" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="22" width="2560" height="1524" extended-state="6" />
-    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.19023034" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.19023034" />
       <window_info id="Structure" order="1" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -715,7 +713,7 @@
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Version Control" order="7" sideWeight="0.4698173" visible="true" weight="0.24301676" />
       <window_info anchor="bottom" id="Terminal" order="8" />
-      <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.53018266" side_tool="true" visible="true" weight="0.24301676" />
+      <window_info active="true" anchor="bottom" id="Event Log" order="9" sideWeight="0.53018266" side_tool="true" visible="true" weight="0.24301676" />
       <window_info anchor="bottom" id="Python Console" order="10" />
       <window_info anchor="bottom" id="Docker" order="11" show_stripe_button="false" />
       <window_info anchor="bottom" id="Database Changes" order="12" show_stripe_button="false" />
@@ -745,7 +743,8 @@
     <MESSAGE value="Updated history cron to only use script runner and purged old versions." />
     <MESSAGE value="Updated all the commands to fix any BaseCommand issues." />
     <MESSAGE value="Added django_session cleanup." />
-    <option name="LAST_COMMIT_MESSAGE" value="Added django_session cleanup." />
+    <MESSAGE value="Added command to remove duplicate UserPreference objects" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added command to remove duplicate UserPreference objects" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
