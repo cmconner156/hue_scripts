@@ -51,7 +51,7 @@ class Command(BaseCommand):
           date1 = users_dict[username][count]['date_joined']
           username2 = users_dict[username][count + 1]['username']
           date2 = users_dict[username][count + 1]['date_joined']
-          LOG.warn("Processing base: %s: with u1 %s : u2 %s" % (username, username1, username2))
+          LOG.warn("Processing: count: %s: base: %s: with u1 %s : u2 %s" % (count, username, username1, username2))
           if date1 < date2:
             oldest_user = username1
             oldest_date = date1
@@ -63,7 +63,7 @@ class Command(BaseCommand):
             oldest_count = count + 1
             users_dict[username][count]["username"]=username1+"renamed"
         else:
-          LOG.warn("Processing base: %s: with oldest_user %s : u2 %s" % (username, oldest_user, username2))
+          LOG.warn("Processing: count: %s: base: %s: with oldest_user %s : u2 %s" % (count, username, oldest_user, username2))
           username2 = users_dict[username][count]['username']
           date2 = users_dict[username][count]['date_joined']
           if username2.lower() == username and username2 != oldest_user:
