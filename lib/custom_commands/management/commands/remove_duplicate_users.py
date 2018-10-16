@@ -36,10 +36,9 @@ class Command(BaseCommand):
       users_dict[user.username.lower()] = user_list
       for usercompare in User.objects.filter():
         if usercompare.id != user.id and usercompare.username.lower() == user.username.lower():
-          print user
-          print usercompare
           users_dict[user.username.lower()].append({'username': usercompare.username, 'date_joined': usercompare.date_joined, 'date_joined_readable': usercompare.date_joined.strftime('%Y-%m-%d %H:%M:%S%z')})
 
+    LOG.warn("users_dict before update: %s" % users_dict)
 
     for username in users_dict.keys():
       count = 0
@@ -75,7 +74,7 @@ class Command(BaseCommand):
 
         count = count + 1
 
-    LOG.warn("%s" % users_dict)
+    LOG.warn("users_dict after update: %s" % users_dict)
 
     #        transaction.commit()
 

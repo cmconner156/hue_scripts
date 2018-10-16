@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8e164a0d-d95e-4980-bca7-863b8efae3da" name="Default" comment="Added command to remove duplicate UserPreference objects" />
+    <list default="true" id="8e164a0d-d95e-4980-bca7-863b8efae3da" name="Default" comment="Added remove duplicate user script">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/custom_commands/management/commands/remove_duplicate_users.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/custom_commands/management/commands/remove_duplicate_users.py" afterDir="false" />
+    </list>
     <ignored path="hue_scripts.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path=".idea/dataSources.local.xml" />
@@ -23,35 +26,35 @@
         <counts>
           <entry key="project.closed" value="3" />
           <entry key="project.open.time.2" value="1" />
-          <entry key="project.open.time.7" value="1" />
+          <entry key="project.open.time.7" value="2" />
           <entry key="project.open.time.8" value="1" />
-          <entry key="project.opened" value="3" />
+          <entry key="project.opened" value="4" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="327" />
+          <entry key="py" value="701" />
           <entry key="sh" value="2972" />
-          <entry key="txt" value="64" />
+          <entry key="txt" value="98" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="Bash" value="2972" />
-          <entry key="PLAIN_TEXT" value="64" />
-          <entry key="Python" value="327" />
+          <entry key="PLAIN_TEXT" value="98" />
+          <entry key="Python" value="701" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="py" value="1" />
-          <entry key="sh" value="3" />
+          <entry key="py" value="3" />
+          <entry key="sh" value="4" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Bash" value="3" />
-          <entry key="Python" value="1" />
+          <entry key="Bash" value="4" />
+          <entry key="Python" value="3" />
         </counts>
       </usages-collector>
     </session>
@@ -62,23 +65,34 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/hue_remove_duplicate_oozie_docs_53.sh">
+        <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/remove_duplicate_user_preferences.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret line="73" column="16" selection-start-line="73" selection-start-column="16" selection-end-line="73" selection-end-column="16" />
+            <state relative-caret-position="435">
+              <caret line="29" column="42" lean-forward="true" selection-start-line="29" selection-start-column="8" selection-end-line="29" selection-end-column="42" />
+              <folding>
+                <element signature="e#22#31#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/share_all_workflows.py">
+        <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/remove_duplicate_users.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="120">
-              <caret line="19" column="33" selection-start-line="19" selection-start-column="33" selection-end-line="19" selection-end-column="33" />
+            <state relative-caret-position="348">
+              <caret line="76" column="39" selection-start-line="76" selection-start-column="39" selection-end-line="76" selection-end-column="39" />
               <folding>
                 <element signature="e#22#31#0" expanded="true" />
+                <marker date="1539724800499" expanded="true" signature="454:459" ph="..." />
               </folding>
             </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/hue_remove_duplicate_docs.sh">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-550" />
           </provider>
         </entry>
       </file>
@@ -138,6 +152,7 @@
         <option value="$PROJECT_DIR$/lib/custom_commands/management/commands/promote_to_superuser.py" />
         <option value="$PROJECT_DIR$/lib/custom_commands/management/commands/remove_duplicate_user_preferences.py" />
         <option value="$PROJECT_DIR$/start_hue.sh" />
+        <option value="$PROJECT_DIR$/lib/custom_commands/management/commands/remove_duplicate_users.py" />
       </list>
     </option>
   </component>
@@ -157,7 +172,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -195,6 +209,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -282,13 +297,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1462895277213</updated>
-    </task>
-    <task id="LOCAL-00016" summary="Added delete user">
-      <created>1530813534715</created>
-      <option name="number" value="00016" />
-      <option name="presentableId" value="LOCAL-00016" />
-      <option name="project" value="LOCAL" />
-      <updated>1530813534715</updated>
     </task>
     <task id="LOCAL-00017" summary="Added delete user">
       <created>1530813573282</created>
@@ -626,14 +634,21 @@
       <option name="project" value="LOCAL" />
       <updated>1535040368511</updated>
     </task>
-    <option name="localTasksCounter" value="65" />
+    <task id="LOCAL-00065" summary="Added remove duplicate user script">
+      <created>1539724541561</created>
+      <option name="number" value="00065" />
+      <option name="presentableId" value="LOCAL-00065" />
+      <option name="project" value="LOCAL" />
+      <updated>1539724541561</updated>
+    </task>
+    <option name="localTasksCounter" value="66" />
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="22" width="1440" height="824" extended-state="6" />
+    <frame x="0" y="22" width="1440" height="829" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.34477827" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.34978542" />
       <window_info id="Structure" order="1" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -643,9 +658,9 @@
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Version Control" order="7" sideWeight="0.46924177" visible="true" weight="0.47540984" />
+      <window_info anchor="bottom" id="Version Control" order="7" sideWeight="0.46852645" visible="true" weight="0.25644505" />
       <window_info anchor="bottom" id="Terminal" order="8" />
-      <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.5307582" side_tool="true" visible="true" weight="0.47540984" />
+      <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.5314735" side_tool="true" visible="true" weight="0.25644505" />
       <window_info anchor="bottom" id="Python Console" order="10" />
       <window_info anchor="bottom" id="Docker" order="11" show_stripe_button="false" />
       <window_info anchor="bottom" id="Database Changes" order="12" show_stripe_button="false" />
@@ -676,7 +691,8 @@
     <MESSAGE value="Updated all the commands to fix any BaseCommand issues." />
     <MESSAGE value="Added django_session cleanup." />
     <MESSAGE value="Added command to remove duplicate UserPreference objects" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added command to remove duplicate UserPreference objects" />
+    <MESSAGE value="Added remove duplicate user script" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added remove duplicate user script" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -765,13 +781,6 @@
     <entry file="file://$PROJECT_DIR$/hue_remove_duplicate_queries.sh">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/hue_remove_duplicate_oozie_docs_53.sh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret line="73" column="16" selection-start-line="73" selection-start-column="16" selection-end-line="73" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/hue_multiple_home_cleanup.sh">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1155">
@@ -779,27 +788,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/start_hue.sh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-759">
-          <caret line="121" column="9" selection-start-line="121" selection-start-column="9" selection-end-line="121" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/remove_duplicate_user_preferences.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="5" selection-start-line="5" selection-end-line="5" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/start_hue.sh" />
     <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/promote_to_superuser.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="304">
           <caret line="57" lean-forward="true" selection-start-line="57" selection-end-line="57" />
-          <folding>
-            <element signature="e#22#31#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -821,9 +814,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="304">
           <caret line="70" column="20" selection-start-line="70" selection-start-column="20" selection-end-line="70" selection-end-column="20" />
-          <folding>
-            <element signature="e#22#31#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -834,12 +824,45 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/hue_remove_duplicate_oozie_docs_53.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1095">
+          <caret line="73" column="16" selection-start-line="73" selection-start-column="16" selection-end-line="73" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/share_all_workflows.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
+        <state relative-caret-position="-767">
           <caret line="19" column="33" selection-start-line="19" selection-start-column="33" selection-end-line="19" selection-end-column="33" />
           <folding>
             <element signature="e#22#31#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hue_remove_duplicate_docs.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-550" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/remove_duplicate_user_preferences.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="435">
+          <caret line="29" column="42" lean-forward="true" selection-start-line="29" selection-start-column="8" selection-end-line="29" selection-end-column="42" />
+          <folding>
+            <element signature="e#22#31#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/remove_duplicate_users.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="348">
+          <caret line="76" column="39" selection-start-line="76" selection-start-column="39" selection-end-line="76" selection-end-column="39" />
+          <folding>
+            <element signature="e#22#31#0" expanded="true" />
+            <marker date="1539724800499" expanded="true" signature="454:459" ph="..." />
           </folding>
         </state>
       </provider>
