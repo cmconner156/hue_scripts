@@ -33,7 +33,7 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="701" />
+          <entry key="py" value="873" />
           <entry key="sh" value="2972" />
           <entry key="txt" value="98" />
         </counts>
@@ -42,7 +42,7 @@
         <counts>
           <entry key="Bash" value="2972" />
           <entry key="PLAIN_TEXT" value="98" />
-          <entry key="Python" value="701" />
+          <entry key="Python" value="873" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -79,11 +79,11 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/remove_duplicate_users.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="348">
-              <caret line="76" column="39" selection-start-line="76" selection-start-column="39" selection-end-line="76" selection-end-column="39" />
+            <state relative-caret-position="138">
+              <caret line="65" column="52" selection-start-line="65" selection-start-column="52" selection-end-line="65" selection-end-column="52" />
               <folding>
                 <element signature="e#22#31#0" expanded="true" />
-                <marker date="1539724800499" expanded="true" signature="454:459" ph="..." />
+                <marker date="1539725431301" expanded="true" signature="489:494" ph="..." />
               </folding>
             </state>
           </provider>
@@ -297,20 +297,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1462895277213</updated>
-    </task>
-    <task id="LOCAL-00017" summary="Added delete user">
-      <created>1530813573282</created>
-      <option name="number" value="00017" />
-      <option name="presentableId" value="LOCAL-00017" />
-      <option name="project" value="LOCAL" />
-      <updated>1530813573282</updated>
-    </task>
-    <task id="LOCAL-00018" summary="Added delete user">
-      <created>1530813944305</created>
-      <option name="number" value="00018" />
-      <option name="presentableId" value="LOCAL-00018" />
-      <option name="project" value="LOCAL" />
-      <updated>1530813944305</updated>
     </task>
     <task id="LOCAL-00019" summary="Added delete user">
       <created>1530822413487</created>
@@ -641,7 +627,21 @@
       <option name="project" value="LOCAL" />
       <updated>1539724541561</updated>
     </task>
-    <option name="localTasksCounter" value="66" />
+    <task id="LOCAL-00066" summary="Added remove duplicate user script">
+      <created>1539724804371</created>
+      <option name="number" value="00066" />
+      <option name="presentableId" value="LOCAL-00066" />
+      <option name="project" value="LOCAL" />
+      <updated>1539724804371</updated>
+    </task>
+    <task id="LOCAL-00067" summary="Added remove duplicate user script">
+      <created>1539725005037</created>
+      <option name="number" value="00067" />
+      <option name="presentableId" value="LOCAL-00067" />
+      <option name="project" value="LOCAL" />
+      <updated>1539725005037</updated>
+    </task>
+    <option name="localTasksCounter" value="68" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -858,11 +858,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/remove_duplicate_users.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="348">
-          <caret line="76" column="39" selection-start-line="76" selection-start-column="39" selection-end-line="76" selection-end-column="39" />
+        <state relative-caret-position="138">
+          <caret line="65" column="52" selection-start-line="65" selection-start-column="52" selection-end-line="65" selection-end-column="52" />
           <folding>
             <element signature="e#22#31#0" expanded="true" />
-            <marker date="1539724800499" expanded="true" signature="454:459" ph="..." />
+            <marker date="1539725431301" expanded="true" signature="489:494" ph="..." />
           </folding>
         </state>
       </provider>
