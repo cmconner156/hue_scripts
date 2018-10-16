@@ -2,6 +2,7 @@
 import os
 import logging
 import datetime
+from pprint import pprint, pformat
 
 
 from django.core.management.base import BaseCommand, CommandError
@@ -27,7 +28,7 @@ class Command(BaseCommand):
     LOG.info("DB User: %s" % desktop.conf.DATABASE.USER.get())
     LOG.info("DB Host: %s" % desktop.conf.DATABASE.HOST.get())
     LOG.info("DB Port: %s" % str(desktop.conf.DATABASE.PORT.get()))
-    LOG.warn("Deleting ducpliate User objects")
+    LOG.warn("Deleting duplicate User objects")
 
     users_dict = {}
 
@@ -38,7 +39,7 @@ class Command(BaseCommand):
         if usercompare.id != user.id and usercompare.username.lower() == user.username.lower():
           users_dict[user.username.lower()].append({'username': usercompare.username, 'date_joined': usercompare.date_joined, 'date_joined_readable': usercompare.date_joined.strftime('%Y-%m-%d %H:%M:%S%z')})
 
-    LOG.warn("users_dict before update: %s" % users_dict)
+    LOG.warn("users_dict before update: %s" % pformat(users_dict, indent=4))
 
     for username in users_dict.keys():
       count = 0
@@ -74,7 +75,7 @@ class Command(BaseCommand):
 
         count = count + 1
 
-    LOG.warn("users_dict after update: %s" % users_dict)
+    LOG.warn("users_dict after update: %s" % pformat(users_dict, indent=4))
 
     #        transaction.commit()
 
