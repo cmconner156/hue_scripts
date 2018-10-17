@@ -55,12 +55,17 @@ class Command(BaseCommand):
 
 
   def change_user_case(self, username=None, newcase=None):
+    tmp_username = username + "tmp"
     if newcase == "lowercase":
       new_username = username.lower()
     else:
       new_username = username.upper()
     LOG.warn("Changing user case, renaming %s to %s" % (username, new_username))
     user_mod = User.objects.get(username=username)
+    user_mod.username = tmp_username
+    user_mod.save()
+
+    user_mod = User.objects.get(username=tmp_username)
     user_mod.username = new_username
     user_mod.save()
 
