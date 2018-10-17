@@ -61,22 +61,11 @@ class Command(BaseCommand):
     else:
       new_username = username.upper()
 
-    LOG.warn("Changing user case, renaming %s to %s" % (username, new_username))
     if "renamed" not in username:
+      LOG.warn("Changing user case, renaming %s to %s" % (username, new_username))
       user_mod = User.objects.get(username=username)
       user_mod.username = new_username
       user_mod.save()
-
-#    LOG.warn("Changing user case, renaming %s to %s" % (username, new_username))
-#    user_mod = User.objects.get(username=username)
-#    user_mod.username = tmp_username
-#    user_mod.save()
-
-#    transaction.commit()
-
-#    user_mod = User.objects.get(username=tmp_username)
-#    user_mod.username = new_username
-#    user_mod.save()
 
 
   def log_users_list(self):
@@ -158,5 +147,5 @@ class Command(BaseCommand):
     LOG.warn("users list after renames")
     self.log_users_list()
 
-    #        transaction.commit()
+    transaction.commit()
 
