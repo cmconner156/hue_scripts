@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8e164a0d-d95e-4980-bca7-863b8efae3da" name="Default" comment="Added remove duplicate user script">
+    <list default="true" id="8e164a0d-d95e-4980-bca7-863b8efae3da" name="Default" comment="Minor fixes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/custom_commands/management/commands/remove_duplicate_users.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/custom_commands/management/commands/remove_duplicate_users.py" afterDir="false" />
     </list>
@@ -33,28 +33,28 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="873" />
+          <entry key="py" value="2264" />
           <entry key="sh" value="2972" />
-          <entry key="txt" value="98" />
+          <entry key="txt" value="109" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="Bash" value="2972" />
-          <entry key="PLAIN_TEXT" value="98" />
-          <entry key="Python" value="873" />
+          <entry key="PLAIN_TEXT" value="109" />
+          <entry key="Python" value="2264" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="py" value="3" />
-          <entry key="sh" value="4" />
+          <entry key="py" value="5" />
+          <entry key="sh" value="5" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Bash" value="4" />
-          <entry key="Python" value="3" />
+          <entry key="Bash" value="5" />
+          <entry key="Python" value="5" />
         </counts>
       </usages-collector>
     </session>
@@ -79,11 +79,36 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/remove_duplicate_users.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="138">
-              <caret line="65" column="52" selection-start-line="65" selection-start-column="52" selection-end-line="65" selection-end-column="52" />
+            <state relative-caret-position="52">
+              <caret line="54" lean-forward="true" selection-start-line="54" selection-end-line="54" />
               <folding>
                 <element signature="e#22#31#0" expanded="true" />
-                <marker date="1539725431301" expanded="true" signature="489:494" ph="..." />
+                <marker date="1539785845775" expanded="true" signature="883:1180" ph="..." />
+                <marker date="1539785845775" expanded="true" signature="1215:1220" ph="..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/remove_doc2_without_content_object.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="669">
+              <caret line="70" column="20" selection-start-line="70" selection-start-column="20" selection-end-line="70" selection-end-column="20" />
+              <folding>
+                <element signature="e#22#31#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/hue_desktop_document_cleanup.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="156">
+              <caret line="110" column="26" selection-start-line="110" selection-start-column="13" selection-end-line="110" selection-end-column="26" />
+              <folding>
+                <element signature="e#22#31#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -127,6 +152,9 @@
       <find>SOURCE_SER</find>
       <find>getopt</find>
       <find>HUE_CONF_DIR</find>
+      <find>objectcleanup</find>
+      <find>users_dict</find>
+      <find>base_user</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -162,10 +190,11 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds">
+    <option name="x" value="-3839" />
     <option name="y" value="22" />
-    <option name="width" value="1440" />
-    <option name="height" value="824" />
+    <option name="width" value="2089" />
+    <option name="height" value="1312" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -297,27 +326,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1462895277213</updated>
-    </task>
-    <task id="LOCAL-00019" summary="Added delete user">
-      <created>1530822413487</created>
-      <option name="number" value="00019" />
-      <option name="presentableId" value="LOCAL-00019" />
-      <option name="project" value="LOCAL" />
-      <updated>1530822413487</updated>
-    </task>
-    <task id="LOCAL-00020" summary="Added delete user">
-      <created>1530822729779</created>
-      <option name="number" value="00020" />
-      <option name="presentableId" value="LOCAL-00020" />
-      <option name="project" value="LOCAL" />
-      <updated>1530822729779</updated>
-    </task>
-    <task id="LOCAL-00021" summary="Added delete user">
-      <created>1530823538601</created>
-      <option name="number" value="00021" />
-      <option name="presentableId" value="LOCAL-00021" />
-      <option name="project" value="LOCAL" />
-      <updated>1530823538601</updated>
     </task>
     <task id="LOCAL-00022" summary="Added delete user">
       <created>1530824114586</created>
@@ -641,14 +649,35 @@
       <option name="project" value="LOCAL" />
       <updated>1539725005037</updated>
     </task>
-    <option name="localTasksCounter" value="68" />
+    <task id="LOCAL-00068" summary="Minor fixes">
+      <created>1539725438771</created>
+      <option name="number" value="00068" />
+      <option name="presentableId" value="LOCAL-00068" />
+      <option name="project" value="LOCAL" />
+      <updated>1539725438771</updated>
+    </task>
+    <task id="LOCAL-00069" summary="Minor fixes">
+      <created>1539725577516</created>
+      <option name="number" value="00069" />
+      <option name="presentableId" value="LOCAL-00069" />
+      <option name="project" value="LOCAL" />
+      <updated>1539725577516</updated>
+    </task>
+    <task id="LOCAL-00070" summary="Minor fixes">
+      <created>1539785182468</created>
+      <option name="number" value="00070" />
+      <option name="presentableId" value="LOCAL-00070" />
+      <option name="project" value="LOCAL" />
+      <updated>1539785182469</updated>
+    </task>
+    <option name="localTasksCounter" value="71" />
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="22" width="1440" height="829" extended-state="6" />
+    <frame x="-3839" y="22" width="2089" height="1312" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.34978542" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.23888618" />
       <window_info id="Structure" order="1" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -658,9 +687,9 @@
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Version Control" order="7" sideWeight="0.46852645" visible="true" weight="0.25644505" />
+      <window_info anchor="bottom" id="Version Control" order="7" sideWeight="0.468979" visible="true" weight="0.15491803" />
       <window_info anchor="bottom" id="Terminal" order="8" />
-      <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.5314735" side_tool="true" visible="true" weight="0.25644505" />
+      <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.531021" side_tool="true" visible="true" weight="0.15491803" />
       <window_info anchor="bottom" id="Python Console" order="10" />
       <window_info anchor="bottom" id="Docker" order="11" show_stripe_button="false" />
       <window_info anchor="bottom" id="Database Changes" order="12" show_stripe_button="false" />
@@ -692,7 +721,8 @@
     <MESSAGE value="Added django_session cleanup." />
     <MESSAGE value="Added command to remove duplicate UserPreference objects" />
     <MESSAGE value="Added remove duplicate user script" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added remove duplicate user script" />
+    <MESSAGE value="Minor fixes" />
+    <option name="LAST_COMMIT_MESSAGE" value="Minor fixes" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -764,20 +794,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/hue_remove_doc2_without_content_object.sh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2482">
-          <caret line="249" column="8" lean-forward="true" selection-start-line="249" selection-start-column="8" selection-end-line="249" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/hue_desktop_document_cleanup.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="195">
-          <caret line="13" column="41" lean-forward="true" selection-start-line="13" selection-start-column="41" selection-end-line="13" selection-end-column="41" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/hue_remove_duplicate_queries.sh">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -807,13 +823,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="165">
           <caret line="23" column="8" selection-start-line="23" selection-start-column="8" selection-end-line="23" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/remove_doc2_without_content_object.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="304">
-          <caret line="70" column="20" selection-start-line="70" selection-start-column="20" selection-end-line="70" selection-end-column="20" />
         </state>
       </provider>
     </entry>
@@ -856,13 +865,41 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/remove_duplicate_users.py">
+    <entry file="file://$PROJECT_DIR$/hue_remove_doc2_without_content_object.sh">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="138">
-          <caret line="65" column="52" selection-start-line="65" selection-start-column="52" selection-end-line="65" selection-end-column="52" />
+        <state relative-caret-position="3116">
+          <caret line="249" column="8" lean-forward="true" selection-start-line="249" selection-start-column="8" selection-end-line="249" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/hue_desktop_document_cleanup.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="156">
+          <caret line="110" column="26" selection-start-line="110" selection-start-column="13" selection-end-line="110" selection-end-column="26" />
           <folding>
             <element signature="e#22#31#0" expanded="true" />
-            <marker date="1539725431301" expanded="true" signature="489:494" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/remove_doc2_without_content_object.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="669">
+          <caret line="70" column="20" selection-start-line="70" selection-start-column="20" selection-end-line="70" selection-end-column="20" />
+          <folding>
+            <element signature="e#22#31#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/remove_duplicate_users.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="52">
+          <caret line="54" lean-forward="true" selection-start-line="54" selection-end-line="54" />
+          <folding>
+            <element signature="e#22#31#0" expanded="true" />
+            <marker date="1539785845775" expanded="true" signature="883:1180" ph="..." />
+            <marker date="1539785845775" expanded="true" signature="1215:1220" ph="..." />
           </folding>
         </state>
       </provider>
