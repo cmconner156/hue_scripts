@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8e164a0d-d95e-4980-bca7-863b8efae3da" name="Default" comment="Minor fixes">
-      <change beforePath="$PROJECT_DIR$/lib/custom_commands/management/commands/remove_duplicate_users.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/custom_commands/management/commands/remove_duplicate_users.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <ignored path="hue_scripts.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -23,7 +23,7 @@
     <session id="1037010770">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="3" />
+          <entry key="project.closed" value="4" />
           <entry key="project.open.time.2" value="1" />
           <entry key="project.open.time.7" value="2" />
           <entry key="project.open.time.8" value="1" />
@@ -32,7 +32,7 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="3085" />
+          <entry key="py" value="3349" />
           <entry key="sh" value="2972" />
           <entry key="txt" value="109" />
         </counts>
@@ -41,7 +41,7 @@
         <counts>
           <entry key="Bash" value="2972" />
           <entry key="PLAIN_TEXT" value="109" />
-          <entry key="Python" value="3085" />
+          <entry key="Python" value="3349" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -78,12 +78,12 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/remove_duplicate_users.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="431">
-              <caret line="64" column="22" selection-start-line="64" selection-start-column="22" selection-end-line="64" selection-end-column="22" />
+            <state relative-caret-position="2115">
+              <caret line="141" column="79" selection-start-line="141" selection-start-column="79" selection-end-line="141" selection-end-column="79" />
               <folding>
                 <element signature="e#22#31#0" expanded="true" />
-                <marker date="1539787270013" expanded="true" signature="2709:3006" ph="..." />
-                <marker date="1539787270013" expanded="true" signature="3041:3046" ph="..." />
+                <marker date="1539794321514" expanded="true" signature="2187:2484" ph="..." />
+                <marker date="1539794321514" expanded="true" signature="2519:2524" ph="..." />
               </folding>
             </state>
           </provider>
@@ -303,34 +303,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1462895277213</updated>
-    </task>
-    <task id="LOCAL-00027" summary="Updated history cron to only use script runner and purged old versions.">
-      <created>1531838520950</created>
-      <option name="number" value="00027" />
-      <option name="presentableId" value="LOCAL-00027" />
-      <option name="project" value="LOCAL" />
-      <updated>1531838520950</updated>
-    </task>
-    <task id="LOCAL-00028" summary="Updated history cron to only use script runner and purged old versions.">
-      <created>1531838594429</created>
-      <option name="number" value="00028" />
-      <option name="presentableId" value="LOCAL-00028" />
-      <option name="project" value="LOCAL" />
-      <updated>1531838594429</updated>
-    </task>
-    <task id="LOCAL-00029" summary="Updated history cron to only use script runner and purged old versions.">
-      <created>1531838801150</created>
-      <option name="number" value="00029" />
-      <option name="presentableId" value="LOCAL-00029" />
-      <option name="project" value="LOCAL" />
-      <updated>1531838801150</updated>
-    </task>
-    <task id="LOCAL-00030" summary="Updated history cron to only use script runner and purged old versions.">
-      <created>1531841457302</created>
-      <option name="number" value="00030" />
-      <option name="presentableId" value="LOCAL-00030" />
-      <option name="project" value="LOCAL" />
-      <updated>1531841457302</updated>
     </task>
     <task id="LOCAL-00031" summary="Updated history cron to only use script runner and purged old versions.">
       <created>1531841712525</created>
@@ -647,7 +619,35 @@
       <option name="project" value="LOCAL" />
       <updated>1539787177085</updated>
     </task>
-    <option name="localTasksCounter" value="76" />
+    <task id="LOCAL-00076" summary="Minor fixes">
+      <created>1539787346828</created>
+      <option name="number" value="00076" />
+      <option name="presentableId" value="LOCAL-00076" />
+      <option name="project" value="LOCAL" />
+      <updated>1539787346828</updated>
+    </task>
+    <task id="LOCAL-00077" summary="Minor fixes">
+      <created>1539787416940</created>
+      <option name="number" value="00077" />
+      <option name="presentableId" value="LOCAL-00077" />
+      <option name="project" value="LOCAL" />
+      <updated>1539787416940</updated>
+    </task>
+    <task id="LOCAL-00078" summary="Minor fixes">
+      <created>1539787493008</created>
+      <option name="number" value="00078" />
+      <option name="presentableId" value="LOCAL-00078" />
+      <option name="project" value="LOCAL" />
+      <updated>1539787493008</updated>
+    </task>
+    <task id="LOCAL-00079" summary="Minor fixes">
+      <created>1539794325294</created>
+      <option name="number" value="00079" />
+      <option name="presentableId" value="LOCAL-00079" />
+      <option name="project" value="LOCAL" />
+      <updated>1539794325294</updated>
+    </task>
+    <option name="localTasksCounter" value="80" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -708,11 +708,6 @@
           <url>file://$PROJECT_DIR$/lib/custom_commands/management/commands/hue_desktop_document_cleanup.py</url>
           <line>1</line>
           <option name="timeStamp" value="1" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/lib/custom_commands/management/commands/remove_duplicate_users.py</url>
-          <line>93</line>
-          <option name="timeStamp" value="2" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -879,12 +874,12 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/remove_duplicate_users.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="431">
-          <caret line="64" column="22" selection-start-line="64" selection-start-column="22" selection-end-line="64" selection-end-column="22" />
+        <state relative-caret-position="2115">
+          <caret line="141" column="79" selection-start-line="141" selection-start-column="79" selection-end-line="141" selection-end-column="79" />
           <folding>
             <element signature="e#22#31#0" expanded="true" />
-            <marker date="1539787270013" expanded="true" signature="2709:3006" ph="..." />
-            <marker date="1539787270013" expanded="true" signature="3041:3046" ph="..." />
+            <marker date="1539794321514" expanded="true" signature="2187:2484" ph="..." />
+            <marker date="1539794321514" expanded="true" signature="2519:2524" ph="..." />
           </folding>
         </state>
       </provider>
