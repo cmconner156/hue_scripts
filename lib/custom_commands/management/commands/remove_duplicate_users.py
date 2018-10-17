@@ -18,13 +18,48 @@ LOG = logging.getLogger(__name__)
 
 class Command(BaseCommand):
   """
-  Handler for deleting duplicate UserPreference objects
+  Handler for renaming duplicate User objects
   """
+
+  try:
+    from optparse import make_option
+    option_list = BaseCommand.option_list + (
+      make_option("--uppercase", help=_t("Rename permanent user to be all UPPERCASE."),
+                  action="store_true", default=False, dest='uppercase'),
+      make_option("--lowercase", help=_t("Rename permanent user to be all lowercase"),
+                  action="store_true", default=False, dest='lowercase'),
+    )
+
+  except AttributeError, e:
+    baseoption_test = 'BaseCommand' in str(e) and 'option_list' in str(e)
+    if baseoption_test:
+      def add_arguments(self, parser):
+        parser.add_argument("--olduser", help=_t("Rename permanent user to be all UPPERCASE."),
+                            action="store_true", default=False, dest='uppercase'),
+        parser.add_argument("--newuser", help=_t("Rename permanent user to be all lowercase."),
+                            action="store_true", default=False, dest='lowercase')
+
+    else:
+      LOG.exception(str(e))
+      sys.exit(1)
+
+
   def rename_user(self, rename_user=None, keep_user=None, count=None):
     new_username = rename_user + "renamed"
     LOG.warn("%s is newer than %s, renaming %s to %s" % (rename_user, keep_user, rename_user, new_username))
     self.users_dict[self.username][count]["username"] = new_username
     user_mod = User.objects.get(username=rename_user)
+    user_mod.username = new_username
+    user_mod.save()
+
+
+  def change_user_case(self, username=None, newcase=None):
+    if newcase == "lowercase":
+      new_username = username.lower()
+    else:
+      new_username = username.upper()
+    LOG.warn("Changing user case, renaming %s to %s" % (username, new_username))
+    user_mod = User.objects.get(username=username)
     user_mod.username = new_username
     user_mod.save()
 
@@ -100,6 +135,10 @@ class Command(BaseCommand):
 
         count = count + 1
 
+    final_case = "lowercase" if not options['uppercase'] else "uppercase"
+    for user in User.objects.filter():
+      LOG.warn("renaming all users to be %s" % final_case)
+      self.change_user_case(username=user.username, newcase=final_case)
 
     LOG.warn("users list after renames")
     self.log_users_list()
