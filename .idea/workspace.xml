@@ -32,7 +32,7 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="3043" />
+          <entry key="py" value="3085" />
           <entry key="sh" value="2972" />
           <entry key="txt" value="109" />
         </counts>
@@ -41,7 +41,7 @@
         <counts>
           <entry key="Bash" value="2972" />
           <entry key="PLAIN_TEXT" value="109" />
-          <entry key="Python" value="3043" />
+          <entry key="Python" value="3085" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -78,12 +78,12 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/remove_duplicate_users.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="922">
-              <caret line="71" lean-forward="true" selection-start-line="71" selection-end-line="71" />
+            <state relative-caret-position="431">
+              <caret line="64" column="22" selection-start-line="64" selection-start-column="22" selection-end-line="64" selection-end-column="22" />
               <folding>
                 <element signature="e#22#31#0" expanded="true" />
-                <marker date="1539787000678" expanded="true" signature="2461:2758" ph="..." />
-                <marker date="1539787000678" expanded="true" signature="2793:2798" ph="..." />
+                <marker date="1539787270013" expanded="true" signature="2709:3006" ph="..." />
+                <marker date="1539787270013" expanded="true" signature="3041:3046" ph="..." />
               </folding>
             </state>
           </provider>
@@ -303,20 +303,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1462895277213</updated>
-    </task>
-    <task id="LOCAL-00025" summary="Updated history cron to only use script runner and purged old versions.">
-      <created>1531838351109</created>
-      <option name="number" value="00025" />
-      <option name="presentableId" value="LOCAL-00025" />
-      <option name="project" value="LOCAL" />
-      <updated>1531838351109</updated>
-    </task>
-    <task id="LOCAL-00026" summary="Updated history cron to only use script runner and purged old versions.">
-      <created>1531838440423</created>
-      <option name="number" value="00026" />
-      <option name="presentableId" value="LOCAL-00026" />
-      <option name="project" value="LOCAL" />
-      <updated>1531838440423</updated>
     </task>
     <task id="LOCAL-00027" summary="Updated history cron to only use script runner and purged old versions.">
       <created>1531838520950</created>
@@ -647,7 +633,21 @@
       <option name="project" value="LOCAL" />
       <updated>1539786823599</updated>
     </task>
-    <option name="localTasksCounter" value="74" />
+    <task id="LOCAL-00074" summary="Minor fixes">
+      <created>1539787003946</created>
+      <option name="number" value="00074" />
+      <option name="presentableId" value="LOCAL-00074" />
+      <option name="project" value="LOCAL" />
+      <updated>1539787003946</updated>
+    </task>
+    <task id="LOCAL-00075" summary="Minor fixes">
+      <created>1539787177085</created>
+      <option name="number" value="00075" />
+      <option name="presentableId" value="LOCAL-00075" />
+      <option name="project" value="LOCAL" />
+      <updated>1539787177085</updated>
+    </task>
+    <option name="localTasksCounter" value="76" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -708,6 +708,11 @@
           <url>file://$PROJECT_DIR$/lib/custom_commands/management/commands/hue_desktop_document_cleanup.py</url>
           <line>1</line>
           <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/lib/custom_commands/management/commands/remove_duplicate_users.py</url>
+          <line>93</line>
+          <option name="timeStamp" value="2" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -874,12 +879,12 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/remove_duplicate_users.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="922">
-          <caret line="71" lean-forward="true" selection-start-line="71" selection-end-line="71" />
+        <state relative-caret-position="431">
+          <caret line="64" column="22" selection-start-line="64" selection-start-column="22" selection-end-line="64" selection-end-column="22" />
           <folding>
             <element signature="e#22#31#0" expanded="true" />
-            <marker date="1539787000678" expanded="true" signature="2461:2758" ph="..." />
-            <marker date="1539787000678" expanded="true" signature="2793:2798" ph="..." />
+            <marker date="1539787270013" expanded="true" signature="2709:3006" ph="..." />
+            <marker date="1539787270013" expanded="true" signature="3041:3046" ph="..." />
           </folding>
         </state>
       </provider>

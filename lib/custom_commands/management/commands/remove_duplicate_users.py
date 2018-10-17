@@ -62,7 +62,7 @@ class Command(BaseCommand):
       new_username = username.upper()
 
     LOG.warn("Changing user case, renaming %s to %s" % (username, new_username))
-    if "renamed" not in user.username:
+    if "renamed" not in username:
       user_mod = User.objects.get(username=username)
       user_mod.username = new_username
       user_mod.save()
