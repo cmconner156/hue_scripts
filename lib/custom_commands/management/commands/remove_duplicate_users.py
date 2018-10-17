@@ -65,6 +65,8 @@ class Command(BaseCommand):
     user_mod.username = tmp_username
     user_mod.save()
 
+    transaction.commit()
+
     user_mod = User.objects.get(username=tmp_username)
     user_mod.username = new_username
     user_mod.save()

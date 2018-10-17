@@ -32,7 +32,7 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="2966" />
+          <entry key="py" value="3043" />
           <entry key="sh" value="2972" />
           <entry key="txt" value="109" />
         </counts>
@@ -41,7 +41,7 @@
         <counts>
           <entry key="Bash" value="2972" />
           <entry key="PLAIN_TEXT" value="109" />
-          <entry key="Python" value="2966" />
+          <entry key="Python" value="3043" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -78,12 +78,12 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/remove_duplicate_users.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2115">
-              <caret line="141" lean-forward="true" selection-start-line="141" selection-end-line="141" />
+            <state relative-caret-position="922">
+              <caret line="71" lean-forward="true" selection-start-line="71" selection-end-line="71" />
               <folding>
                 <element signature="e#22#31#0" expanded="true" />
-                <marker date="1539786701227" expanded="true" signature="2240:2537" ph="..." />
-                <marker date="1539786701227" expanded="true" signature="2572:2577" ph="..." />
+                <marker date="1539787000678" expanded="true" signature="2461:2758" ph="..." />
+                <marker date="1539787000678" expanded="true" signature="2793:2798" ph="..." />
               </folding>
             </state>
           </provider>
@@ -92,8 +92,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/change_owner_of_docs.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="480">
-              <caret line="44" lean-forward="true" selection-start-line="23" selection-end-line="44" />
+            <state relative-caret-position="135">
+              <caret line="9" column="71" lean-forward="true" selection-start-line="9" selection-end-line="9" selection-end-column="71" />
             </state>
           </provider>
         </entry>
@@ -303,20 +303,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1462895277213</updated>
-    </task>
-    <task id="LOCAL-00023" summary="Updated history cron to only use script runner and purged old versions.">
-      <created>1530824241018</created>
-      <option name="number" value="00023" />
-      <option name="presentableId" value="LOCAL-00023" />
-      <option name="project" value="LOCAL" />
-      <updated>1530824241018</updated>
-    </task>
-    <task id="LOCAL-00024" summary="Updated history cron to only use script runner and purged old versions.">
-      <created>1530824504628</created>
-      <option name="number" value="00024" />
-      <option name="presentableId" value="LOCAL-00024" />
-      <option name="project" value="LOCAL" />
-      <updated>1530824504628</updated>
     </task>
     <task id="LOCAL-00025" summary="Updated history cron to only use script runner and purged old versions.">
       <created>1531838351109</created>
@@ -647,7 +633,21 @@
       <option name="project" value="LOCAL" />
       <updated>1539785849077</updated>
     </task>
-    <option name="localTasksCounter" value="72" />
+    <task id="LOCAL-00072" summary="Minor fixes">
+      <created>1539786704965</created>
+      <option name="number" value="00072" />
+      <option name="presentableId" value="LOCAL-00072" />
+      <option name="project" value="LOCAL" />
+      <updated>1539786704965</updated>
+    </task>
+    <task id="LOCAL-00073" summary="Minor fixes">
+      <created>1539786823599</created>
+      <option name="number" value="00073" />
+      <option name="presentableId" value="LOCAL-00073" />
+      <option name="project" value="LOCAL" />
+      <updated>1539786823599</updated>
+    </task>
+    <option name="localTasksCounter" value="74" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -867,19 +867,19 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/change_owner_of_docs.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="480">
-          <caret line="44" lean-forward="true" selection-start-line="23" selection-end-line="44" />
+        <state relative-caret-position="135">
+          <caret line="9" column="71" lean-forward="true" selection-start-line="9" selection-end-line="9" selection-end-column="71" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/remove_duplicate_users.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2115">
-          <caret line="141" lean-forward="true" selection-start-line="141" selection-end-line="141" />
+        <state relative-caret-position="922">
+          <caret line="71" lean-forward="true" selection-start-line="71" selection-end-line="71" />
           <folding>
             <element signature="e#22#31#0" expanded="true" />
-            <marker date="1539786701227" expanded="true" signature="2240:2537" ph="..." />
-            <marker date="1539786701227" expanded="true" signature="2572:2577" ph="..." />
+            <marker date="1539787000678" expanded="true" signature="2461:2758" ph="..." />
+            <marker date="1539787000678" expanded="true" signature="2793:2798" ph="..." />
           </folding>
         </state>
       </provider>
