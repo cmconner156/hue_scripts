@@ -60,16 +60,23 @@ class Command(BaseCommand):
       new_username = username.lower()
     else:
       new_username = username.upper()
+
     LOG.warn("Changing user case, renaming %s to %s" % (username, new_username))
-    user_mod = User.objects.get(username=username)
-    user_mod.username = tmp_username
-    user_mod.save()
+    if "renamed" not in user.username:
+      user_mod = User.objects.get(username=username)
+      user_mod.username = new_username
+      user_mod.save()
 
-    transaction.commit()
+#    LOG.warn("Changing user case, renaming %s to %s" % (username, new_username))
+#    user_mod = User.objects.get(username=username)
+#    user_mod.username = tmp_username
+#    user_mod.save()
 
-    user_mod = User.objects.get(username=tmp_username)
-    user_mod.username = new_username
-    user_mod.save()
+#    transaction.commit()
+
+#    user_mod = User.objects.get(username=tmp_username)
+#    user_mod.username = new_username
+#    user_mod.save()
 
 
   def log_users_list(self):
@@ -144,8 +151,8 @@ class Command(BaseCommand):
         count = count + 1
 
     final_case = "lowercase" if not options['uppercase'] else "uppercase"
+    LOG.warn("renaming all users to be %s" % final_case)
     for user in User.objects.filter():
-      LOG.warn("renaming all users to be %s" % final_case)
       self.change_user_case(username=user.username, newcase=final_case)
 
     LOG.warn("users list after renames")
