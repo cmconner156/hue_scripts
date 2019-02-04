@@ -5,6 +5,9 @@ import datetime
 import time
 from pprint import pprint, pformat
 
+from django.core.management.base import BaseCommand, CommandError
+from django.utils.translation import ugettext_lazy as _t, ugettext as _
+
 from beeswax.server import dbms
 from beeswax.conf import HIVE_SERVER_HOST
 from django.contrib.auth.models import User
