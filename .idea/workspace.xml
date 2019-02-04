@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8e164a0d-d95e-4980-bca7-863b8efae3da" name="Default" comment="Final change, renamed the command to &quot;rename_duplicate_users&quot;" />
+    <list default="true" id="8e164a0d-d95e-4980-bca7-863b8efae3da" name="Default" comment="Final change, renamed the command to &quot;rename_duplicate_users&quot;">
+      <change beforePath="$PROJECT_DIR$/lib/custom_commands/management/commands/run_hive_impala_query.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/custom_commands/management/commands/run_hive_impala_query.py" afterDir="false" />
+    </list>
     <ignored path="hue_scripts.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path=".idea/dataSources.local.xml" />
@@ -32,7 +34,7 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="dummy" value="4" />
-          <entry key="py" value="4473" />
+          <entry key="py" value="4518" />
           <entry key="sh" value="2979" />
           <entry key="txt" value="169" />
         </counts>
@@ -41,7 +43,7 @@
         <counts>
           <entry key="Bash" value="2979" />
           <entry key="PLAIN_TEXT" value="173" />
-          <entry key="Python" value="4473" />
+          <entry key="Python" value="4518" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -66,11 +68,11 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/run_hive_impala_query.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="341">
-              <caret line="65" selection-start-line="65" selection-end-line="65" />
+            <state relative-caret-position="630">
+              <caret line="84" column="24" selection-start-line="84" selection-start-column="24" selection-end-line="84" selection-end-column="24" />
               <folding>
                 <element signature="e#22#31#0" expanded="true" />
-                <marker date="1549306184331" expanded="true" signature="1177:1184" ph="..." />
+                <marker date="1549306496039" expanded="true" signature="1327:1334" ph="..." />
               </folding>
             </state>
           </provider>
@@ -79,8 +81,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/delete_user.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="26">
-              <caret line="19" column="30" selection-start-line="19" selection-start-column="30" selection-end-line="19" selection-end-column="30" />
+            <state relative-caret-position="135">
+              <caret line="9" column="70" selection-start-line="9" selection-start-column="70" selection-end-line="9" selection-end-column="70" />
             </state>
           </provider>
         </entry>
@@ -299,20 +301,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1462895277213</updated>
-    </task>
-    <task id="LOCAL-00033" summary="Updated history cron to only use script runner and purged old versions.">
-      <created>1531841837123</created>
-      <option name="number" value="00033" />
-      <option name="presentableId" value="LOCAL-00033" />
-      <option name="project" value="LOCAL" />
-      <updated>1531841837123</updated>
-    </task>
-    <task id="LOCAL-00034" summary="Updated history cron to only use script runner and purged old versions.">
-      <created>1531841889667</created>
-      <option name="number" value="00034" />
-      <option name="presentableId" value="LOCAL-00034" />
-      <option name="project" value="LOCAL" />
-      <updated>1531841889667</updated>
     </task>
     <task id="LOCAL-00035" summary="Updated history cron to only use script runner and purged old versions.">
       <created>1531842011619</created>
@@ -643,14 +631,28 @@
       <option name="project" value="LOCAL" />
       <updated>1549306184660</updated>
     </task>
-    <option name="localTasksCounter" value="82" />
+    <task id="LOCAL-00082" summary="Final change, renamed the command to &quot;rename_duplicate_users&quot;">
+      <created>1549306324782</created>
+      <option name="number" value="00082" />
+      <option name="presentableId" value="LOCAL-00082" />
+      <option name="project" value="LOCAL" />
+      <updated>1549306324782</updated>
+    </task>
+    <task id="LOCAL-00083" summary="Final change, renamed the command to &quot;rename_duplicate_users&quot;">
+      <created>1549306409869</created>
+      <option name="number" value="00083" />
+      <option name="presentableId" value="LOCAL-00083" />
+      <option name="project" value="LOCAL" />
+      <updated>1549306409870</updated>
+    </task>
+    <option name="localTasksCounter" value="84" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1680" height="963" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25213677" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.25213677" />
       <window_info id="Structure" order="1" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -662,7 +664,7 @@
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Version Control" order="7" sideWeight="0.46642247" visible="true" weight="0.15384616" />
       <window_info anchor="bottom" id="Terminal" order="8" />
-      <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.53357756" side_tool="true" visible="true" weight="0.15384616" />
+      <window_info active="true" anchor="bottom" id="Event Log" order="9" sideWeight="0.53357756" side_tool="true" visible="true" weight="0.15384616" />
       <window_info anchor="bottom" id="Python Console" order="10" />
       <window_info anchor="bottom" id="Docker" order="11" show_stripe_button="false" />
       <window_info anchor="bottom" id="Database Changes" order="12" show_stripe_button="false" />
@@ -894,18 +896,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/delete_user.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="26">
-          <caret line="19" column="30" selection-start-line="19" selection-start-column="30" selection-end-line="19" selection-end-column="30" />
+        <state relative-caret-position="135">
+          <caret line="9" column="70" selection-start-line="9" selection-start-column="70" selection-end-line="9" selection-end-column="70" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/run_hive_impala_query.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="341">
-          <caret line="65" selection-start-line="65" selection-end-line="65" />
+        <state relative-caret-position="630">
+          <caret line="84" column="24" selection-start-line="84" selection-start-column="24" selection-end-line="84" selection-end-column="24" />
           <folding>
             <element signature="e#22#31#0" expanded="true" />
-            <marker date="1549306184331" expanded="true" signature="1177:1184" ph="..." />
+            <marker date="1549306496039" expanded="true" signature="1327:1334" ph="..." />
           </folding>
         </state>
       </provider>

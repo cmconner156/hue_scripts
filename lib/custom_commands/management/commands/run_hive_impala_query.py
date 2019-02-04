@@ -79,7 +79,7 @@ class Command(BaseCommand):
     db = dbms.get(hue)
     db.get_tables()
 
-    executequery = query
+    executequery = options['query']
     query = db.execute_statement(executequery)
 
     LOG.info(db.get_log(query.get_handle()))
