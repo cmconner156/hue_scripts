@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8e164a0d-d95e-4980-bca7-863b8efae3da" name="Default" comment="Final change, renamed the command to &quot;rename_duplicate_users&quot;">
-      <change afterPath="$PROJECT_DIR$/lib/custom_commands/management/commands/run_hive_impala_query.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="8e164a0d-d95e-4980-bca7-863b8efae3da" name="Default" comment="Final change, renamed the command to &quot;rename_duplicate_users&quot;" />
     <ignored path="hue_scripts.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path=".idea/dataSources.local.xml" />
@@ -35,7 +32,7 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="dummy" value="4" />
-          <entry key="py" value="4210" />
+          <entry key="py" value="4473" />
           <entry key="sh" value="2979" />
           <entry key="txt" value="169" />
         </counts>
@@ -44,7 +41,7 @@
         <counts>
           <entry key="Bash" value="2979" />
           <entry key="PLAIN_TEXT" value="173" />
-          <entry key="Python" value="4210" />
+          <entry key="Python" value="4473" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -69,11 +66,11 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/run_hive_impala_query.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="459">
-              <caret line="68" lean-forward="true" selection-start-line="68" selection-end-line="68" />
+            <state relative-caret-position="341">
+              <caret line="65" selection-start-line="65" selection-end-line="65" />
               <folding>
                 <element signature="e#22#31#0" expanded="true" />
-                <marker date="1549305973597" expanded="true" signature="1177:1184" ph="..." />
+                <marker date="1549306184331" expanded="true" signature="1177:1184" ph="..." />
               </folding>
             </state>
           </provider>
@@ -302,13 +299,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1462895277213</updated>
-    </task>
-    <task id="LOCAL-00032" summary="Updated history cron to only use script runner and purged old versions.">
-      <created>1531841788890</created>
-      <option name="number" value="00032" />
-      <option name="presentableId" value="LOCAL-00032" />
-      <option name="project" value="LOCAL" />
-      <updated>1531841788890</updated>
     </task>
     <task id="LOCAL-00033" summary="Updated history cron to only use script runner and purged old versions.">
       <created>1531841837123</created>
@@ -646,7 +636,14 @@
       <option name="project" value="LOCAL" />
       <updated>1539794712827</updated>
     </task>
-    <option name="localTasksCounter" value="81" />
+    <task id="LOCAL-00081" summary="Final change, renamed the command to &quot;rename_duplicate_users&quot;">
+      <created>1549306184659</created>
+      <option name="number" value="00081" />
+      <option name="presentableId" value="LOCAL-00081" />
+      <option name="project" value="LOCAL" />
+      <updated>1549306184660</updated>
+    </task>
+    <option name="localTasksCounter" value="82" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -904,11 +901,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/run_hive_impala_query.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="459">
-          <caret line="68" lean-forward="true" selection-start-line="68" selection-end-line="68" />
+        <state relative-caret-position="341">
+          <caret line="65" selection-start-line="65" selection-end-line="65" />
           <folding>
             <element signature="e#22#31#0" expanded="true" />
-            <marker date="1549305973597" expanded="true" signature="1177:1184" ph="..." />
+            <marker date="1549306184331" expanded="true" signature="1177:1184" ph="..." />
           </folding>
         </state>
       </provider>
