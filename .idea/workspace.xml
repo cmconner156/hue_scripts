@@ -34,7 +34,7 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="dummy" value="4" />
-          <entry key="py" value="5333" />
+          <entry key="py" value="5416" />
           <entry key="sh" value="2979" />
           <entry key="txt" value="169" />
         </counts>
@@ -43,7 +43,7 @@
         <counts>
           <entry key="Bash" value="2979" />
           <entry key="PLAIN_TEXT" value="173" />
-          <entry key="Python" value="5333" />
+          <entry key="Python" value="5416" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -68,11 +68,11 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/remove_orphaned_docs.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="711">
-              <caret line="70" column="51" selection-start-line="70" selection-start-column="51" selection-end-line="70" selection-end-column="51" />
+            <state relative-caret-position="799">
+              <caret line="69" column="21" selection-start-line="69" selection-start-column="21" selection-end-line="69" selection-end-column="21" />
               <folding>
                 <element signature="e#22#31#0" expanded="true" />
-                <marker date="1556120860018" expanded="true" signature="1465:1471" ph="..." />
+                <marker date="1556121219737" expanded="true" signature="1479:1485" ph="..." />
               </folding>
             </state>
           </provider>
@@ -907,11 +907,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/remove_orphaned_docs.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="711">
-          <caret line="70" column="51" selection-start-line="70" selection-start-column="51" selection-end-line="70" selection-end-column="51" />
+        <state relative-caret-position="799">
+          <caret line="69" column="21" selection-start-line="69" selection-start-column="21" selection-end-line="69" selection-end-column="21" />
           <folding>
             <element signature="e#22#31#0" expanded="true" />
-            <marker date="1556120860018" expanded="true" signature="1465:1471" ph="..." />
+            <marker date="1556121219737" expanded="true" signature="1479:1485" ph="..." />
           </folding>
         </state>
       </provider>
