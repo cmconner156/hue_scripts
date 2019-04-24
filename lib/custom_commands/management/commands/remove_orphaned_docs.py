@@ -16,6 +16,7 @@ from django.contrib.auth.models import User
 from desktop.auth.backend import find_or_create_user, rewrite_user, ensure_has_a_group
 from useradmin.models import get_profile, get_default_user_group, UserProfile
 from notebook.connectors.base import get_api, Notebook
+from oozie.models2 import Workflow
 import logging
 import logging.handlers
 
