@@ -27,7 +27,7 @@ LOG = logging.getLogger(__name__)
 
 class Command(BaseCommand):
   """
-  Handler for purging old Query History, Workflow documents and Session data
+  Handler for moving orphaned docs
   """
 
   try:
@@ -65,9 +65,9 @@ class Command(BaseCommand):
 
     totalUsers = User.objects.filter().values_list("id", flat=True)
     totalDocs = Document2.objects.exclude(owner_id__in=totalUsers)
-#    deleteDirs = Document2.objects.exclude(owner_id__in=totalUsers).filter(type__in('directory'))
     docstorage_id = "docstorage" + str(uuid.uuid4())
     docstorage_id = docstorage_id[:30]
+    LOG.info("Creating new owner for all orphaned docs: %s" % docstorage_id)
     docstorage = find_or_create_user(docstorage_id)
     docstorage = rewrite_user(docstorage)
     userprofile = get_profile(docstorage)
@@ -77,26 +77,26 @@ class Command(BaseCommand):
     new_home_dir = Document2.objects.create_user_directories(docstorage)
 
     for doc in totalDocs:
-      if not doc.type -= "oozie-workflow2":
+      if not doc.type == "directory":
         name = doc.name
         new_dir_name = "recover-" + str(doc.owner_id)
         new_sub_dir = Directory.objects.create(name=new_dir_name, owner=docstorage, parent_directory=new_home_dir)
         doc2 = doc.copy(name=name, owner=docstorage)
         doc2.parent_directory = new_sub_dir
         doc2.save()
-        print "migrating orphaned workflow: %s : %s : %s : %s : to user: %s" % (doc2.name, doc2.type, doc2.owner_id, doc2.parent_directory, docstorage_id)
-        print "deleting original orphaned workflow: %s : %s : %s : %s" % (doc.name, doc.type, doc.owner_id, doc.parent_directory)
+        LOG.info("Migrating orphaned workflow: %s : %s : %s : %s : to user: %s" % (doc2.name, doc2.type, doc2.owner_id, doc2.parent_directory, docstorage_id))
+        LOG.info("Deleting original orphaned workflow: %s : %s : %s : %s" % (doc.name, doc.type, doc.owner_id, doc.parent_directory))
         doc.delete()
 
     for doc in totalDocs:
       if doc.type == "directory":
-        print "deleting orphaned directory: %s : %s : %s" % (doc.name, doc.type, doc.owner_id)
+        LOG.info("Deleting orphaned directory: %s : %s : %s" % (doc.name, doc.type, doc.owner_id))
         doc.delete()
 
 
     end = time.time()
     elapsed = (end - start)
-    LOG.debug("Total time elapsed (seconds): %.2f" % elapsed)
+    LOG.info("Total time elapsed (seconds): %.2f" % elapsed)
 
 
 
