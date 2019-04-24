@@ -63,7 +63,7 @@ class Command(BaseCommand):
 
         totalUsers = User.objects.filter().values_list("id", flat=True)
         totalDocs = Document2.objects.exclude(owner_id__in=totalUsers)
-        deleteDirs = Document2.objects.exclude(owner_id__in=totalUsers).filter(type__in('directory'))
+#        deleteDirs = Document2.objects.exclude(owner_id__in=totalUsers).filter(type__in('directory'))
         docstorage_id = "docstorage" + str(uuid.uuid4())
         docstorage = find_or_create_user(docstorage_id[:30])
 
