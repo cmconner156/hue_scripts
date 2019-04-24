@@ -76,8 +76,6 @@ class Command(BaseCommand):
     ensure_has_a_group(docstorage)
     new_home_dir = Document2.objects.create_user_directories(docstorage)
 
-    docstorageDocs = Document2.objects.filter(owner_id=docstorage)
-
     for doc in totalDocs:
       if doc.type == "oozie-workflow2":
         name = doc.name
@@ -86,18 +84,14 @@ class Command(BaseCommand):
         doc2 = doc.copy(name=name, owner=docstorage)
         doc2.parent_directory = new_sub_dir
         doc2.save()
-#        print doc2.__dict__
-        print "migrating workflow: %s : %s : %s : %s : to user: %s" % (doc2.name, doc2.type, doc2.owner_id, doc2.parent_directory, docstorage_id)
-#        print "migrating workflow: %s : %s : %s : %s : to user: %s" % (doc2.name, doc2.type, doc2.owner_id, doc2.parent_directory, docstorage_id)
-
+        print "migrating orphaned workflow: %s : %s : %s : %s : to user: %s" % (doc2.name, doc2.type, doc2.owner_id, doc2.parent_directory, docstorage_id)
+        print "deleting original orphaned workflow: %s : %s : %s : %s" % (doc.name, doc.type, doc.owner_id, doc.parent_directory)
+        doc.delete()
 
     for doc in totalDocs:
       if doc.type == "directory":
-        print "deleting doc: %s : %s : %s" % (doc.name, doc.type, doc.owner_id)
-#      doc.delete()
-
-
-
+        print "deleting orphaned directory: %s : %s : %s" % (doc.name, doc.type, doc.owner_id)
+        doc.delete()
 
 
     end = time.time()
