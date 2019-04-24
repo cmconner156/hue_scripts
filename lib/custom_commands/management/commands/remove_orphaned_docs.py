@@ -11,7 +11,7 @@ from django.utils.translation import ugettext_lazy as _t, ugettext as _
 from datetime import date, timedelta
 from django.db.utils import DatabaseError
 import desktop.conf
-from desktop.models import Document2
+from desktop.models import Directory, Document2
 from django.contrib.auth.models import User
 from desktop.auth.backend import find_or_create_user, rewrite_user, ensure_has_a_group
 from useradmin.models import get_profile, get_default_user_group, UserProfile
@@ -94,10 +94,10 @@ class Command(BaseCommand):
 
 #    userprofile = get_profile(docstorage)
     docstorageDocs = Document2.objects.filter(owner_id=docstorage)
-    print docstorage.__dict__
-    print docstorageDocs
-    print new_home_dir
-    print new_sub_dir
+    print "docstorage: %s" % docstorage.__dict__
+    print "docstorageDocs: %s" % docstorageDocs
+    print "new_home_dir: %s" % new_home_dir
+    print "new_sub_dir: %s" % new_sub_dir
 
     for doc in totalDocs:
       if doc.type == "oozie-workflow2":
