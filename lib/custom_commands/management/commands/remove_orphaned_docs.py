@@ -68,8 +68,10 @@ class Command(BaseCommand):
     docstorage_id = "docstorage" + str(uuid.uuid4())
     docstorage = find_or_create_user(docstorage_id[:30])
     userprofile = get_profile(docstorage)
+    docstorageDocs = Document2.objects.filter(owner_id__in=docstorage.id)
     print docstorage.__dict__
     print userprofile.home_directory
+    print docstorageDocs
 
     for doc in totalDocs:
       if doc.type == "oozie-workflow2":
