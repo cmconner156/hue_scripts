@@ -72,7 +72,7 @@ class Command(BaseCommand):
         name = doc.name
         doc2 = doc.copy(name=name, owner=docstorage)
         print docstorage.__dict__
-        print doc2.__dict__
+#        print doc2.__dict__
         print "migrating workflow: %s : %s : %s : to user: %s" % (doc2.name, doc2.type, doc2.owner_id, docstorage_id)
 #        print "migrating workflow: %s : %s : %s : %s : to user: %s" % (doc2.name, doc2.type, doc2.owner_id, doc2.parent_directory, docstorage_id)
 
