@@ -74,37 +74,19 @@ class Command(BaseCommand):
     userprofile.save()
     ensure_has_a_group(docstorage)
     new_home_dir = Document2.objects.create_user_directories(docstorage)
-    new_dir_name = "christest"
-    new_sub_dir = Directory.objects.create(name=new_dir_name, owner=docstorage, parent_directory=new_home_dir)
 
-#    editor_type = ""
-#    directory_uuid = ""
-
-#    editor = Notebook()
-#    data = editor.get_data()
-
-#    if editor_type != 'notebook':
-#      data['name'] = ''
-#      data['type'] = 'query-%s' % editor_type
-
-#    data['directoryUuid'] = directory_uuid
-#    editor.data = json.dumps(data)
-
-
-
-#    userprofile = get_profile(docstorage)
     docstorageDocs = Document2.objects.filter(owner_id=docstorage)
-    print "docstorage: %s" % docstorage.__dict__
-    print "docstorageDocs: %s" % docstorageDocs
-    print "new_home_dir: %s" % new_home_dir
-    print "new_sub_dir: %s" % new_sub_dir
 
     for doc in totalDocs:
       if doc.type == "oozie-workflow2":
         name = doc.name
+        new_dir_name = "recover-" + doc.owner_id
+        new_sub_dir = Directory.objects.create(name=new_dir_name, owner=docstorage, parent_directory=new_home_dir)
         doc2 = doc.copy(name=name, owner=docstorage)
+        doc2.parent_directory = new_sub_dir
+        doc2.save()
 #        print doc2.__dict__
-        print "migrating workflow: %s : %s : %s : to user: %s" % (doc2.name, doc2.type, doc2.owner_id, docstorage_id)
+        print "migrating workflow: %s : %s : %s : %s : to user: %s" % (doc2.name, doc2.type, doc2.owner_id, doc2.parent_directory, docstorage_id)
 #        print "migrating workflow: %s : %s : %s : %s : to user: %s" % (doc2.name, doc2.type, doc2.owner_id, doc2.parent_directory, docstorage_id)
 
 
