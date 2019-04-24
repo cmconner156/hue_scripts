@@ -73,6 +73,9 @@ class Command(BaseCommand):
     userprofile.first_login = False
     userprofile.save()
     ensure_has_a_group(docstorage)
+    new_home_dir = Document2.objects.create_user_directories(docstorage)
+    new_dir_name = "christest"
+    new_sub_dir = Directory.objects.create(name=new_dir_name, owner=docstorage, parent_directory=new_home_dir)
 
 #    editor_type = ""
 #    directory_uuid = ""
@@ -92,8 +95,9 @@ class Command(BaseCommand):
 #    userprofile = get_profile(docstorage)
     docstorageDocs = Document2.objects.filter(owner_id=docstorage)
     print docstorage.__dict__
-    print userprofile.home_directory
     print docstorageDocs
+    print new_home_dir
+    print new_sub_dir
 
     for doc in totalDocs:
       if doc.type == "oozie-workflow2":
