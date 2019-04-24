@@ -49,6 +49,7 @@ class Command(BaseCommand):
             LOG.exception(str(e))
             sys.exit(1)
 
+    def handle(self, *args, **options):
 
         LOG.warn("HUE_CONF_DIR: %s" % os.environ['HUE_CONF_DIR'])
         LOG.info("DB Engine: %s" % desktop.conf.DATABASE.ENGINE.get())
