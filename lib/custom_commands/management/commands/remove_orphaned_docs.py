@@ -68,15 +68,13 @@ class Command(BaseCommand):
     docstorage_id = "docstorage" + str(uuid.uuid4())
     docstorage = find_or_create_user(docstorage_id[:30])
     userprofile = get_profile(docstorage)
+    print docstorage.__dict__
     print userprofile.home_directory
 
     for doc in totalDocs:
       if doc.type == "oozie-workflow2":
         name = doc.name
         doc2 = doc.copy(name=name, owner=docstorage)
-        new_home = docstorage.get_home_directory()
-        print docstorage.__dict__
-        print new_home
 #        print doc2.__dict__
         print "migrating workflow: %s : %s : %s : to user: %s" % (doc2.name, doc2.type, doc2.owner_id, docstorage_id)
 #        print "migrating workflow: %s : %s : %s : %s : to user: %s" % (doc2.name, doc2.type, doc2.owner_id, doc2.parent_directory, docstorage_id)
