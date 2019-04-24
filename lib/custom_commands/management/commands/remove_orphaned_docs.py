@@ -69,14 +69,14 @@ class Command(BaseCommand):
 
     for doc in totalDocs:
       if doc.type == "oozie-workflow2":
-      name = doc2.name
-      doc2 = doc2.copy(name=name, owner=docstorage)
-      print "migrating workflow: %s : %s : %s : %s : to user: %s" % (doc2.name, doc2.type, doc2.owner_id, doc2.parent_directory, docstorage_id)
+        name = doc2.name
+        doc2 = doc2.copy(name=name, owner=docstorage)
+        print "migrating workflow: %s : %s : %s : %s : to user: %s" % (doc2.name, doc2.type, doc2.owner_id, doc2.parent_directory, docstorage_id)
 
 
     for doc in totalDocs:
       if doc.type == "directory":
-      print "deleting doc: %s : %s : %s" % (doc.name, doc.type, doc.owner_id)
+        print "deleting doc: %s : %s : %s" % (doc.name, doc.type, doc.owner_id)
 #      doc.delete()
 
 
