@@ -13,8 +13,12 @@ from django.db.utils import DatabaseError
 import desktop.conf
 from desktop.models import Document2
 from django.contrib.auth.models import User
-from desktop.auth.backend import find_or_create_user, rewrite_user
+from desktop.auth.backend import find_or_create_user, rewrite_user, ensure_has_a_group
 from useradmin.models import get_profile, get_default_user_group, UserProfile
+from desktop.lib.django_test_util import make_logged_in_client
+from django.test.client import Client
+from hadoop import pseudo_hdfs4
+from notebook.connectors.base import get_api, Notebook
 import logging
 import logging.handlers
 
@@ -69,6 +73,26 @@ class Command(BaseCommand):
     docstorage = find_or_create_user(docstorage_id[:30])
     docstorage = rewrite_user(docstorage)
     userprofile = get_profile(docstorage)
+    userprofile.first_login = False
+    userprofile.save()
+    ensure_has_a_group(docstorage)
+
+#    editor_type = ""
+#    directory_uuid = ""
+
+#    editor = Notebook()
+#    data = editor.get_data()
+
+#    if editor_type != 'notebook':
+#      data['name'] = ''
+#      data['type'] = 'query-%s' % editor_type
+
+#    data['directoryUuid'] = directory_uuid
+#    editor.data = json.dumps(data)
+
+
+
+#    userprofile = get_profile(docstorage)
     docstorageDocs = Document2.objects.filter(owner_id=docstorage)
     print docstorage.__dict__
     print userprofile.home_directory
