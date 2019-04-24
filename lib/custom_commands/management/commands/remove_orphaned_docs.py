@@ -78,22 +78,17 @@ class Command(BaseCommand):
     new_home_dir = Document2.objects.create_user_directories(docstorage)
 
     for doc in totalDocs:
-      if doc.type == "oozie-workflow2":
-        name = doc.name
+      if not doc.type == "directory":
         new_dir_name = "recover-" + str(doc.owner_id)
         new_sub_dir = Directory.objects.create(name=new_dir_name, owner=docstorage, parent_directory=new_home_dir)
         doc1 = doc.doc.get()
         doc.owner = docstorage
         doc1.owner = docstorage
         doc.parent_directory = new_sub_dir
-#        workflow = Workflow(document=doc)
-#        doc.update_data({'workflow': workflow.get_data()['workflow']})
         doc.save()
         doc1.save()
         Document.objects.sync()
-        LOG.info("Migrating orphaned workflow: %s : %s : %s : %s : to user: %s" % (doc.name, doc.type, doc.owner_id, doc.parent_directory, docstorage_id))
-    #        LOG.info("Deleting original orphaned workflow: %s : %s : %s : %s" % (doc.name, doc.type, doc.owner_id, doc.parent_directory))
-    #        doc.delete()
+        LOG.info("Migrating orphaned doc: %s : %s : %s : %s : to orphaned doc owner: %s" % (doc.name, doc.type, doc.owner_id, doc.parent_directory, docstorage_id))
 
     for doc in totalDocs:
       if doc.type == "directory":
