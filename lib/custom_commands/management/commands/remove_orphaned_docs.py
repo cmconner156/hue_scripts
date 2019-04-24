@@ -14,6 +14,7 @@ import desktop.conf
 from desktop.models import Document2
 from django.contrib.auth.models import User
 from desktop.auth.backend import find_or_create_user
+from useradmin.models import get_profile, get_default_user_group, UserProfile
 import logging
 import logging.handlers
 
@@ -66,6 +67,8 @@ class Command(BaseCommand):
 #    deleteDirs = Document2.objects.exclude(owner_id__in=totalUsers).filter(type__in('directory'))
     docstorage_id = "docstorage" + str(uuid.uuid4())
     docstorage = find_or_create_user(docstorage_id[:30])
+    userprofile = get_profile(docstorage)
+    print userprofile.home_directory
 
     for doc in totalDocs:
       if doc.type == "oozie-workflow2":
