@@ -91,8 +91,8 @@ class Command(BaseCommand):
         doc2.update_data({'workflow': workflow.get_data()['workflow']})
         doc2.save()
         LOG.info("Migrating orphaned workflow: %s : %s : %s : %s : to user: %s" % (doc2.name, doc2.type, doc2.owner_id, doc2.parent_directory, docstorage_id))
-        LOG.info("Deleting original orphaned workflow: %s : %s : %s : %s" % (doc.name, doc.type, doc.owner_id, doc.parent_directory))
-        doc.delete()
+#        LOG.info("Deleting original orphaned workflow: %s : %s : %s : %s" % (doc.name, doc.type, doc.owner_id, doc.parent_directory))
+#        doc.delete()
 
     for doc in totalDocs:
       if doc.type == "directory":
