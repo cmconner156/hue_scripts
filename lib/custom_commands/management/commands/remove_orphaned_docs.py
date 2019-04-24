@@ -77,7 +77,7 @@ class Command(BaseCommand):
     new_home_dir = Document2.objects.create_user_directories(docstorage)
 
     for doc in totalDocs:
-      if doc.type == "oozie-workflow2":
+      if not doc.type -= "oozie-workflow2":
         name = doc.name
         new_dir_name = "recover-" + str(doc.owner_id)
         new_sub_dir = Directory.objects.create(name=new_dir_name, owner=docstorage, parent_directory=new_home_dir)
