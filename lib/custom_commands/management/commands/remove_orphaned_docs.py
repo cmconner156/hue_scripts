@@ -80,7 +80,7 @@ class Command(BaseCommand):
     for doc in totalDocs:
       if doc.type == "oozie-workflow2":
         name = doc.name
-        new_dir_name = "recover-" + doc.owner_id
+        new_dir_name = "recover-" + str(doc.owner_id)
         new_sub_dir = Directory.objects.create(name=new_dir_name, owner=docstorage, parent_directory=new_home_dir)
         doc2 = doc.copy(name=name, owner=docstorage)
         doc2.parent_directory = new_sub_dir
