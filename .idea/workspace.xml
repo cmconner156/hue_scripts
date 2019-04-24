@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8e164a0d-d95e-4980-bca7-863b8efae3da" name="Default" comment="Final change, renamed the command to &quot;rename_duplicate_users&quot;">
-      <change beforePath="$PROJECT_DIR$/lib/custom_commands/management/commands/remove_orphaned_docs.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/custom_commands/management/commands/remove_orphaned_docs.py" afterDir="false" />
-    </list>
+    <list default="true" id="8e164a0d-d95e-4980-bca7-863b8efae3da" name="Default" comment="Final change, renamed the command to &quot;rename_duplicate_users&quot;" />
     <ignored path="hue_scripts.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path=".idea/dataSources.local.xml" />
@@ -68,8 +66,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/remove_orphaned_docs.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="815">
-              <caret line="92" column="18" selection-start-line="92" selection-start-column="18" selection-end-line="92" selection-end-column="18" />
+            <state relative-caret-position="571">
+              <caret line="83" column="18" selection-start-line="83" selection-start-column="18" selection-end-line="83" selection-end-column="18" />
               <folding>
                 <element signature="e#22#31#0" expanded="true" />
                 <marker date="1556125853745" expanded="true" signature="1523:1529" ph="..." />
@@ -907,8 +905,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/remove_orphaned_docs.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="815">
-          <caret line="92" column="18" selection-start-line="92" selection-start-column="18" selection-end-line="92" selection-end-column="18" />
+        <state relative-caret-position="571">
+          <caret line="83" column="18" selection-start-line="83" selection-start-column="18" selection-end-line="83" selection-end-column="18" />
           <folding>
             <element signature="e#22#31#0" expanded="true" />
             <marker date="1556125853745" expanded="true" signature="1523:1529" ph="..." />
