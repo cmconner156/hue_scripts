@@ -24,7 +24,7 @@ class Configurator(object):
         cm_supervisor_dir = config.get('General', 'agent_wide_credential_cache_location')
       except NoOptionError:
         try:
-          cm_agent_process = subprocess.Popen('pgrep -f cmf-agent', shell=True, stdout=subprocess.PIPE)
+          cm_agent_process = subprocess.Popen('ps -ef | grep "[c]m agent\|[c]mf-agent" | awk \'{print $2}\'', shell=True, stdout=subprocess.PIPE)
           cm_agent_pid = cm_agent_process.communicate()[0].split('\n')[0]
           cm_agent_dir_process = subprocess.Popen('strings /proc/%s/cmdline | grep -A1 "agent_dir" | tail -1' % cm_agent_pid, shell=True, stdout=subprocess.PIPE)
           cm_supervisor_dir = cm_agent_dir_process.communicate()[0].split('\n')[0]
