@@ -15,6 +15,7 @@ class Configurator(object):
     Collect environment from CM supervisor
     """
     cm_config_file = '/etc/cloudera-scm-agent/config.ini'
+    cm_supervisor_dir = '/var/run/cloudera-scm-agent'
     if os.path.isfile(cm_config_file):
       import ConfigParser
       from ConfigParser import NoOptionError
@@ -27,9 +28,10 @@ class Configurator(object):
           cm_agent_process = subprocess.Popen('ps -ef | grep "[c]m agent\|[c]mf-agent" | awk \'{print $2}\'', shell=True, stdout=subprocess.PIPE)
           cm_agent_pid = cm_agent_process.communicate()[0].split('\n')[0]
           cm_agent_dir_process = subprocess.Popen('strings /proc/%s/cmdline | grep -A1 "agent_dir" | tail -1' % cm_agent_pid, shell=True, stdout=subprocess.PIPE)
-          cm_supervisor_dir = cm_agent_dir_process.communicate()[0].split('\n')[0]
+          temp_cm_supervisor_dir = cm_agent_dir_process.communicate()[0].split('\n')[0]
+          if not temp_cm_supervisor_dir == "":
+            cm_supervisor_dir = temp_cm_supervisor_dir
         except:
-          cm_supervisor_dir = '/var/run/cloudera-scm-agent'
           pass
         pass
 
