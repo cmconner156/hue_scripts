@@ -1,6 +1,7 @@
 import os
 import sys
 import logging
+import subprocess
 logging.basicConfig()
 LOG = logging.getLogger(__name__)
 
@@ -22,7 +23,14 @@ class Configurator(object):
       try:
         cm_supervisor_dir = config.get('General', 'agent_wide_credential_cache_location')
       except NoOptionError:
-        cm_supervisor_dir = '/var/run/cloudera-scm-agent'
+        try:
+          cm_agent_process = subprocess.Popen('pgrep -f cmf-agent', shell=True, stdout=subprocess.PIPE)
+          cm_agent_pid = cm_agent_process.communicate()[0].split('\n')[0]
+          cm_agent_dir_process = subprocess.Popen('strings /proc/%s/cmdline | grep -A1 "agent_dir" | tail -1' % cm_agent_pid, shell=True, stdout=subprocess.PIPE)
+          cm_supervisor_dir = cm_agent_dir_process.communicate()[0].split('\n')[0]
+        except:
+          cm_supervisor_dir = '/var/run/cloudera-scm-agent'
+          pass
         pass
 
       #Parse CM supervisor include file for Hue and set env vars
