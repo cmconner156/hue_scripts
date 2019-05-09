@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8e164a0d-d95e-4980-bca7-863b8efae3da" name="Default" comment="Final change, renamed the command to &quot;rename_duplicate_users&quot;">
-      <change beforePath="$PROJECT_DIR$/lib/cm_environment.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/cm_environment.py" afterDir="false" />
-    </list>
+    <list default="true" id="8e164a0d-d95e-4980-bca7-863b8efae3da" name="Default" comment="Final change, renamed the command to &quot;rename_duplicate_users&quot;" />
     <ignored path="hue_scripts.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path=".idea/dataSources.local.xml" />
@@ -173,7 +171,7 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
-  <component name="ProjectFrameBounds">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="249" />
     <option name="y" value="69" />
     <option name="width" value="2568" />
@@ -657,10 +655,9 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="249" y="69" width="2568" height="1255" extended-state="0" />
-    <editor active="true" />
+    <frame x="0" y="23" width="1680" height="947" extended-state="6" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.38558987" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.5946276" />
       <window_info id="Structure" order="1" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -670,9 +667,9 @@
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Version Control" order="7" sideWeight="0.4655582" visible="true" weight="0.18658641" />
+      <window_info anchor="bottom" id="Version Control" order="7" sideWeight="0.46520147" visible="true" weight="0.25380117" />
       <window_info anchor="bottom" id="Terminal" order="8" />
-      <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.5344418" side_tool="true" visible="true" weight="0.18658641" />
+      <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.53479856" side_tool="true" visible="true" weight="0.25380117" />
       <window_info anchor="bottom" id="Python Console" order="10" />
       <window_info anchor="bottom" id="Docker" order="11" show_stripe_button="false" />
       <window_info anchor="bottom" id="Database Changes" order="12" show_stripe_button="false" />

@@ -21,22 +21,17 @@ class Configurator(object):
       from ConfigParser import NoOptionError
       config = ConfigParser.RawConfigParser()
       config.read(cm_config_file)
+#     cm_supervisor_dir = config.get('General', 'agent_wide_credential_cache_location')
+
       try:
-        cm_supervisor_dir = config.get('General', 'agent_wide_credential_cache_location')
-      except NoOptionError:
-        try:
-          cm_agent_process = subprocess.Popen('ps -ef | grep "[c]m agent\|[c]mf-agent" | awk \'{print $2}\'', shell=True, stdout=subprocess.PIPE)
-          cm_agent_pid = cm_agent_process.communicate()[0].split('\n')[0]
-          cm_agent_dir_process = subprocess.Popen('strings /proc/%s/cmdline | grep -A1 "agent_dir" | tail -1' % cm_agent_pid, shell=True, stdout=subprocess.PIPE)
-          temp_cm_supervisor_dir = cm_agent_dir_process.communicate()[0].split('\n')[0]
-          if not temp_cm_supervisor_dir == "":
-            cm_supervisor_dir = temp_cm_supervisor_dir
-        except:
-          pass
-        pass
+        supervisor_process = subprocess.Popen('ps -ef | grep [s]upervisord | awk \'{print $2}\'', shell=True, stdout=subprocess.PIPE)
+        supervisor_pid = supervisor_process.communicate()[0].split('\n')[0]
+        cm_supervisor_dir = os.path.realpath('/proc/%s/cwd' % supervisor_pid)
+      except Exception, e:
+        LOG.exception("Unable to get valid supervisord, make sure you are running as root and make sure the CM supervisor is running")    
 
       #Parse CM supervisor include file for Hue and set env vars
-      cm_supervisor_dir = cm_supervisor_dir + '/supervisor/include'
+      cm_supervisor_dir = cm_supervisor_dir + '/include'
       hue_env_conf = None
       envline = None
       cm_hue_string = "HUE_SERVER"
