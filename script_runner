@@ -5,7 +5,13 @@ import os.path
 import subprocess
 
 script_dir = os.path.dirname(os.path.realpath(__file__))
-sys.path.insert(0, script_dir + '/lib')
+lib_dir = '%s/lib' % script_dir
+if not os.path.isdir(lib_dir):
+  print "lib directory is missing.  You must download the entire git repo to run this script"
+  print "https://github.com/cmconner156/hue_scripts"
+  sys.exit(1)
+
+sys.path.insert(0, lib_dir)
 
 if os.path.isfile('/usr/lib64/cmf/service/common/cloudera-config.sh'):
   locate_java = subprocess.Popen(['bash', '-c', '. /usr/lib64/cmf/service/common/cloudera-config.sh; locate_java_home'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)

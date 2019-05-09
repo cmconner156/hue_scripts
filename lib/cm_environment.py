@@ -32,6 +32,7 @@ class Configurator(object):
 
       #Parse CM supervisor include file for Hue and set env vars
       cm_supervisor_dir = cm_supervisor_dir + '/include'
+      cm_agent_run_dir = os.path.dirname(cm_supervisor_dir)
       hue_env_conf = None
       envline = None
       cm_hue_string = "HUE_SERVER"
