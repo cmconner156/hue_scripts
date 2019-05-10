@@ -6,6 +6,7 @@ import subprocess
 
 script_dir = os.path.dirname(os.path.realpath(__file__))
 lib_dir = '%s/lib' % script_dir
+sys.argv.append("--cm-managed")
 if not os.path.isdir(lib_dir):
   print "lib directory is missing.  You must download the entire git repo to run this script"
   print "https://github.com/cmconner156/hue_scripts"
@@ -45,6 +46,7 @@ from custom_commands.settings import *
 settings.INSTALLED_APPS.append('custom_commands')
 
 if __name__ == '__main__':
+    sys.argv.remove("--cm-managed")
     sys.exit(
         load_entry_point('desktop', 'console_scripts', 'hue')()
     )

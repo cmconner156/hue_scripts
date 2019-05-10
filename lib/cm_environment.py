@@ -132,7 +132,7 @@ class Configurator(object):
     except:
       os.environ["SKIP_RELOAD"] = "True"
       if 'LD_LIBRARY_PATH' in os.environ:
-        LOG.warn("We need to reload the process to include LD_LIBRARY_PATH for Oracle backend")
+        LOG.info("We need to reload the process to include any LD_LIBRARY_PATH changes")
         try:
           os.execv(sys.argv[0], sys.argv)
         except Exception, exc:
