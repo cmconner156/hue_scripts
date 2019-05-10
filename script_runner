@@ -11,33 +11,17 @@ if not os.path.isdir(lib_dir):
   print "https://github.com/cmconner156/hue_scripts"
   sys.exit(1)
 
-sys.path.insert(0, lib_dir)
-
-if os.path.isfile('/usr/lib64/cmf/service/common/cloudera-config.sh'):
-  locate_java = subprocess.Popen(['bash', '-c', '. /usr/lib64/cmf/service/common/cloudera-config.sh; locate_java_home'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-elif os.path.isfile('/opt/cloudera/cm-agent/service/common/cloudera-config.sh'):
-  locate_java = subprocess.Popen(['bash', '-c', '. /opt/cloudera/cm-agent/service/common/cloudera-config.sh; locate_java_home'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
-JAVA_HOME = "UNKNOWN"
-
-for line in iter(locate_java.stdout.readline,''):
-   if 'JAVA_HOME' in line:
-     JAVA_HOME = line.rstrip().split('=')[1]
-
-if JAVA_HOME != "UNKNOWN":
-  os.environ["JAVA_HOME"] = JAVA_HOME
-
-if "JAVA_HOME" not in os.environ:
-  print "JAVA_HOME must be set and can't be found, please set JAVA_HOME environment variable"
+if not os.environ["USER"] == "root":
+  print "This script must be run as root"
   sys.exit(1)
+
+sys.path.insert(0, lib_dir)
 
 from cm_environment import Configurator
 Configurator().set_cm_environment()
 
-if "PARCELS_ROOT" in os.environ:
-    parcel_dir = os.environ["PARCELS_ROOT"]
-else:
-    parcel_dir = "/opt/cloudera/parcels"
+if not "SKIP_RELOAD" in os.environ.keys():
+  Configurator().reload_with_cm_env()
 
 hue_bin_dir = parcel_dir + "/CDH/lib/hue/build/env/bin"
 activate_file = hue_bin_dir + "/activate_this.py"
