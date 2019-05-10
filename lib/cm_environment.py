@@ -14,7 +14,7 @@ class Configurator(object):
     """
     Collect environment from CM supervisor
     """
-    hue_bin_dir = /usr/lib/hue
+    hue_bin_dir = "/usr/lib/hue"
     cm_agent_process = subprocess.Popen('ps -ef | grep "[c]m agent\|[c]mf-agent" | awk \'{print $2}\'', shell=True, stdout=subprocess.PIPE)
     cm_agent_pid = cm_agent_process.communicate()[0].split('\n')[0]
 #    cm_config_file = '/etc/cloudera-scm-agent/config.ini'
