@@ -14,6 +14,7 @@ class Configurator(object):
     """
     Collect environment from CM supervisor
     """
+    hue_bin_dir = /usr/lib/hue
     cm_agent_process = subprocess.Popen('ps -ef | grep "[c]m agent\|[c]mf-agent" | awk \'{print $2}\'', shell=True, stdout=subprocess.PIPE)
     cm_agent_pid = cm_agent_process.communicate()[0].split('\n')[0]
 #    cm_config_file = '/etc/cloudera-scm-agent/config.ini'
@@ -74,6 +75,8 @@ class Configurator(object):
       else:
         parcel_dir = "/opt/cloudera/parcels"
 
+      hue_bin_dir = parcel_dir + "/CDH/lib/hue/build/env/bin"
+
       cloudera_config_script = None
       if os.path.isfile('/usr/lib64/cmf/service/common/cloudera-config.sh'):
         cloudera_config_script = '/usr/lib64/cmf/service/common/cloudera-config.sh'
@@ -121,11 +124,13 @@ class Configurator(object):
       print "Running with /etc/hue/conf as the HUE_CONF_DIR"
       os.environ["HUE_CONF_DIR"] = "/etc/hue/conf"
 
+    return hue_bin_dir
+
   def reload_with_cm_env(self):
     try:
       from django.db.backends.oracle.base import Oracle_datetime
     except:
-      os.environ["SKIP_RELOAD"] = True
+      os.environ["SKIP_RELOAD"] = "True"
       if 'LD_LIBRARY_PATH' in os.environ:
         LOG.warn("We need to reload the process to include LD_LIBRARY_PATH for Oracle backend")
         try:
