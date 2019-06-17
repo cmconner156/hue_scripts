@@ -56,7 +56,7 @@ logging.info("Using the following config make sure it looks correct")
 try:
   import platform
   logging.info("Python Version: %s" % platform.python_version())
-  logging.info("OS Version: %s %s" % (platform.linux_distribution()[0] % platform.linux_distribution()[1]))
+  logging.info("OS Version: %s %s" % (platform.linux_distribution()[0], platform.linux_distribution()[1]))
 except:
   pass
 logging.info("HUE_CONF_DIR: %s" % HUE_CONF_DIR)
