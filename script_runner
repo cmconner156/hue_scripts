@@ -19,7 +19,11 @@ if not os.environ["USER"] == "root":
 sys.path.insert(0, lib_dir)
 
 from cm_environment import Configurator
-hue_bin_dir = Configurator().set_cm_environment()
+hue_config = Configurator().set_cm_environment()
+hue_bin_dir = hue_config['hue_bin_dir']
+HUE_CONF_DIR = hue_config['HUE_CONF_DIR']
+parcel_dir = hue_config['parcel_dir']
+parcel_name = hue_config['parcel_name']
 
 if not "SKIP_RELOAD" in os.environ.keys():
   Configurator().reload_with_cm_env()
@@ -44,6 +48,18 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'desktop.settings')
 
 from custom_commands.settings import *
 settings.INSTALLED_APPS.append('custom_commands')
+
+from desktop.conf import DATABASE as desktop_database
+print "Using the following config make sure it looks correct"
+print "HUE_CONF_DIR: %s" % HUE_CONF_DIR
+print "parcel_dir: %s" % parcel_dir
+print "parcel_name: %s" % parcel_name
+print "hue_bin_dir: %s" % hue_bin_dir
+print "DB Engine: %s" % desktop_database.ENGINE.get()
+print "DB Name: %s" % desktop_database.NAME.get()
+print "DB User: %s" % desktop_database.USER.get()
+print "DB Host: %s" % desktop_database.HOST.get()
+print "DB Port: %s" % str(desktop_database.PORT.get())
 
 if __name__ == '__main__':
     sys.argv.remove("--cm-managed")

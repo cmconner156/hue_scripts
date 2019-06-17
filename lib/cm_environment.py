@@ -132,7 +132,13 @@ class Configurator(object):
       print "Running with /etc/hue/conf as the HUE_CONF_DIR"
       os.environ["HUE_CONF_DIR"] = "/etc/hue/conf"
 
-    return hue_bin_dir
+    hue_config = {}
+    hue_config['hue_bin_dir'] = hue_bin_dir
+    hue_config['HUE_CONF_DIR'] = os.environ["HUE_CONF_DIR"]
+    hue_config['parcel_name'] = parcel_name
+    hue_config['parcel_dir'] = parcel_dir
+
+    return hue_config
 
   def reload_with_cm_env(self):
     try:
