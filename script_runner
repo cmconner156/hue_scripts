@@ -4,18 +4,17 @@ import os, sys
 import os.path
 import subprocess
 import logging
-LOG = logging.getLogger(__name__)
 
 script_dir = os.path.dirname(os.path.realpath(__file__))
 lib_dir = '%s/lib' % script_dir
 sys.argv.append("--cm-managed")
 if not os.path.isdir(lib_dir):
-  LOG.warn("lib directory is missing.  You must download the entire git repo to run this script")
-  LOG.warn("https://github.com/cmconner156/hue_scripts")
+  logging.exception("lib directory is missing.  You must download the entire git repo to run this script")
+  logging.exception("https://github.com/cmconner156/hue_scripts")
   sys.exit(1)
 
 if not os.environ["USER"] == "root":
-  LOG.warn("This script must be run as root")
+  logging.exception("This script must be run as root")
   sys.exit(1)
 
 sys.path.insert(0, lib_dir)
@@ -52,16 +51,16 @@ from custom_commands.settings import *
 settings.INSTALLED_APPS.append('custom_commands')
 
 from desktop.conf import DATABASE as desktop_database
-LOG.warn("Using the following config make sure it looks correct")
-LOG.warn("HUE_CONF_DIR: %s" % HUE_CONF_DIR)
-LOG.warn("parcel_dir: %s" % parcel_dir)
-LOG.warn("parcel_name: %s" % parcel_name)
-LOG.warn("hue_bin_dir: %s" % hue_bin_dir)
-LOG.warn("DB Engine: %s" % desktop_database.ENGINE.get())
-LOG.warn("DB Name: %s" % desktop_database.NAME.get())
-LOG.warn("DB User: %s" % desktop_database.USER.get())
-LOG.warn("DB Host: %s" % desktop_database.HOST.get())
-LOG.warn("DB Port: %s" % str(desktop_database.PORT.get()))
+logging.info("Using the following config make sure it looks correct")
+logging.info("HUE_CONF_DIR: %s" % HUE_CONF_DIR)
+logging.info("parcel_dir: %s" % parcel_dir)
+logging.info("parcel_name: %s" % parcel_name)
+logging.info("hue_bin_dir: %s" % hue_bin_dir)
+logging.info("DB Engine: %s" % desktop_database.ENGINE.get())
+logging.info("DB Name: %s" % desktop_database.NAME.get())
+logging.info("DB User: %s" % desktop_database.USER.get())
+logging.info("DB Host: %s" % desktop_database.HOST.get())
+logging.info("DB Port: %s" % str(desktop_database.PORT.get()))
 
 if __name__ == '__main__':
     sys.argv.remove("--cm-managed")
