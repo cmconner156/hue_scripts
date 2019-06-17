@@ -61,7 +61,7 @@ LOG.warn("DB Engine: %s" % desktop_database.ENGINE.get())
 LOG.warn("DB Name: %s" % desktop_database.NAME.get())
 LOG.warn("DB User: %s" % desktop_database.USER.get())
 LOG.warn("DB Host: %s" % desktop_database.HOST.get())
-LOG.warn("DB Port: %s" % str(desktop_database.PORT.get())
+LOG.warn("DB Port: %s" % str(desktop_database.PORT.get()))
 
 if __name__ == '__main__':
     sys.argv.remove("--cm-managed")
