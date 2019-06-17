@@ -52,6 +52,7 @@ settings.INSTALLED_APPS.append('custom_commands')
 
 from desktop.conf import DATABASE as desktop_database
 logging.info("Using the following config make sure it looks correct")
+logging.info("Python Version: %s.%s.%s" % (sys.version_info[0], sys.version_info[1], sys.version_info[2])
 logging.info("HUE_CONF_DIR: %s" % HUE_CONF_DIR)
 logging.info("parcel_dir: %s" % parcel_dir)
 logging.info("parcel_name: %s" % parcel_name)
