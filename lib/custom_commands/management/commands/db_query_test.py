@@ -74,12 +74,6 @@ class Command(BaseCommand):
           sys.exit(1)
 
   def handle(self, *args, **options):
-    LOG.warn("HUE_CONF_DIR: %s" % os.environ['HUE_CONF_DIR'])
-    LOG.info("DB Engine: %s" % desktop.conf.DATABASE.ENGINE.get())
-    LOG.info("DB Name: %s" % desktop.conf.DATABASE.NAME.get())
-    LOG.info("DB User: %s" % desktop.conf.DATABASE.USER.get())
-    LOG.info("DB Host: %s" % desktop.conf.DATABASE.HOST.get())
-    LOG.info("DB Port: %s" % str(desktop.conf.DATABASE.PORT.get()))
     LOG.warn("Running database queries in file: %s: starting from: %s" % (options['read_log_file'], options['start_time']))
 
     start = time.time()

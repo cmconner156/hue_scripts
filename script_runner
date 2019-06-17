@@ -3,17 +3,19 @@
 import os, sys
 import os.path
 import subprocess
+import logging
+LOG = logging.getLogger(__name__)
 
 script_dir = os.path.dirname(os.path.realpath(__file__))
 lib_dir = '%s/lib' % script_dir
 sys.argv.append("--cm-managed")
 if not os.path.isdir(lib_dir):
-  print "lib directory is missing.  You must download the entire git repo to run this script"
-  print "https://github.com/cmconner156/hue_scripts"
+  LOG.warn("lib directory is missing.  You must download the entire git repo to run this script")
+  LOG.warn("https://github.com/cmconner156/hue_scripts")
   sys.exit(1)
 
 if not os.environ["USER"] == "root":
-  print "This script must be run as root"
+  LOG.warn("This script must be run as root")
   sys.exit(1)
 
 sys.path.insert(0, lib_dir)
@@ -50,16 +52,16 @@ from custom_commands.settings import *
 settings.INSTALLED_APPS.append('custom_commands')
 
 from desktop.conf import DATABASE as desktop_database
-print "Using the following config make sure it looks correct"
-print "HUE_CONF_DIR: %s" % HUE_CONF_DIR
-print "parcel_dir: %s" % parcel_dir
-print "parcel_name: %s" % parcel_name
-print "hue_bin_dir: %s" % hue_bin_dir
-print "DB Engine: %s" % desktop_database.ENGINE.get()
-print "DB Name: %s" % desktop_database.NAME.get()
-print "DB User: %s" % desktop_database.USER.get()
-print "DB Host: %s" % desktop_database.HOST.get()
-print "DB Port: %s" % str(desktop_database.PORT.get())
+LOG.warn("Using the following config make sure it looks correct")
+LOG.warn("HUE_CONF_DIR: %s" % HUE_CONF_DIR)
+LOG.warn("parcel_dir: %s" % parcel_dir)
+LOG.warn("parcel_name: %s" % parcel_name)
+LOG.warn("hue_bin_dir: %s" % hue_bin_dir)
+LOG.warn("DB Engine: %s" % desktop_database.ENGINE.get())
+LOG.warn("DB Name: %s" % desktop_database.NAME.get())
+LOG.warn("DB User: %s" % desktop_database.USER.get())
+LOG.warn("DB Host: %s" % desktop_database.HOST.get())
+LOG.warn("DB Port: %s" % str(desktop_database.PORT.get())
 
 if __name__ == '__main__':
     sys.argv.remove("--cm-managed")

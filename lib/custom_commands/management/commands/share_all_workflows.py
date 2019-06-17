@@ -51,19 +51,12 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        LOG.warn("HUE_CONF_DIR: %s" % os.environ['HUE_CONF_DIR'])
-        LOG.info("DB Engine: %s" % desktop.conf.DATABASE.ENGINE.get())
-        LOG.info("DB Name: %s" % desktop.conf.DATABASE.NAME.get())
-        LOG.info("DB User: %s" % desktop.conf.DATABASE.USER.get())
-        LOG.info("DB Host: %s" % desktop.conf.DATABASE.HOST.get())
-        LOG.info("DB Port: %s" % str(desktop.conf.DATABASE.PORT.get()))
-
         if not options['shareusers'] and not options['sharegroups']:
-            print "You must set either shareusers or sharegroups or both"
+            LOG.warn("You must set either shareusers or sharegroups or both")
             sys.exit(1)
 
         if not options['permissions']:
-            print "permissions option required either read, write or read,write"
+            LOG.warn("permissions option required either read, write or read,write")
             sys.exit(1)
 
         if options['shareusers']:
