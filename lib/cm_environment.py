@@ -78,7 +78,7 @@ class Configurator(object):
       if "PARCEL_DIRNAMES" in os.environ:
         parcel_names = os.environ["PARCEL_DIRNAMES"].split(':')
         for parcel_name_temp in parcel_names:
-          if "CDH" in parcel_name_temp:
+          if parcel_name_temp.startswith("CDH"):
             parcel_name = parcel_name_temp
       else:
         parcel_name = "CDH"
