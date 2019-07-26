@@ -142,6 +142,7 @@ main() {
   else
     echo "Launching watcher daemon.  To end process run:"
     echo "rm ${ENDFILE}"
+    touch ${ENDFILE}
     exec nohup "${BASH_SOURCE[0]}" --watcher "${INITIAL_ARGS[@]}" 0<&- &> /dev/null &     
   fi
   
