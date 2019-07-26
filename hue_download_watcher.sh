@@ -139,7 +139,8 @@ main() {
         LOG_SIZE=$(du -sm ${LOG_FILE} | awk '{print $1}')
         if [[ ${LOG_SIZE} -gt ${ROTATE_SIZE} ]]
         then
-          mv ${LOG_FILE} ${LOG_FILE}.1
+          cat ${LOG_FILE} > ${LOG_FILE}.1
+          cat /dev/null > ${LOG_FILE}
         fi
       fi
     done
