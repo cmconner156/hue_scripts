@@ -100,7 +100,13 @@ main() {
     usage
     exit 1
   fi
-  
+ 
+  if [[ ! "${ROTATE_SIZE}"  =~ ^[0-9]+$ ]]
+  then
+    echo "--max-log-size or -s must be a number"
+    exit 1
+  fi
+ 
   OLDTIME=1800
   # Get current and file times
   CURTIME=$(date +%s)
@@ -123,7 +129,7 @@ main() {
   
   if [[ -z ${SPAWN_WATCHER} ]]
   then   
-    tail -F ${RUNCPSERVER} | grep 'downloaded result\|TExecuteStatementReq(' > ${LOG_FILE} &
+    tail -F ${RUNCPSERVER} | egrep --line-buffered "downloaded result|TExecuteStatementReq\(" >> ${LOG_FILE} &
     PID=$!
     while [[ -f ${ENDFILE} ]]
     do
