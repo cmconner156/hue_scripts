@@ -87,7 +87,7 @@ main() {
     exit 1
   fi
  
-  if [[ -z ${SPAWN_WATCHER} ]] && [[ ! -f ${ENDFILE} ]]
+  if [[ ! -z ${SPAWN_WATCHER} ]] && [[ ! -f ${ENDFILE} ]]
   then
     echo "$0 must not be run manually with -w or --watcher flags"
     exit 1
@@ -127,7 +127,7 @@ main() {
     exit 1
   fi
   
-  if [[ -z ${SPAWN_WATCHER} ]]
+  if [[ ! -z ${SPAWN_WATCHER} ]]
   then   
     tail -F ${RUNCPSERVER} | egrep --line-buffered "downloaded result|TExecuteStatementReq\(" >> ${LOG_FILE} &
     PID=$!
