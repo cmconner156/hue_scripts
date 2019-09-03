@@ -83,7 +83,8 @@ class Configurator(object):
       else:
         parcel_name = "CDH"
 
-      hue_bin_dir = "%s/%s/lib/hue/build/env/bin" % (parcel_dir, parcel_name)
+      hue_path = "%s/%s/lib/hue" % (parcel_dir, parcel_name)
+      hue_bin_dir = "%s/build/env/bin" % hue_path
 
       cloudera_config_script = None
       if os.path.isfile('/usr/lib64/cmf/service/common/cloudera-config.sh'):
@@ -133,6 +134,7 @@ class Configurator(object):
       os.environ["HUE_CONF_DIR"] = "/etc/hue/conf"
 
     hue_config = {}
+    hue_config['hue_path'] = hue_path
     hue_config['hue_bin_dir'] = hue_bin_dir
     hue_config['HUE_CONF_DIR'] = os.environ["HUE_CONF_DIR"]
     hue_config['parcel_name'] = parcel_name

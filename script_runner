@@ -21,6 +21,7 @@ sys.path.insert(0, lib_dir)
 
 from cm_environment import Configurator
 hue_config = Configurator().set_cm_environment()
+hue_path = hue_config['hue_path']
 hue_bin_dir = hue_config['hue_bin_dir']
 HUE_CONF_DIR = hue_config['HUE_CONF_DIR']
 parcel_dir = hue_config['parcel_dir']
@@ -71,6 +72,20 @@ logging.info("DB Port: %s" % str(desktop_database.PORT.get()))
 
 if __name__ == '__main__':
     sys.argv.remove("--cm-managed")
-    sys.exit(
-        load_entry_point('desktop', 'console_scripts', 'hue')()
-    )
+    try:
+        sys.exit(
+            load_entry_point('desktop', 'console_scripts', 'hue')()
+        )
+    except UnboundLocalError, e:
+        logging.info("Command failed because of bug in older versions of CDH: %s" % e)
+        logging.info("Patching and re-running")
+        patch_file = "%s/fix_cm_config_file.patch" % script_dir
+        patch_cmd = ["patch", "-p1"]
+        patch_file_in = open(patch_file)
+        os.chdir(hue_path)
+        subprocess.call(patch_cmd, stdin=patch_file_in)
+        os.chdir(script_dir)
+        sys.exit(
+            load_entry_point('desktop', 'console_scripts', 'hue')()
+        )
+
