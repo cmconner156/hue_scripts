@@ -8,8 +8,6 @@ import time
 from django.core.management.base import BaseCommand, CommandError
 from django.utils.translation import ugettext_lazy as _t, ugettext as _
 
-from beeswax.server import dbms
-from beeswax.conf import HIVE_SERVER_HOST
 from django.contrib.auth.models import User
 
 import desktop.conf
@@ -54,22 +52,29 @@ class Command(BaseCommand):
 
 
   def handle(self, *args, **options):
+    hue, created = User.objects.get_or_create(username=options['username'])
     if options['runhive']:
       query_backend = 'hive'
+      from beeswax.server import dbms
+      from beeswax.conf import HIVE_SERVER_HOST
+      SERVER_HOST = HIVE_SERVER_HOST
+      db = dbms.get(hue)
     else:
       query_backend = 'impala'
-      LOG.exception('Impala does not work yet')
-      sys.exit(1)
+      from impala import conf
+      from impala import dbms
+      from beeswax.server import dbms as beeswax_dbms
+      SERVER_HOST = conf.SERVER_HOST.get()
+      query_server = dbms.get_query_server_config()
+      db = beeswax_dbms.get(hue, query_server=query_server)
 
     LOG.info("QUERY_BACKEND: %s" % query_backend)
     LOG.info("QUERY_USER: %s" % options['username'])
     LOG.info("QUERY: %s" % options['query'])
-    LOG.info("QUERY_HOST: %s" % HIVE_SERVER_HOST)
-
-    hue, created = User.objects.get_or_create(username=options['username'])
+    LOG.info("QUERY_HOST: %s" % SERVER_HOST)
 
     start = time.time()
-    db = dbms.get(hue)
+
     db.get_tables()
 
     executequery = options['query']
@@ -79,26 +84,37 @@ class Command(BaseCommand):
 
     while True:
       ret = db.get_state(query.get_handle())
-      LOG.info("ret: %s" % ret)
-      LOG.info("ret.key: %s" % ret.key)
-      if ret.key != 'running':
-        break
+      try:
+        LOG.info("ret.key: %s" % ret.key)
+        LOG.info("ret: %s" % ret)
+        if ret.key != 'running':
+          break
+      except AttributeError:
+#    submitted = 0
+#    running = 1
+#    available = 2
+#    failed = 3
+#    expired = 4
+        LOG.info("ret: %s" % ret.value)
+        if ret.value != 1:
+          break
+        pass
       time.sleep(1)
-      LOG.debug("Waiting for query execution")
+      LOG.info("Waiting for query execution")
 
     result = db.fetch(query.get_handle())
 
     i = 0
     for row in result.rows():
-      LOG.debug("row: %s" % row)
+      LOG.info("row: %s" % row)
       if i > 100:
         break
       i += 1
 
-    LOG.debug(db.get_log(query.get_handle()))
+    LOG.info(db.get_log(query.get_handle()))
     end = time.time()
     elapsed = (end - start) / 60
-    LOG.debug("Time elapsed (minutes): %.2f" % elapsed)
+    LOG.info("Time elapsed (minutes): %.2f" % elapsed)
 
 
 
