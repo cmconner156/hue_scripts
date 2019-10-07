@@ -78,8 +78,10 @@ main()
    if [ -d ${AGENT_PROCESS_DIR} ]
    then
       HUE_CONF_DIR="${AGENT_PROCESS_DIR}/`ls -1 ${AGENT_PROCESS_DIR} | grep HUE_SERVER | sort -n | tail -1 `"
+      KT_CONF_DIR="${AGENT_PROCESS_DIR}/`ls -1 ${AGENT_PROCESS_DIR} | grep KT_RENEWER | sort -n | tail -1 `"
    else
       HUE_CONF_DIR="/etc/hue/conf"
+      KT_CONF_DIR="/etc/hue/conf"
    fi
 
    if [[ ! -f ${HUE_CONF_DIR}/hue.ini ]]
@@ -87,6 +89,21 @@ main()
       echo "Script must be run on a Hue server as it uses Hue's config"
    fi
 
+   SECURE=`grep -A1 "hadoop.security.authentication" /etc/hadoop/conf/core-site.xml | tail -1 | awk -F\> '{print $2}' | awk -F\< '{print $1}'`
+   if [[ ${SECURE} =~ .*kerberos.* ]]
+   then
+     TICKET_CACHE="/var/run/hue/hue_krb5_ccache"
+     if [[ -f ${TICKET_CACHE} ]]
+     then
+       export KRB5CCNAME=${TICKET_CACHE}
+     else
+       PRINCIPAL=$(klist -ekt hue.keytab | grep 'hue/' | tail -1 | awk '{print $4}')
+       kinit -kt ${KT_CONF_DIR}/hue.keytab ${PRINCIPAL}
+     fi
+     OPTIONS="${OPTIONS} --negotiate -u :"
+     klist
+   fi
+   
    HTTP_HOST=$(get_property http_host)
    HTTP_PORT=$(get_property http_port)
    declare -A service_property_names
@@ -103,15 +120,15 @@ main()
    service_test_url[oozie]="/v1/admin/status"
    service_test_url[solr]="/admin/cores?action=STATUS"
 
-   test_service httpfs
+   test_service httpfs ${OPTIONS}
    echo
-   test_service rm
+   test_service rm ${OPTIONS}
    echo
-   test_service jhs
+   test_service jhs ${OPTIONS}
    echo
-   test_service oozie
+   test_service oozie ${OPTIONS}
    echo
-   test_service solr
+   test_service solr ${OPTIONS}
    echo
 
 }
@@ -119,6 +136,9 @@ main()
 function test_service() {
 
    SERVICE=$1
+   shift
+
+   OPTIONS=$2
    shift
 
    TESTURL=${service_test_url[${SERVICE}]}
@@ -130,6 +150,7 @@ function test_service() {
       do_curl \
          GET \
          "${URL}" \
+         ${OPTIONS}
       echo
    fi
 
