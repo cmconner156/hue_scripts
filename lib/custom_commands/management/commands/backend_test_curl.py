@@ -30,7 +30,8 @@ if hdfs_config.SECURITY_ENABLED.get():
   if KLIST is None:
     LOG.exception("klist is required, please install and rerun")
     sys.exit(1)
-  klist_cmd = '%s | grep "Default principal"' % KLIST,
+  klist_cmd = '%s | grep "Default principal"' % KLIST
+  LOG.info("KLIST: %s" % klist_cmd)
   klist_check = subprocess.Popen(klist_cmd, shell=False, stdout=subprocess.PIPE)
   klist_princ = klist_check.communicate()
   LOG.info("klist_princ: %s" % klist_princ)
