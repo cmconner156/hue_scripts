@@ -88,7 +88,7 @@ class Command(BaseCommand):
 
   def handle(self, *args, **options):
 
-    curl = Curl(verbose=verbose)
+    curl = Curl(verbose=options['verbose'])
 
     available_services = {}
 
