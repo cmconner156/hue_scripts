@@ -1,5 +1,23 @@
 #!/bin/bash
 
+#[hadoop]
+#[[hdfs_clusters]]
+#[[[default]]]
+#security_enabled=false
+#temp_dir=/tmp
+#[[yarn_clusters]]
+#[[[default]]]
+#security_enabled=false
+##
+#[liboozie]
+#security_enabled=false
+#[search]
+#solr_url=http://nightly5x-unsecure-1.vpc.cloudera.com:8983/solr
+#
+##TODO SPARK
+
+
+
 #parse command line arguments
 parse_arguments()
 {
@@ -11,17 +29,17 @@ parse_arguments()
   fi
 
   # Parse short and long option parameters.
-  ATEST=
+  TESTUSER=
   VERBOSE=
-  GETOPT=`getopt -n $0 -o a:,v,h \
-      -l atest:,verbose,help \
+  GETOPT=`getopt -n $0 -o u:,v,h \
+      -l user:,verbose,help \
       -- "$@"`
   eval set -- "$GETOPT"
   while true;
   do
     case "$1" in
-    -a|--atest)
-      ATEST=$2
+    -u|--user)
+      TESTUSER=$2
       shift 2
       ;;
     -v|--verbose)
@@ -119,25 +137,55 @@ main()
    service_test_url[jhs]="/ws/v1/history"
    service_test_url[oozie]="/v1/admin/status"
    service_test_url[solr]="/admin/cores?action=STATUS"
+   service_test_url[solr_jmx]="/jmx"
 
    test_service httpfs ${OPTIONS}
    echo
-   test_service rm ${OPTIONS}
+   test_service_get rm 'None' ${OPTIONS}
    echo
-   test_service jhs ${OPTIONS}
+   test_service_get jhs 'None' ${OPTIONS}
    echo
-   test_service oozie ${OPTIONS}
+   test_service_get oozie 'None' ${OPTIONS}
    echo
-   test_service solr ${OPTIONS}
+   #Test solr/jmx
+   RESPONSE=$(test_service_get solr solr_jmx ${OPTIONS})
+   echo ${RESPONSE} | grep "solr.solrxml.location"
+   if [[ 
    echo
 
 }
 
-function test_service() {
-
+function test_service_get() {
    SERVICE=$1
    shift
+   TEST=$2
+   shift
+   OPTIONS=$3
+   shift
 
+   TESTURL=${service_test_url[${TEST}]}
+   URLBASE=$(get_property ${service_property_names[${SERVICE}]} | sed "s%/$%%g")
+   if [[ -z ${URLBASE} ]]
+   then
+     URL=${URLBASE}${TESTURL}
+     if [[ ! -z ${URLBASE} ]]
+     then
+        echo "Testing ${SERVICE} against ${URL}"
+        RESPONSE=$(do_curl \
+           GET \
+           "${URL}" \
+           ${OPTIONS})
+        echo
+     fi
+     else
+     RESPONSE="Service not configured in Hue" 
+   fi
+   echo ${RESPONSE}
+}
+
+function test_service_put() {
+   SERVICE=$1
+   shift
    OPTIONS=$2
    shift
 
@@ -146,14 +194,14 @@ function test_service() {
    URL=${URLBASE}${TESTURL}
    if [[ ! -z ${URLBASE} ]]
    then
-      echo "Testing SPNEGO auth for ${SERVICE} against ${URL}"
-      do_curl \
-         GET \
+      echo "Testing ${SERVICE} against ${URL}"
+      RESPONSE=$(do_curl \
+         PUT \
          "${URL}" \
-         ${OPTIONS}
+         ${OPTIONS})
       echo
    fi
-
+   echo ${RESPONSE}
 }
 
 function get_property() {
