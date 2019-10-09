@@ -12,6 +12,8 @@ import desktop.conf
 from desktop.conf import TIME_ZONE
 from search.conf import SOLR_URL, SECURITY_ENABLED as SOLR_SECURITY_ENABLED
 from liboozie.conf import OOZIE_URL, SECURITY_ENABLED as OOZIE_SECURITY_ENABLED
+from hadoop import conf as hdfs_conf
+
 
 from hue_curl import Curl
 
@@ -23,6 +25,11 @@ def get_service_info(service):
   if service.lower() == 'oozie':
     service_info['url'] = OOZIE_URL.get()
     service_info['security_enabled'] = OOZIE_SECURITY_ENABLED.get()
+  if service.lower() == 'httpfw':
+    hdfs_config = conf.HDFS_CLUSTERS['default']
+    service_info['ur'] = hdfs_config.WEBHDFS_URL.get()
+    service_info['security_enabled'] = hdfs_config.SECURITY_ENABLED.get()
+
   if service_info['url'] is None:
     logging.info("Hue does not have %s configured, cannot test %s" % (service_name, service_name))
 
@@ -99,6 +106,10 @@ class Command(BaseCommand):
     #Add Oozie
     add_service_test(available_services, options=options, service_name="Oozie", testname="STATUS",
                      suburl='v1/admin/status?timezone=%s&user.name=hue&doAs=%s' % (TIME_ZONE.get(), options['username']), teststring='{"systemMode":"NORMAL"}')
+
+    #Add HTTPFS
+    add_service_test(available_services, options=options, service_name="Httpfs", testname="USERHOME",
+                     suburl='user/%s?op=GETFILESTATUS&user.name=hue&doas=%s' % (options['username'], options['username']), method='GET', teststring='"type":"DIRECTORY"')
 
     for service in available_services:
       for service_test in available_services[service]['tests']:
