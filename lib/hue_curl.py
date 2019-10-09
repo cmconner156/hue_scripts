@@ -30,13 +30,15 @@ class Curl(object):
     if self.verbose:
       self.cmd = self.cmd + '-v'
 
-  def do_curl(self, method='GET', url=None, follow=False):
+  def do_curl(self, method='GET', url=None, follow=False, args=None):
 
     self.cmd = self.cmd + '-X ' + method
     if follow:
       self.cmd = self.cmd + ' -L'
-        
+
+    if args not None:
+      self.cmd = self.cmd + ' ' + args
+
+    self.cmd = self.cmd + ' \'' + url + '\''
     logging.info("cmd: %s" % self.cmd)
-
-
 

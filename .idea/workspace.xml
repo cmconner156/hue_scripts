@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8e164a0d-d95e-4980-bca7-863b8efae3da" name="Default" comment="Final change, renamed the command to &quot;rename_duplicate_users&quot;">
-      <change beforePath="$PROJECT_DIR$/lib/cm_environment.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/cm_environment.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/hue_curl.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/hue_curl.py" afterDir="false" />
     </list>
     <ignored path="hue_scripts.iws" />
@@ -36,7 +35,7 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="dummy" value="25" />
-          <entry key="py" value="12041" />
+          <entry key="py" value="12139" />
           <entry key="script_runner" value="346" />
           <entry key="sh" value="2979" />
           <entry key="txt" value="169" />
@@ -46,7 +45,7 @@
         <counts>
           <entry key="Bash" value="2979" />
           <entry key="PLAIN_TEXT" value="194" />
-          <entry key="Python" value="12387" />
+          <entry key="Python" value="12485" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -84,14 +83,14 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lib/hue_curl.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="510">
-              <caret line="34" column="30" selection-start-line="34" selection-start-column="30" selection-end-line="34" selection-end-column="30" />
+            <state relative-caret-position="480">
+              <caret line="32" column="63" selection-start-line="32" selection-start-column="63" selection-end-line="32" selection-end-column="63" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
-                <marker date="1570644183725" expanded="true" signature="237:696" ph="..." />
-                <marker date="1570644183725" expanded="true" signature="237:697" ph="..." />
-                <marker date="1570644183725" expanded="true" signature="775:779" ph="..." />
-                <marker date="1570644183725" expanded="true" signature="814:818" ph="..." />
+                <marker date="1570644484034" expanded="true" signature="237:696" ph="..." />
+                <marker date="1570644484034" expanded="true" signature="237:697" ph="..." />
+                <marker date="1570644484034" expanded="true" signature="855:859" ph="..." />
+                <marker date="1570644484034" expanded="true" signature="893:897" ph="..." />
               </folding>
             </state>
           </provider>
@@ -999,14 +998,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/hue_curl.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="510">
-          <caret line="34" column="30" selection-start-line="34" selection-start-column="30" selection-end-line="34" selection-end-column="30" />
+        <state relative-caret-position="480">
+          <caret line="32" column="63" selection-start-line="32" selection-start-column="63" selection-end-line="32" selection-end-column="63" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
-            <marker date="1570644183725" expanded="true" signature="237:696" ph="..." />
-            <marker date="1570644183725" expanded="true" signature="237:697" ph="..." />
-            <marker date="1570644183725" expanded="true" signature="775:779" ph="..." />
-            <marker date="1570644183725" expanded="true" signature="814:818" ph="..." />
+            <marker date="1570644484034" expanded="true" signature="237:696" ph="..." />
+            <marker date="1570644484034" expanded="true" signature="237:697" ph="..." />
+            <marker date="1570644484034" expanded="true" signature="855:859" ph="..." />
+            <marker date="1570644484034" expanded="true" signature="893:897" ph="..." />
           </folding>
         </state>
       </provider>
