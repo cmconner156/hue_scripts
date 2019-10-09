@@ -34,6 +34,9 @@ if hdfs_config.SECURITY_ENABLED.get():
   LOG.info("KLIST: %s" % klist_cmd)
   klist_check = subprocess.Popen(klist_cmd, shell=True, stdout=subprocess.PIPE)
   klist_princ = klist_check.communicate()[0]
+  if not 'hue/1' in klist_princ:
+    LOG.exception("klist failed, please contact support")
+    sys.exit(1)
   LOG.info("klist_princ: %s" % klist_princ)
 #  klist_princ = klist_check.communicate()[0].split('\n')[0]
   security_enabled = True
