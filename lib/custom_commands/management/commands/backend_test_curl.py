@@ -10,6 +10,13 @@ from django.utils.translation import ugettext_lazy as _t, ugettext as _
 
 import desktop.conf
 
+security_enabled = False
+if hasattr(desktop.conf.KERBEROS.CCACHE_PATH, 'get'):
+  if desktop.conf.KERBEROS.CCACHE_PATH.get() is not None:
+    os.environ['KRB5CCNAME'] = desktop.conf.KERBEROS.CCACHE_PATH.get()
+    security_enabled = True
+
+
 def which(file_name):
   for path in os.environ["PATH"].split(os.pathsep):
     full_path = os.path.join(path, file_name)
@@ -18,8 +25,10 @@ def which(file_name):
   return None
 
 LOG = logging.getLogger(__name__)
-
 CURL = which('curl')
+
+def do_curl(method='GET', url=None, security_enabled=False):
+  LOG.info("CURL: %s" % CURL)
 
 class Command(BaseCommand):
   """
@@ -56,11 +65,12 @@ class Command(BaseCommand):
       sys.exit(1)
 
   def handle(self, *args, **options):
+
     if CURL is None:
       LOG.exception("curl is required, please install and rerun")
       sys.exit(1)
 
-    available_services == {}
+    available_services = {}
 
     if options['service'] == "all" or options['service'] == "solr":
       from search.conf import SOLR_URL, SECURITY_ENABLED
@@ -79,8 +89,7 @@ class Command(BaseCommand):
       else:
         LOG.info("Hue does not have Solr configured, cannot test Solr")
 
-
-  def do_curl(self, method='GET', url=None, security_enabled=False):
-    LOG.info("CURL: %s" % curl)
+    LOG.info("security_enabled: %s" % security_enabled)
+    do_curl()
 
 
