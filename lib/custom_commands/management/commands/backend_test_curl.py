@@ -44,6 +44,9 @@ def get_service_info(service):
   elif service_info['url'] is None:
     logging.info("Hue does not have %s configured, cannot test %s" % (service, service))
 
+  if service_info['url'].endswith('/'):
+    service_info['url'] = service_info['url'][:-1]
+
   return service_info
 
 
