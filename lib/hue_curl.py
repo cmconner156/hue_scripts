@@ -19,7 +19,8 @@ class Curl(object):
       logging.exception("curl is required, please install and rerun")
       sys.exit(1)
 
-    self.cmd = self.curl
+    # We will change to handle certs later
+    self.cmd = self.curl + ' -k'
     logging.info("Checking security status")
     self.security_enabled = check_security()
     self.verbose = verbose
