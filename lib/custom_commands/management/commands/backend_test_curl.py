@@ -4,17 +4,22 @@ import sys
 import logging
 import datetime
 import time
+import subprocess
 
 from django.core.management.base import BaseCommand, CommandError
 from django.utils.translation import ugettext_lazy as _t, ugettext as _
 
 import desktop.conf
 
+LOG = logging.getLogger(__name__)
 security_enabled = False
-if hasattr(desktop.conf.KERBEROS.CCACHE_PATH, 'get'):
-  if desktop.conf.KERBEROS.CCACHE_PATH.get() is not None:
-    os.environ['KRB5CCNAME'] = desktop.conf.KERBEROS.CCACHE_PATH.get()
-    security_enabled = True
+
+from hadoop import conf
+hdfs_config = conf.HDFS_CLUSTERS['default']
+if hdfs_config.SECURITY_ENABLED.get():
+  LOG.info("%s" % desktop.conf.KERBEROS.CCACHE_PATH.get())
+  os.environ['KRB5CCNAME'] = desktop.conf.KERBEROS.CCACHE_PATH.get()
+  security_enabled = True
 
 
 def which(file_name):
@@ -24,7 +29,6 @@ def which(file_name):
       return full_path
   return None
 
-LOG = logging.getLogger(__name__)
 CURL = which('curl')
 
 def do_curl(method='GET', url=None, security_enabled=False):
