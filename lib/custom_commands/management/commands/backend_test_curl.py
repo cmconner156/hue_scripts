@@ -63,7 +63,7 @@ class Command(BaseCommand):
         available_services['solr']['url'] = SOLR_URL.get()
         available_services['solr']['tests'] = {}
         available_services['solr']['tests']['jmx'] = {}
-        available_services['solr']['tests']['jmx']['url'] = '/jmx'
+        available_services['solr']['tests']['jmx']['url'] = '%s/jmx' % available_services['solr']['url']
         available_services['solr']['tests']['jmx']['method'] = 'GET'
         available_services['solr']['tests']['jmx']['test'] = 'solr.solrxml.location'
         if hasattr(SECURITY_ENABLED, 'get'):
@@ -73,6 +73,7 @@ class Command(BaseCommand):
       else:
         logging.info("Hue does not have Solr configured, cannot test Solr")
 
-    curl.do_curl(available_services['solr']['url'])
+    response = curl.do_curl_available_services(available_services['solr']['tests']['jmx'])
+    logging.info("Response: %s" % response)
 
 

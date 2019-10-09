@@ -32,7 +32,7 @@ class Curl(object):
 
   def do_curl(self, url, method='GET', follow=False, args=None):
 
-    self.cmd = self.cmd + '-X ' + method
+    self.cmd = self.cmd + ' -X ' + method
     if follow:
       self.cmd = self.cmd + ' -L'
 
@@ -41,4 +41,12 @@ class Curl(object):
 
     self.cmd = self.cmd + ' \'' + url + '\''
     logging.info("cmd: %s" % self.cmd)
+    curl_result = subprocess.Popen(self.cmd, shell=True, stdout=subprocess.PIPE)
+    logging.info("curl result: %s" curl_result)
+    return curl_result.communicate()[0]
 
+
+  def do_curl_available_services(self, service_test):
+    url = service_test['url']
+    method = service_test['method']
+    response = self.do_curl(url, method='GET')
