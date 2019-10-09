@@ -30,7 +30,7 @@ class Curl(object):
     if self.verbose:
       self.cmd = self.cmd + '-v'
 
-  def do_curl(self, method='GET', url=None, follow=False, args=None):
+  def do_curl(self, url, method='GET', follow=False, args=None):
 
     self.cmd = self.cmd + '-X ' + method
     if follow:

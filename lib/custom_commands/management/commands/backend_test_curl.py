@@ -73,6 +73,6 @@ class Command(BaseCommand):
       else:
         logging.info("Hue does not have Solr configured, cannot test Solr")
 
-    curl.do_curl()
+    curl.do_curl(available_services['solr']['url'])
 
 
