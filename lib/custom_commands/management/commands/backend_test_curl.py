@@ -10,11 +10,11 @@ from django.utils.translation import ugettext_lazy as _t, ugettext as _
 
 import desktop.conf
 
-
-
 from hue_curl import Curl
 
+logging.basicConfig()
 LOG = logging.getLogger(__name__)
+
 
 class Command(BaseCommand):
   """

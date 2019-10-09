@@ -8,6 +8,7 @@ import subprocess
 from cm_environment import check_security
 from hue_shared import which
 
+logging.basicConfig()
 LOG = logging.getLogger(__name__)
 
 class Curl(object):
