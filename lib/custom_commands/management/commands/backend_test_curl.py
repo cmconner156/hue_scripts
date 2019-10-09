@@ -73,7 +73,12 @@ class Command(BaseCommand):
       else:
         logging.info("Hue does not have Solr configured, cannot test Solr")
 
+    logging.info("Running Solr JMX Test:")
     response = curl.do_curl_available_services(available_services['solr']['tests']['jmx'])
-    logging.info("Response: %s" % response)
+    if options['entireresponse']:
+      logging.info("Solr JMX Test Response: %s" % response)
+    else:
+      if available_services['solr']['tests']['jmx']['test'] in response:
+        logging.info("Solr JMX Test Passed: %s found in response" % available_services['solr']['tests']['jmx']['test'])
 
 
