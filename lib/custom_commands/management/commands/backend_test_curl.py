@@ -30,7 +30,9 @@ def get_service_info(service):
     service_info['ur'] = hdfs_config.WEBHDFS_URL.get()
     service_info['security_enabled'] = hdfs_config.SECURITY_ENABLED.get()
 
-  if service_info['url'] is None:
+  if 'url' not in service_info:
+    logging.info("Hue does not have %s configured, cannot test %s" % (service_name, service_name))
+  elif service_info['url'] is None:
     logging.info("Hue does not have %s configured, cannot test %s" % (service_name, service_name))
 
   return service_info
