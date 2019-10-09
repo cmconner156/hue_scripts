@@ -154,8 +154,6 @@ def check_security():
   hdfs_config = conf.HDFS_CLUSTERS['default']
   security_enabled = False
   if hdfs_config.SECURITY_ENABLED.get():
-    #  LOG.info("%s" % desktop.conf.KERBEROS.CCACHE_PATH.get())
-    #  os.environ['KRB5CCNAME'] = desktop.conf.KERBEROS.CCACHE_PATH.get()
     KLIST = which('klist')
     if KLIST is None:
       LOG.exception("klist is required, please install and rerun")
@@ -171,3 +169,4 @@ def check_security():
     security_enabled = True
 
   return security_enabled
+
