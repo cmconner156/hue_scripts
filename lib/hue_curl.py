@@ -31,6 +31,8 @@ class Curl(object):
 
     if self.verbose:
       self.cmd = self.cmd + ' -v'
+    else:
+      self.cmd = self.cmd + ' -s'
 
     logging.info("self.cmd: %s" % self.cmd)
 
@@ -45,12 +47,15 @@ class Curl(object):
 
     self.cmd = self.cmd + ' \'' + url + '\''
     logging.info("cmd: %s" % self.cmd)
-    curl_result = subprocess.Popen(self.cmd, shell=True, stdout=subprocess.PIPE)
-    logging.info("curl result: %s" % curl_result)
-    return curl_result.communicate()[0]
+    curl_process = subprocess.Popen(self.cmd, shell=True, stdout=subprocess.PIPE)
+    curl_response = curl_process.communicate()[0]
+    curl_ret = curl_process.returncode
+    logging.info("curl return code: %s" % str(curl_ret))
+    return curl_response
 
 
   def do_curl_available_services(self, service_test):
     url = service_test['url']
     method = service_test['method']
-    response = self.do_curl(url, method='GET')
+    response = self.do_curl(url, method=method)
+    return response
