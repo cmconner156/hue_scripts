@@ -23,6 +23,8 @@ def get_service_info(service):
   if service.lower() == 'oozie':
     service_info['url'] = OOZIE_URL.get()
     service_info['security_enabled'] = OOZIE_SECURITY_ENABLED.get()
+  if service_info['url'] is None:
+    logging.info("Hue does not have %s configured, cannot test %s" % (service_name, service_name))
 
   return service_info
 
@@ -42,11 +44,8 @@ def add_service_test(available_services, options=None, service_name=None, testna
     if not testname in available_services[service_name]['tests']:
       available_services[service_name]['tests']['JMX'] = {}
       available_services[service_name]['tests']['JMX']['url'] = '%s/%s' % (available_services[service_name]['url'], suburl)
-
       available_services[service_name]['tests']['JMX']['method'] = method
       available_services[service_name]['tests']['JMX']['test'] = teststring
-  else:
-    logging.info("Hue does not have %s configured, cannot test %s" % (service_name, service_name))
 
 
 class Command(BaseCommand):
@@ -65,6 +64,8 @@ class Command(BaseCommand):
                   action="store_true", default=False, dest='entireresponse'),
       make_option("--username", help=_t("User to doAs."),
                   action="store", default="admin", dest='username'),
+      make_option("--verbose", help=_t("Verbose."),
+                  action="store_true", default=False, dest='verbose'),
     )
 
   except AttributeError, e:
@@ -78,14 +79,16 @@ class Command(BaseCommand):
         parser.add_argument("--response", help=_t("Show entire REST response."),
                     action="store_true", default=False, dest='entireresponse'),
         parser.add_argument("--username", help=_t("User to doAs."),
-                    action="store", default="admin", dest='username')
+                    action="store", default="admin", dest='username'),
+        parser.add_argument("--verbose", help=_t("Verbose."),
+                    action="store_true", default=False, dest='verbose')
     else:
       logging.exception(str(e))
       sys.exit(1)
 
   def handle(self, *args, **options):
 
-    curl = Curl()
+    curl = Curl(verbose=verbose)
 
     available_services = {}
 
