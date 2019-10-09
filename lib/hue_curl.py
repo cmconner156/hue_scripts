@@ -46,7 +46,7 @@ class Curl(object):
       self.cmd = self.cmd + ' ' + args
 
     self.cmd = self.cmd + ' \'' + url + '\''
-    logging.info("cmd: %s" % self.cmd)
+    logging.info("OSRUN: %s" % self.cmd)
     curl_process = subprocess.Popen(self.cmd, shell=True, stdout=subprocess.PIPE)
     curl_response = curl_process.communicate()[0]
     curl_ret = curl_process.returncode
