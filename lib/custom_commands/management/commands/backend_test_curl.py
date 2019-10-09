@@ -12,8 +12,8 @@ import desktop.conf
 
 from hue_curl import Curl
 
-logging.basicConfig()
-LOG = logging.getLogger(__name__)
+#logging.basicConfig()
+#logging = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
@@ -47,7 +47,7 @@ class Command(BaseCommand):
         parser.add_argument("--username", help=_t("User to doAs."),
                     action="store", default="admin", dest='username')
     else:
-      LOG.exception(str(e))
+      logging.exception(str(e))
       sys.exit(1)
 
   def handle(self, *args, **options):
@@ -71,7 +71,7 @@ class Command(BaseCommand):
         else:
           available_services['solr']['security_enabled'] = False
       else:
-        LOG.info("Hue does not have Solr configured, cannot test Solr")
+        logging.info("Hue does not have Solr configured, cannot test Solr")
 
     curl.do_curl()
 

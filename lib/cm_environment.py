@@ -5,8 +5,8 @@ import subprocess
 
 from hue_shared import which
 
-logging.basicConfig()
-LOG = logging.getLogger(__name__)
+#logging.basicConfig()
+#logging = logging.getLogger(__name__)
 
 """
 Class to configure Hue environment from CM
@@ -25,12 +25,12 @@ def set_cm_environment():
       supervisor_pid = supervisor_process.communicate()[0].split('\n')[0]
       cm_supervisor_dir = os.path.realpath('/proc/%s/cwd' % supervisor_pid)
       if supervisor_pid == '':
-        LOG.exception("This appears to be a CM enabled cluster and supervisord is not running")
-        LOG.exception("Make sure you are running as root and CM supervisord is running")
+        logging.exception("This appears to be a CM enabled cluster and supervisord is not running")
+        logging.exception("Make sure you are running as root and CM supervisord is running")
         sys.exit(1)
     except Exception, e:
-      LOG.exception("This appears to be a CM enabled cluster and supervisord is not running")
-      LOG.exception("Make sure you are running as root and CM supervisord is running")
+      logging.exception("This appears to be a CM enabled cluster and supervisord is not running")
+      logging.exception("Make sure you are running as root and CM supervisord is running")
       sys.exit(1)
 
     #Parse CM supervisor include file for Hue and set env vars
@@ -47,7 +47,7 @@ def set_cm_environment():
     if not hue_env_conf == None:
       if os.path.isfile(cm_supervisor_dir + "/" + hue_env_conf):
         hue_env_conf_file = open(cm_supervisor_dir + "/" + hue_env_conf, "r")
-        LOG.info("Setting CM managed environment using supervisor include: %s" % hue_env_conf_file)
+        logging.info("Setting CM managed environment using supervisor include: %s" % hue_env_conf_file)
         for line in hue_env_conf_file:
           if "environment" in line:
             envline = line
@@ -142,11 +142,11 @@ def reload_with_cm_env():
   except:
     os.environ["SKIP_RELOAD"] = "True"
     if 'LD_LIBRARY_PATH' in os.environ:
-      LOG.info("We need to reload the process to include any LD_LIBRARY_PATH changes")
+      logging.info("We need to reload the process to include any LD_LIBRARY_PATH changes")
       try:
         os.execv(sys.argv[0], sys.argv)
       except Exception, exc:
-        LOG.warn('Failed re-exec:', exc)
+        logging.warn('Failed re-exec:', exc)
         sys.exit(1)
 
 def check_security():
@@ -156,16 +156,16 @@ def check_security():
   if hdfs_config.SECURITY_ENABLED.get():
     KLIST = which('klist')
     if KLIST is None:
-      LOG.exception("klist is required, please install and rerun")
+      logging.exception("klist is required, please install and rerun")
       sys.exit(1)
     klist_cmd = '%s | grep "Default principal"' % KLIST
-    LOG.info("KLIST: %s" % klist_cmd)
+    logging.info("KLIST: %s" % klist_cmd)
     klist_check = subprocess.Popen(klist_cmd, shell=True, stdout=subprocess.PIPE)
     klist_princ = klist_check.communicate()[0].split(': ')[1]
     if not 'hue/' in klist_princ:
-      LOG.exception("klist failed, please contact support: %s" % klist_princ)
+      logging.exception("klist failed, please contact support: %s" % klist_princ)
       sys.exit(1)
-    LOG.info("Security enabled using klist_princ: %s" % klist_princ)
+    logging.info("Security enabled using klist_princ: %s" % klist_princ)
     security_enabled = True
 
   return security_enabled
