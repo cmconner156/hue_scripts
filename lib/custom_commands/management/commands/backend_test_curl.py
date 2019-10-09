@@ -25,15 +25,15 @@ def get_service_info(service):
   if service.lower() == 'oozie':
     service_info['url'] = OOZIE_URL.get()
     service_info['security_enabled'] = OOZIE_SECURITY_ENABLED.get()
-  if service.lower() == 'httpfw':
+  if service.lower() == 'httpfs':
     hdfs_config = conf.HDFS_CLUSTERS['default']
     service_info['ur'] = hdfs_config.WEBHDFS_URL.get()
     service_info['security_enabled'] = hdfs_config.SECURITY_ENABLED.get()
 
   if 'url' not in service_info:
-    logging.info("Hue does not have %s configured, cannot test %s" % (service_name, service_name))
+    logging.info("Hue does not have %s configured, cannot test %s" % (service, service))
   elif service_info['url'] is None:
-    logging.info("Hue does not have %s configured, cannot test %s" % (service_name, service_name))
+    logging.info("Hue does not have %s configured, cannot test %s" % (service, service))
 
   return service_info
 
