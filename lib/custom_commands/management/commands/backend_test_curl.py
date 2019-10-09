@@ -24,8 +24,8 @@ def which(file_name):
 from hadoop import conf
 hdfs_config = conf.HDFS_CLUSTERS['default']
 if hdfs_config.SECURITY_ENABLED.get():
-  LOG.info("%s" % desktop.conf.KERBEROS.CCACHE_PATH.get())
-  os.environ['KRB5CCNAME'] = desktop.conf.KERBEROS.CCACHE_PATH.get()
+#  LOG.info("%s" % desktop.conf.KERBEROS.CCACHE_PATH.get())
+#  os.environ['KRB5CCNAME'] = desktop.conf.KERBEROS.CCACHE_PATH.get()
   KLIST = which('klist')
   if KLIST is None:
     LOG.exception("klist is required, please install and rerun")
@@ -39,7 +39,7 @@ if hdfs_config.SECURITY_ENABLED.get():
     sys.exit(1)
   LOG.info("Security enabled using klist_princ: %s" % klist_princ)
 #  klist_princ = klist_check.communicate()[0].split('\n')[0]
-  security_enabled = True
+#  security_enabled = True
 
 CURL = which('curl')
 

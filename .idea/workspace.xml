@@ -35,7 +35,7 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="dummy" value="4" />
-          <entry key="py" value="10455" />
+          <entry key="py" value="10541" />
           <entry key="script_runner" value="284" />
           <entry key="sh" value="2979" />
           <entry key="txt" value="169" />
@@ -45,7 +45,7 @@
         <counts>
           <entry key="Bash" value="2979" />
           <entry key="PLAIN_TEXT" value="173" />
-          <entry key="Python" value="10739" />
+          <entry key="Python" value="10825" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -107,12 +107,12 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/backend_test_curl.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="540">
-              <caret line="36" column="14" selection-start-line="36" selection-start-column="14" selection-end-line="36" selection-end-column="14" />
+            <state relative-caret-position="600">
+              <caret line="40" selection-start-line="40" selection-end-line="40" />
               <folding>
                 <element signature="e#22#31#0" expanded="true" />
-                <marker date="1570640224086" expanded="true" signature="2410:2417" ph="..." />
-                <marker date="1570640224086" expanded="true" signature="4218:4219" ph="..." />
+                <marker date="1570640660172" expanded="true" signature="2468:2475" ph="..." />
+                <marker date="1570640660172" expanded="true" signature="4276:4277" ph="..." />
               </folding>
             </state>
           </provider>
@@ -952,12 +952,12 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/backend_test_curl.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="540">
-          <caret line="36" column="14" selection-start-line="36" selection-start-column="14" selection-end-line="36" selection-end-column="14" />
+        <state relative-caret-position="600">
+          <caret line="40" selection-start-line="40" selection-end-line="40" />
           <folding>
             <element signature="e#22#31#0" expanded="true" />
-            <marker date="1570640224086" expanded="true" signature="2410:2417" ph="..." />
-            <marker date="1570640224086" expanded="true" signature="4218:4219" ph="..." />
+            <marker date="1570640660172" expanded="true" signature="2468:2475" ph="..." />
+            <marker date="1570640660172" expanded="true" signature="4276:4277" ph="..." />
           </folding>
         </state>
       </provider>
