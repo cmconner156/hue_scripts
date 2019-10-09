@@ -19,6 +19,17 @@ hdfs_config = conf.HDFS_CLUSTERS['default']
 if hdfs_config.SECURITY_ENABLED.get():
   LOG.info("%s" % desktop.conf.KERBEROS.CCACHE_PATH.get())
   os.environ['KRB5CCNAME'] = desktop.conf.KERBEROS.CCACHE_PATH.get()
+  from desktop.conf import KERBEROS as kerberos_conf
+  KINIT = kerberos_conf.KINIT_PATH.get()
+  KLIST = os.path.dirname(KINIT) + "/klist"
+  if not os.path.isfile(KLIST):
+    LOG.exception("klist is required, please install and rerun")
+    sys.exit(1)
+  klist_check = subprocess.Popen('%s | grep "Default principal"' % KLIST,
+                                      stdout=subprocess.PIPE)
+  klist_princ = klist_check.communicate()
+  LOG.info("klist_princ: %s" % klist_princ)
+#  klist_princ = klist_check.communicate()[0].split('\n')[0]
   security_enabled = True
 
 
