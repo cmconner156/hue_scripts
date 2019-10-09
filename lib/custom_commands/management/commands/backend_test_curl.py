@@ -27,11 +27,11 @@ if hdfs_config.SECURITY_ENABLED.get():
   LOG.info("%s" % desktop.conf.KERBEROS.CCACHE_PATH.get())
   os.environ['KRB5CCNAME'] = desktop.conf.KERBEROS.CCACHE_PATH.get()
   KLIST = which('klist')
-  if not os.path.isfile(KLIST):
+  if KLIST is None:
     LOG.exception("klist is required, please install and rerun")
     sys.exit(1)
-  klist_check = subprocess.Popen('%s | grep "Default principal"' % KLIST,
-                                      stdout=subprocess.PIPE)
+  klist_cmd = '%s | grep "Default principal"' % KLIST,
+  klist_check = subprocess.Popen(klist_cmd, shell=False, stdout=subprocess.PIPE)
   klist_princ = klist_check.communicate()
   LOG.info("klist_princ: %s" % klist_princ)
 #  klist_princ = klist_check.communicate()[0].split('\n')[0]
