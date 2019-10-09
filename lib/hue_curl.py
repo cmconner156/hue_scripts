@@ -26,10 +26,10 @@ class Curl(object):
 
     if self.security_enabled:
       logging.info("sec_enabled adding negotiate")
-      self.cmf = self.cmd + ' --negotiate -u :'
+      self.cmd = self.cmd + ' --negotiate -u :'
 
     if self.verbose:
-      self.cmd = self.cmd + '-v'
+      self.cmd = self.cmd + ' -v'
 
     logging.info("self.cmd: %s" % self.cmd)
 
