@@ -104,6 +104,7 @@ class Command(BaseCommand):
       for service_test in available_services[service]['tests']:
         logging.info("Running %s %s Test:" % (service, service_test))
         response = curl.do_curl_available_services(available_services[service]['tests'][service_test])
+        logging.info("entireresponse: %s" % options['entireresponse'])
         if options['entireresponse']:
           logging.info("%s %s Test Response: %s" % (service, service_test, response))
         else:
