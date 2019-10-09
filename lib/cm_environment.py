@@ -166,7 +166,7 @@ def check_security():
       sys.exit(1)
     logging.info("Security enabled using principal: %s" % klist_princ)
     logging.info("You can imitate by running following export:")
-    logging.info("OSRUN: export KRB5CCNAME=%s" % os.environ.get['KRB5CCNAME'])
+    logging.info("OSRUN: export KRB5CCNAME=%s" % os.environ['KRB5CCNAME'])
     security_enabled = True
 
   return security_enabled
