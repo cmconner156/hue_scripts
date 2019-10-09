@@ -16,16 +16,23 @@ from liboozie.conf import OOZIE_URL, OOZIE_SECURITY_ENABLED
 from hue_curl import Curl
 
 def get_service_info(service):
+  service_info = {}
   if service.lower() == 'solr':
-    return SOLR_URL.get() SOLR_SECURITY_ENABLED.get()
+    service_info['url'] = SOLR_URL.get()
+    service_info['security_enabled'] = SOLR_SECURITY_ENABLED.get()
   if service.lower() == 'oozie':
-    return OOZIE_URL.get() OOZIE_SECURITY_ENABLED.get()
+    service_info['url'] = OOZIE_URL.get()
+    service_info['security_enabled'] = OOZIE_SECURITY_ENABLED.get()
+
+  return service_info
 
 
 def add_service_test(available_services, service_name=None, testname=None, suburl=None, method='GET', teststring=None):
   if options['service'] == "all" or options['service'] == service_name.lower():
     if not service_name in available_services:
-      url, security_enabled = get_service_info(service_name)
+      service_info = get_service_info(service_name)
+      url = service_info['url']
+      security_enabled = service_info['security_enabled']
       available_services[service_name] = {}
       available_services[service_name]['url'] = url
       available_services[service_name]['security_enabled'] = security_enabled
