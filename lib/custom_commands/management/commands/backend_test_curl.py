@@ -27,7 +27,8 @@ def get_service_info(service):
     service_info['security_enabled'] = OOZIE_SECURITY_ENABLED.get()
   if service.lower() == 'httpfs':
     hdfs_config = hdfs_conf.HDFS_CLUSTERS['default']
-    service_info['ur'] = hdfs_config.WEBHDFS_URL.get()
+    loggin
+    service_info['url'] = hdfs_config.WEBHDFS_URL.get()
     service_info['security_enabled'] = hdfs_config.SECURITY_ENABLED.get()
 
   if 'url' not in service_info:
