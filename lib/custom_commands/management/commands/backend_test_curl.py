@@ -91,11 +91,11 @@ class Command(BaseCommand):
 
     #Add Solr
     add_service_test(available_services, options=options, service_name="Solr", testname="JMX",
-                     suburl='/jmx', method='GET', teststring='solr.solrxml.location')
+                     suburl='jmx', method='GET', teststring='solr.solrxml.location')
 
     #Add Oozie
     add_service_test(available_services, options=options, service_name="Oozie", testname="STATUS",
-                     suburl='/oozie/v1/admin/status?timezone=%s&user.name=hue&doAs=%s' % (TIME_ZONE.get(), options['username']), teststring='systemMode')
+                     suburl='v1/admin/status?timezone=%s&user.name=hue&doAs=%s' % (TIME_ZONE.get(), options['username']), teststring='systemMode')
 
     for service in available_services:
       for service_test in available_services[service]['tests']:

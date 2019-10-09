@@ -20,31 +20,31 @@ class Curl(object):
       sys.exit(1)
 
     # We will change to handle certs later
-    self.cmd = self.curl + ' -k'
+    self.basecmd = self.curl + ' -k'
     logging.info("Checking security status")
     self.security_enabled = check_security()
     self.verbose = verbose
 
     if self.security_enabled:
-      self.cmd = self.cmd + ' --negotiate -u :'
+      self.basecmd = self.basecmd + ' --negotiate -u :'
 
     if self.verbose:
-      self.cmd = self.cmd + ' -v'
+      self.basecmd = self.basecmd + ' -v'
     else:
-      self.cmd = self.cmd + ' -s'
+      self.basecmd = self.basecmd + ' -s'
 
   def do_curl(self, url, method='GET', follow=False, args=None):
 
-    self.cmd = self.cmd + ' -X ' + method
+    cmd = self.basecmd + ' -X ' + method
     if follow:
-      self.cmd = self.cmd + ' -L'
+      cmd = cmd + ' -L'
 
     if args is not None:
-      self.cmd = self.cmd + ' ' + args
+      cmd = cmd + ' ' + args
 
-    self.cmd = self.cmd + ' \'' + url + '\''
-    logging.info("OSRUN: %s" % self.cmd)
-    curl_process = subprocess.Popen(self.cmd, shell=True, stdout=subprocess.PIPE)
+    cmd = cmd + ' \'' + url + '\''
+    logging.info("OSRUN: %s" % cmd)
+    curl_process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
     curl_response = curl_process.communicate()[0]
     curl_ret = curl_process.returncode
     if curl_ret > 0:
