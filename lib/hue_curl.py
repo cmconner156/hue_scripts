@@ -36,7 +36,7 @@ class Curl(object):
     if follow:
       self.cmd = self.cmd + ' -L'
 
-    if args not None:
+    if args is not None:
       self.cmd = self.cmd + ' ' + args
 
     self.cmd = self.cmd + ' \'' + url + '\''
