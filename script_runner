@@ -19,8 +19,8 @@ if not os.environ["USER"] == "root":
 
 sys.path.insert(0, lib_dir)
 
-from cm_environment import Configurator
-hue_config = Configurator().set_cm_environment()
+from cm_environment import set_cm_environment, reload_with_cm_env
+hue_config = set_cm_environment()
 hue_path = hue_config['hue_path']
 hue_bin_dir = hue_config['hue_bin_dir']
 HUE_CONF_DIR = hue_config['HUE_CONF_DIR']
@@ -28,7 +28,7 @@ parcel_dir = hue_config['parcel_dir']
 parcel_name = hue_config['parcel_name']
 
 if not "SKIP_RELOAD" in os.environ.keys():
-  Configurator().reload_with_cm_env()
+  reload_with_cm_env()
 
 activate_file = hue_bin_dir + "/activate_this.py"
 hue_bin = hue_bin_dir + "/hue"

@@ -12,27 +12,29 @@ from django.utils.translation import ugettext_lazy as _t, ugettext as _
 import desktop.conf
 
 from hue_shared import which
+from cm_environment import check_security
 
 LOG = logging.getLogger(__name__)
-security_enabled = False
+security_enabled = check_security()
+#security_enabled = False
 
-from hadoop import conf
-hdfs_config = conf.HDFS_CLUSTERS['default']
-if hdfs_config.SECURITY_ENABLED.get():
-#  LOG.info("%s" % desktop.conf.KERBEROS.CCACHE_PATH.get())
-#  os.environ['KRB5CCNAME'] = desktop.conf.KERBEROS.CCACHE_PATH.get()
-  KLIST = which('klist')
-  if KLIST is None:
-    LOG.exception("klist is required, please install and rerun")
-    sys.exit(1)
-  klist_cmd = '%s | grep "Default principal"' % KLIST
-  LOG.info("KLIST: %s" % klist_cmd)
-  klist_check = subprocess.Popen(klist_cmd, shell=True, stdout=subprocess.PIPE)
-  klist_princ = klist_check.communicate()[0].split(': ')[1]
-  if not 'hue/' in klist_princ:
-    LOG.exception("klist failed, please contact support: %s" % klist_princ)
-    sys.exit(1)
-  LOG.info("Security enabled using klist_princ: %s" % klist_princ)
+#from hadoop import conf
+#hdfs_config = conf.HDFS_CLUSTERS['default']
+#if hdfs_config.SECURITY_ENABLED.get():
+##  LOG.info("%s" % desktop.conf.KERBEROS.CCACHE_PATH.get())
+##  os.environ['KRB5CCNAME'] = desktop.conf.KERBEROS.CCACHE_PATH.get()
+#  KLIST = which('klist')
+#  if KLIST is None:
+#    LOG.exception("klist is required, please install and rerun")
+#    sys.exit(1)
+#  klist_cmd = '%s | grep "Default principal"' % KLIST
+#  LOG.info("KLIST: %s" % klist_cmd)
+#  klist_check = subprocess.Popen(klist_cmd, shell=True, stdout=subprocess.PIPE)
+#  klist_princ = klist_check.communicate()[0].split(': ')[1]
+#  if not 'hue/' in klist_princ:
+#    LOG.exception("klist failed, please contact support: %s" % klist_princ)
+#    sys.exit(1)
+#  LOG.info("Security enabled using klist_princ: %s" % klist_princ)
 #  klist_princ = klist_check.communicate()[0].split('\n')[0]
 #  security_enabled = True
 
