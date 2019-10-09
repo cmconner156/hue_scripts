@@ -25,10 +25,13 @@ class Curl(object):
     self.verbose = verbose
 
     if self.security_enabled:
-      self.cmf = self.cmd + '--negotiate -u :'
+      logging.info("sec_enabled adding negotiate")
+      self.cmf = self.cmd + ' --negotiate -u :'
 
     if self.verbose:
       self.cmd = self.cmd + '-v'
+
+    logging.info("self.cmd: %s" % self.cmd)
 
   def do_curl(self, url, method='GET', follow=False, args=None):
 
