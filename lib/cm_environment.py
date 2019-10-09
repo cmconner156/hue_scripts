@@ -155,3 +155,5 @@ class Configurator(object):
           LOG.warn('Failed re-exec:', exc)
           sys.exit(1)
 
+  def check_security(selfself):
+

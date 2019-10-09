@@ -11,15 +11,10 @@ from django.utils.translation import ugettext_lazy as _t, ugettext as _
 
 import desktop.conf
 
+from hue_shared import which
+
 LOG = logging.getLogger(__name__)
 security_enabled = False
-
-def which(file_name):
-  for path in os.environ["PATH"].split(os.pathsep):
-    full_path = os.path.join(path, file_name)
-    if os.path.exists(full_path) and os.access(full_path, os.X_OK):
-      return full_path
-  return None
 
 from hadoop import conf
 hdfs_config = conf.HDFS_CLUSTERS['default']
