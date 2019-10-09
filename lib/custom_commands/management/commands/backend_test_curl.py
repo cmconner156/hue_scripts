@@ -13,7 +13,7 @@ from desktop.conf import TIME_ZONE
 from search.conf import SOLR_URL, SECURITY_ENABLED as SOLR_SECURITY_ENABLED
 from liboozie.conf import OOZIE_URL, SECURITY_ENABLED as OOZIE_SECURITY_ENABLED
 from hadoop import conf as hdfs_conf
-
+from hadoop import cluster
 
 from hue_curl import Curl
 
@@ -27,9 +27,17 @@ def get_service_info(service):
     service_info['security_enabled'] = OOZIE_SECURITY_ENABLED.get()
   if service.lower() == 'httpfs':
     hdfs_config = hdfs_conf.HDFS_CLUSTERS['default']
-    loggin
     service_info['url'] = hdfs_config.WEBHDFS_URL.get()
     service_info['security_enabled'] = hdfs_config.SECURITY_ENABLED.get()
+  if service.lower() == 'rm':
+    yarn_cluster = cluster.get_cluster_conf_for_job_submission()
+    service_info['url'] = yarn_cluster.RESOURCE_MANAGER_API_URL.get()
+    service_info['security_enabled'] = yarn_cluster.SECURITY_ENABLED.get()
+
+#REFERNCE
+#  history_server_api_url
+#  spark_history_server_url
+#  spark_history_server_security_enabled
 
   if 'url' not in service_info:
     logging.info("Hue does not have %s configured, cannot test %s" % (service, service))
@@ -52,10 +60,10 @@ def add_service_test(available_services, options=None, service_name=None, testna
     if not 'tests' in available_services[service_name]:
       available_services[service_name]['tests'] = {}
     if not testname in available_services[service_name]['tests']:
-      available_services[service_name]['tests']['JMX'] = {}
-      available_services[service_name]['tests']['JMX']['url'] = '%s/%s' % (available_services[service_name]['url'], suburl)
-      available_services[service_name]['tests']['JMX']['method'] = method
-      available_services[service_name]['tests']['JMX']['test'] = teststring
+      available_services[service_name]['tests'][testname] = {}
+      available_services[service_name]['tests'][testname]['url'] = '%s/%s' % (available_services[service_name]['url'], suburl)
+      available_services[service_name]['tests'][testname]['method'] = method
+      available_services[service_name]['tests'][testname]['test'] = teststring
 
 
 class Command(BaseCommand):
@@ -113,6 +121,10 @@ class Command(BaseCommand):
     #Add HTTPFS
     add_service_test(available_services, options=options, service_name="Httpfs", testname="USERHOME",
                      suburl='user/%s?op=GETFILESTATUS&user.name=hue&doas=%s' % (options['username'], options['username']), method='GET', teststring='"type":"DIRECTORY"')
+
+    #Add RM
+    add_service_test(available_services, options=options, service_name="RM", testname="CLUSTERINFO",
+                     suburl='ws/v1/cluster/info', method='GET', teststring='"clusterInfo"')
 
     for service in available_services:
       for service_test in available_services[service]['tests']:
