@@ -26,15 +26,12 @@ class Curl(object):
     self.verbose = verbose
 
     if self.security_enabled:
-      logging.info("sec_enabled adding negotiate")
       self.cmd = self.cmd + ' --negotiate -u :'
 
     if self.verbose:
       self.cmd = self.cmd + ' -v'
     else:
       self.cmd = self.cmd + ' -s'
-
-    logging.info("self.cmd: %s" % self.cmd)
 
   def do_curl(self, url, method='GET', follow=False, args=None):
 
@@ -50,7 +47,8 @@ class Curl(object):
     curl_process = subprocess.Popen(self.cmd, shell=True, stdout=subprocess.PIPE)
     curl_response = curl_process.communicate()[0]
     curl_ret = curl_process.returncode
-    logging.info("curl return code: %s" % str(curl_ret))
+    if curl_ret > 0:
+      logging.exception("Curl failed to run succesfully: %s" % curl_response)
     return curl_response
 
 
