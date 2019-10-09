@@ -18,10 +18,12 @@ class Curl(object):
       LOG.exception("curl is required, please install and rerun")
       sys.exit(1)
 
+    LOG.info("Checking security status")
     self.security_enabled = check_security()
 
   def do_curl(self, method='GET', url=None):
 
+    LOG.info("security_enabled: %s" % self.security_enabled)
     LOG.info("curl: %s" % self.curl)
 
 
