@@ -14,14 +14,19 @@ import desktop.conf
 LOG = logging.getLogger(__name__)
 security_enabled = False
 
+def which(file_name):
+  for path in os.environ["PATH"].split(os.pathsep):
+    full_path = os.path.join(path, file_name)
+    if os.path.exists(full_path) and os.access(full_path, os.X_OK):
+      return full_path
+  return None
+
 from hadoop import conf
 hdfs_config = conf.HDFS_CLUSTERS['default']
 if hdfs_config.SECURITY_ENABLED.get():
   LOG.info("%s" % desktop.conf.KERBEROS.CCACHE_PATH.get())
   os.environ['KRB5CCNAME'] = desktop.conf.KERBEROS.CCACHE_PATH.get()
-  from desktop.conf import KERBEROS as kerberos_conf
-  KINIT = kerberos_conf.KINIT_PATH.get()
-  KLIST = os.path.dirname(KINIT) + "/klist"
+  KLIST = which('klist')
   if not os.path.isfile(KLIST):
     LOG.exception("klist is required, please install and rerun")
     sys.exit(1)
@@ -31,14 +36,6 @@ if hdfs_config.SECURITY_ENABLED.get():
   LOG.info("klist_princ: %s" % klist_princ)
 #  klist_princ = klist_check.communicate()[0].split('\n')[0]
   security_enabled = True
-
-
-def which(file_name):
-  for path in os.environ["PATH"].split(os.pathsep):
-    full_path = os.path.join(path, file_name)
-    if os.path.exists(full_path) and os.access(full_path, os.X_OK):
-      return full_path
-  return None
 
 CURL = which('curl')
 
