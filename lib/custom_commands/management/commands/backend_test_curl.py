@@ -27,7 +27,7 @@ def get_service_info(service):
   return service_info
 
 
-def add_service_test(available_services, service_name=None, testname=None, suburl=None, method='GET', teststring=None):
+def add_service_test(available_services, options=None, service_name=None, testname=None, suburl=None, method='GET', teststring=None):
   if options['service'] == "all" or options['service'] == service_name.lower():
     if not service_name in available_services:
       service_info = get_service_info(service_name)
@@ -90,11 +90,11 @@ class Command(BaseCommand):
     available_services = {}
 
     #Add Solr
-    add_service_test(available_services, service_name="Solr", testname="JMX", suburl='/jmx', method='GET', teststring='solr.solrxml.location')
-
+    add_service_test(available_services, options=options, service_name="Solr", testname="JMX",
+                     suburl='/jmx', method='GET', teststring='solr.solrxml.location')
 
     #Add Oozie
-    add_service_test(available_services, service_name="Oozie", testname="STATUS",
+    add_service_test(available_services, options=options, service_name="Oozie", testname="STATUS",
                      suburl='/oozie/v1/admin/status?timezone=%s&user.name=hue&doAs=%s' % (TIME_ZONE.get(), options['username']), teststring='systemMode')
 
     for service in available_services:
