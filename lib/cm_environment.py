@@ -159,13 +159,12 @@ def check_security():
       logging.exception("klist is required, please install and rerun")
       sys.exit(1)
     klist_cmd = '%s | grep "Default principal"' % KLIST
-    logging.info("KLIST: %s" % klist_cmd)
     klist_check = subprocess.Popen(klist_cmd, shell=True, stdout=subprocess.PIPE)
     klist_princ = klist_check.communicate()[0].split(': ')[1]
     if not 'hue/' in klist_princ:
       logging.exception("klist failed, please contact support: %s" % klist_princ)
       sys.exit(1)
-    logging.info("Security enabled using klist_princ: %s" % klist_princ)
+    logging.info("Security enabled using principal: %s" % klist_princ)
     security_enabled = True
 
   return security_enabled
