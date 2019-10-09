@@ -9,11 +9,37 @@ from django.core.management.base import BaseCommand, CommandError
 from django.utils.translation import ugettext_lazy as _t, ugettext as _
 
 import desktop.conf
+from desktop.conf import TIME_ZONE
+from search.conf import SOLR_URL, SOLR_SECURITY_ENABLED
+from liboozie.conf import OOZIE_URL, OOZIE_SECURITY_ENABLED
 
 from hue_curl import Curl
 
-#logging.basicConfig()
-#logging = logging.getLogger(__name__)
+def get_service_info(service):
+  if service.lower() == 'solr':
+    return SOLR_URL.get() SOLR_SECURITY_ENABLED.get()
+  if service.lower() == 'oozie':
+    return OOZIE_URL.get() OOZIE_SECURITY_ENABLED.get()
+
+
+def add_service_test(available_services, service_name=None, testname=None, suburl=None, method='GET', teststring=None):
+  if options['service'] == "all" or options['service'] == service_name.lower():
+    if not service_name in available_services:
+      url, security_enabled = get_service_info(service_name)
+      available_services[service_name] = {}
+      available_services[service_name]['url'] = url
+      available_services[service_name]['security_enabled'] = security_enabled
+    # Tests
+    if not 'tests' in available_services[service_name]:
+      available_services[service_name]['tests'] = {}
+    if not testname in available_services[service_name]['tests']:
+      available_services[service_name]['tests']['JMX'] = {}
+      available_services[service_name]['tests']['JMX']['url'] = '%s/%s' % (available_services[service_name]['url'], suburl)
+
+      available_services[service_name]['tests']['JMX']['method'] = method
+      available_services[service_name]['tests']['JMX']['test'] = teststring
+  else:
+    logging.info("Hue does not have %s configured, cannot test %s" % (service_name, service_name))
 
 
 class Command(BaseCommand):
@@ -56,29 +82,22 @@ class Command(BaseCommand):
 
     available_services = {}
 
-    if options['service'] == "all" or options['service'] == "solr":
-      from search.conf import SOLR_URL, SECURITY_ENABLED
-      if hasattr(SOLR_URL, 'get'):
-        available_services['solr'] = {}
-        available_services['solr']['url'] = SOLR_URL.get()
-        available_services['solr']['tests'] = {}
-        available_services['solr']['tests']['jmx'] = {}
-        available_services['solr']['tests']['jmx']['url'] = '%s/jmx' % available_services['solr']['url']
-        available_services['solr']['tests']['jmx']['method'] = 'GET'
-        available_services['solr']['tests']['jmx']['test'] = 'solr.solrxml.location'
-        if hasattr(SECURITY_ENABLED, 'get'):
-          available_services['solr']['security_enabled'] = SECURITY_ENABLED.get()
-        else:
-          available_services['solr']['security_enabled'] = False
-      else:
-        logging.info("Hue does not have Solr configured, cannot test Solr")
+    #Add Solr
+    add_service_test(available_services, service_name="Solr", testname="JMX", suburl='/jmx', method='GET', teststring='solr.solrxml.location')
 
-    logging.info("Running Solr JMX Test:")
-    response = curl.do_curl_available_services(available_services['solr']['tests']['jmx'])
-    if options['entireresponse']:
-      logging.info("Solr JMX Test Response: %s" % response)
-    else:
-      if available_services['solr']['tests']['jmx']['test'] in response:
-        logging.info("Solr JMX Test Passed: %s found in response" % available_services['solr']['tests']['jmx']['test'])
+
+    #Add Oozie
+    add_service_test(available_services, service_name="Oozie", testname="STATUS",
+                     suburl='/oozie/v1/admin/status?timezone=%s&user.name=hue&doAs=%s' % (TIME_ZONE.get(), options['username']), teststring='systemMode')
+
+    for service in available_services:
+      for service_test in available_services[service]['tests']:
+        logging.info("Running %s %s Test:" % (service, service_test))
+        response = curl.do_curl_available_services(available_services[service]['tests'][service_test])
+        if options['entireresponse']:
+          logging.info("%s %s Test Response: %s" % (service, service_test, response))
+        else:
+          if available_services[service]['tests'][service_test]['test'] in response:
+            logging.info("%s %s Test Passed: %s found in response" % (service, service_test, available_services[service]['tests'][service_test]['test']))
 
 
