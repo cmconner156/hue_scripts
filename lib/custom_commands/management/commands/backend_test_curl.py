@@ -10,8 +10,8 @@ from django.utils.translation import ugettext_lazy as _t, ugettext as _
 
 import desktop.conf
 from desktop.conf import TIME_ZONE
-from search.conf import SOLR_URL, SOLR_SECURITY_ENABLED
-from liboozie.conf import OOZIE_URL, OOZIE_SECURITY_ENABLED
+from search.conf import SOLR_URL, SECURITY_ENABLED as SOLR_SECURITY_ENABLED
+from liboozie.conf import OOZIE_URL, SECURITY_ENABLED as OOZIE_SECURITY_ENABLED
 
 from hue_curl import Curl
 
