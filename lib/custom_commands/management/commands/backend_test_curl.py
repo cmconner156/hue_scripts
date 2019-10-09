@@ -133,7 +133,6 @@ class Command(BaseCommand):
       for service_test in available_services[service]['tests']:
         logging.info("Running %s %s Test:" % (service, service_test))
         response = curl.do_curl_available_services(available_services[service]['tests'][service_test])
-        logging.info("entireresponse: %s" % options['entireresponse'])
         if available_services[service]['tests'][service_test]['test'] in response:
           logging.info("%s %s Test Passed: %s found in response" % (service, service_test, available_services[service]['tests'][service_test]['test']))
         if options['entireresponse']:
