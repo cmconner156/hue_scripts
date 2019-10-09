@@ -2,6 +2,9 @@ import os
 import sys
 import logging
 import subprocess
+
+from hue_shared import which
+
 logging.basicConfig()
 LOG = logging.getLogger(__name__)
 
