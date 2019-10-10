@@ -17,6 +17,11 @@ from hadoop import cluster
 
 from hue_curl import Curl
 
+current_milli_time = lambda: int(round(time.time() * 1000))
+
+NOW = current_milli_time()
+NOWLESSMIN = NOW - 60000
+
 def get_service_info(service):
   service_info = {}
   if service.lower() == 'solr':
@@ -33,11 +38,14 @@ def get_service_info(service):
     yarn_cluster = cluster.get_cluster_conf_for_job_submission()
     service_info['url'] = yarn_cluster.RESOURCE_MANAGER_API_URL.get()
     service_info['security_enabled'] = yarn_cluster.SECURITY_ENABLED.get()
-
-#REFERNCE
-#  history_server_api_url
-#  spark_history_server_url
-#  spark_history_server_security_enabled
+  if service.lower() == 'jhs':
+    yarn_cluster = cluster.get_cluster_conf_for_job_submission()
+    service_info['url'] = yarn_cluster.HISTORY_SERVER_API_URL.get()
+    service_info['security_enabled'] = yarn_cluster.SECURITY_ENABLED.get()
+  if service.lower() == 'sparkhs':
+    yarn_cluster = cluster.get_cluster_conf_for_job_submission()
+    service_info['url'] = yarn_cluster.SPARK_HISTORY_SERVER_URL.get()
+    service_info['security_enabled'] = yarn_cluster.SPARK_HISTORY_SERVER_SECURITY_ENABLED.get()
 
   if 'url' not in service_info:
     logging.info("Hue does not have %s configured, cannot test %s" % (service, service))
@@ -77,7 +85,7 @@ class Command(BaseCommand):
   try:
     from optparse import make_option
     option_list = BaseCommand.option_list + (
-      make_option("--service", help=_t("Service to test, all, httpfs, solr, oozie, rm, jhs, sparkhs."),
+      make_option("--service", help=_t("Comma separated services to test, all, httpfs, solr, oozie, rm, jhs, sparkhs."),
                   action="store", default='all', dest='service'),
       make_option("--showcurl", help=_t("Show curl commands."),
                   action="store_true", default=False, dest='showcurl'),
@@ -93,7 +101,7 @@ class Command(BaseCommand):
     baseoption_test = 'BaseCommand' in str(e) and 'option_list' in str(e)
     if baseoption_test:
       def add_arguments(self, parser):
-        parser.add_argument("--service", help=_t("Service to test, all, httpfs, solr, oozie, rm, jhs, sparkhs."),
+        parser.add_argument("--service", help=_t("Comma separated services to test, all, httpfs, solr, oozie, rm, jhs, sparkhs."),
                     action="store", default='all', dest='service'),
         parser.add_argument("--showcurl", help=_t("Show curl commands."),
                     action="store_true", default=False, dest='showcurl'),
@@ -108,6 +116,24 @@ class Command(BaseCommand):
       sys.exit(1)
 
   def handle(self, *args, **options):
+    test_services = options['service'].split(',')
+    supported_services = ['all', 'httpfs', 'solr', 'oozie', 'rm', 'jhs', 'sparkhs']
+
+    if not any(elem in test_services for elem in supported_services):
+      logging.exception("Your service list does not contain a supported service: %s" % options['service'])
+      logging.exception("Supported services: all, httpfs, solr, oozie, rm, jhs, sparkhs")
+      logging.exception("Format: httpfs,solr,oozie")
+      sys.exit(1)
+
+    if not all(elem in supported_services for elem in test_services):
+      logging.exception("Your service list contains an unsupported service: %s" % options['service'])
+      logging.exception("Supported services: all, httpfs, solr, oozie, rm, jhs, sparkhs")
+      logging.exception("Format: httpfs,solr,oozie")
+      sys.exit(1)
+
+    if options['service'] == 'sparkhs':
+      logging.exception("Spark History Server not supported yet")
+      sys.exit(1)
 
     curl = Curl(verbose=options['verbose'])
 
@@ -128,6 +154,10 @@ class Command(BaseCommand):
     #Add RM
     add_service_test(available_services, options=options, service_name="RM", testname="CLUSTERINFO",
                      suburl='ws/v1/cluster/info', method='GET', teststring='"clusterInfo"')
+
+    #Add JHS
+    add_service_test(available_services, options=options, service_name="JHS", testname="FINISHED",
+                     suburl='ws/v1/history/mapreduce/jobs?finishedTimeBegin=%s&finishedTimeEnd=%s' % (NOWLESSMIN, NOW), method='GET', teststring='"{"jobs":"')
 
     for service in available_services:
       for service_test in available_services[service]['tests']:

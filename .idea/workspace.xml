@@ -35,7 +35,7 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="dummy" value="25" />
-          <entry key="py" value="16603" />
+          <entry key="py" value="17359" />
           <entry key="script_runner" value="346" />
           <entry key="sh" value="2979" />
           <entry key="txt" value="169" />
@@ -45,7 +45,7 @@
         <counts>
           <entry key="Bash" value="2979" />
           <entry key="PLAIN_TEXT" value="194" />
-          <entry key="Python" value="16949" />
+          <entry key="Python" value="17705" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -99,13 +99,13 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/backend_test_curl.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="540">
-              <caret line="135" selection-start-line="135" selection-end-line="135" />
+            <state relative-caret-position="335">
+              <caret line="119" selection-start-line="119" selection-end-line="119" />
               <folding>
                 <element signature="e#22#31#0" expanded="true" />
-                <marker date="1570657059279" expanded="true" signature="1923:2902" ph="..." />
-                <marker date="1570657059279" expanded="true" signature="3955:3962" ph="..." />
-                <marker date="1570657059279" expanded="true" signature="6497:6498" ph="..." />
+                <marker date="1570731298099" expanded="true" signature="2436:3415" ph="..." />
+                <marker date="1570731298099" expanded="true" signature="4485:4492" ph="..." />
+                <marker date="1570731298099" expanded="true" signature="8009:8010" ph="..." />
               </folding>
             </state>
           </provider>
@@ -968,13 +968,13 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/backend_test_curl.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="540">
-          <caret line="135" selection-start-line="135" selection-end-line="135" />
+        <state relative-caret-position="335">
+          <caret line="119" selection-start-line="119" selection-end-line="119" />
           <folding>
             <element signature="e#22#31#0" expanded="true" />
-            <marker date="1570657059279" expanded="true" signature="1923:2902" ph="..." />
-            <marker date="1570657059279" expanded="true" signature="3955:3962" ph="..." />
-            <marker date="1570657059279" expanded="true" signature="6497:6498" ph="..." />
+            <marker date="1570731298099" expanded="true" signature="2436:3415" ph="..." />
+            <marker date="1570731298099" expanded="true" signature="4485:4492" ph="..." />
+            <marker date="1570731298099" expanded="true" signature="8009:8010" ph="..." />
           </folding>
         </state>
       </provider>
