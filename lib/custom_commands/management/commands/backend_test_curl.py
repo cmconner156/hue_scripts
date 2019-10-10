@@ -179,12 +179,12 @@ class Command(BaseCommand):
     log_file = log_dir + '/backend_test_curl.log'
     logging.info("Tests completed, view logs here: %s" % log_file)
     logging.info("Report:")
-    cmd = 'grep -A1000 "%s" | grep "TEST:"' % str(NOW)
+    cmd = 'grep -A1000 "%s" %s | grep "TEST:"' % (str(NOW), log_file)
     grep_process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
     grep_response = grep_process.communicate()[0]
     logging.info("%s" % grep_response)
     logging.info("OS Repro Commands are:")
-    cmd = 'grep -A1000 "%s" | grep "OSRUN:"' % str(NOW)
+    cmd = 'grep -A1000 "%s" %s | grep "OSRUN:"' % (str(NOW), log_file)
     grep_process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
     grep_response = grep_process.communicate()[0]
     logging.info("%s" % grep_response)
