@@ -180,13 +180,13 @@ class Command(BaseCommand):
     print ""
     print "Tests completed, view logs here: %s" % log_file
     print "Report:"
-    cmd = 'grep -A1000 "%s" %s | grep "TEST:"' % (str(NOW), log_file)
+    cmd = 'grep -A1000 "%s" %s | grep "TEST:" | sed "s/.*INFO//g"' % (str(NOW), log_file)
     grep_process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
     grep_response = grep_process.communicate()[0]
     print "%s" % grep_response
     print ""
     print "OS Repro Commands are:"
-    cmd = 'grep -A1000 "%s" %s | grep "OSRUN:"' % (str(NOW), log_file)
+    cmd = 'grep -A1000 "%s" %s | grep "OSRUN:" | sed "s/.*INFO//g"' % (str(NOW), log_file)
     grep_process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
     grep_response = grep_process.communicate()[0]
     print "%s" % grep_response
