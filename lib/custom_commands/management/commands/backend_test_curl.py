@@ -4,6 +4,7 @@ import sys
 import logging
 import datetime
 import time
+import subprocess
 
 from django.core.management.base import BaseCommand, CommandError
 from django.utils.translation import ugettext_lazy as _t, ugettext as _
@@ -17,7 +18,8 @@ from hadoop import cluster
 
 from hue_curl import Curl
 
-command_logger = logging.getLogger('command_log')
+DEFAULT_LOG_DIR = 'logs'
+log_dir = os.getenv("DESKTOP_LOG_DIR", DEFAULT_LOG_DIR)
 
 current_milli_time = lambda: int(round(time.time() * 1000))
 
@@ -137,6 +139,8 @@ class Command(BaseCommand):
       logging.exception("Spark History Server not supported yet")
       sys.exit(1)
 
+    logging.info("OSRUN: %s" % str(NOW))
+    logging.info("Running REST API Tests on Services: %s" % options['service'])
     curl = Curl(verbose=options['verbose'])
 
     available_services = {}
@@ -166,9 +170,24 @@ class Command(BaseCommand):
         logging.info("Running %s %s Test:" % (service, service_test))
         response = curl.do_curl_available_services(available_services[service]['tests'][service_test])
         if available_services[service]['tests'][service_test]['test'] in response:
-          logging.info("%s %s Test Passed: %s found in response" % (service, service_test, available_services[service]['tests'][service_test]['test']))
+          logging.info("%s %s TEST: Passed: %s found in response" % (service, service_test, available_services[service]['tests'][service_test]['test']))
         if options['entireresponse']:
-          logging.info("%s %s Test Response: %s" % (service, service_test, response))
+          logging.info("%s %s TEST: Response: %s" % (service, service_test, response))
+
+
+
+    log_file = log_dir + '/backend_test_curl.log'
+    logging.info("Tests completed, view logs here: %s" % log_file)
+    logging.info("Report:")
+    cmd = 'grep -A1000 "%s" | grep "TEST:"' % str(NOW)
+    grep_process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
+    grep_response = grep_process.communicate()[0]
+    logging.info("%s" % grep_response)
+    logging.info("OS Repro Commands are:")
+    cmd = 'grep -A1000 "%s" | grep "OSRUN:"' % str(NOW)
+    grep_process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
+    grep_response = grep_process.communicate()[0]
+    logging.info("%s" % grep_response)
 
 
 

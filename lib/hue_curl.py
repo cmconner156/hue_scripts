@@ -10,7 +10,6 @@ from hue_shared import which
 
 #logging.basicConfig()
 #logging = logging.getLogger(__name__)
-command_logger = logging.getLogger('command_log')
 
 class Curl(object):
 
@@ -45,7 +44,6 @@ class Curl(object):
 
     cmd = cmd + ' \'' + url + '\''
     logging.info("OSRUN: %s" % cmd)
-    command_logger.info("OSRUN: %s" % cmd)
     curl_process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
     curl_response = curl_process.communicate()[0]
     curl_ret = curl_process.returncode
