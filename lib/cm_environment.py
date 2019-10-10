@@ -5,6 +5,8 @@ import subprocess
 
 from hue_shared import which
 
+command_logger = logging.getLogger('command_log')
+
 #logging.basicConfig()
 #logging = logging.getLogger(__name__)
 
@@ -167,6 +169,7 @@ def check_security():
     logging.info("Security enabled using principal: %s" % klist_princ)
     logging.info("You can imitate by running following export:")
     logging.info("OSRUN: export KRB5CCNAME=%s" % os.environ['KRB5CCNAME'])
+    command_logger.info("OSRUN: export KRB5CCNAME=%s" % os.environ['KRB5CCNAME'])
     security_enabled = True
 
   return security_enabled

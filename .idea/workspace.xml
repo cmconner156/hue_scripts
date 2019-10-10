@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8e164a0d-d95e-4980-bca7-863b8efae3da" name="Default" comment="Final change, renamed the command to &quot;rename_duplicate_users&quot;">
-      <change beforePath="$PROJECT_DIR$/lib/custom_commands/management/commands/backend_test_curl.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/custom_commands/management/commands/backend_test_curl.py" afterDir="false" />
-    </list>
+    <list default="true" id="8e164a0d-d95e-4980-bca7-863b8efae3da" name="Default" comment="Final change, renamed the command to &quot;rename_duplicate_users&quot;" />
     <ignored path="hue_scripts.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path=".idea/dataSources.local.xml" />
@@ -35,7 +33,7 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="dummy" value="25" />
-          <entry key="py" value="17359" />
+          <entry key="py" value="17486" />
           <entry key="script_runner" value="346" />
           <entry key="sh" value="2979" />
           <entry key="txt" value="169" />
@@ -45,7 +43,7 @@
         <counts>
           <entry key="Bash" value="2979" />
           <entry key="PLAIN_TEXT" value="194" />
-          <entry key="Python" value="17705" />
+          <entry key="Python" value="17832" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -99,13 +97,12 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/backend_test_curl.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="335">
-              <caret line="119" selection-start-line="119" selection-end-line="119" />
+            <state relative-caret-position="255">
+              <caret line="17" column="24" selection-start-line="17" selection-start-column="24" selection-end-line="17" selection-end-column="24" />
               <folding>
-                <element signature="e#22#31#0" expanded="true" />
-                <marker date="1570731298099" expanded="true" signature="2436:3415" ph="..." />
-                <marker date="1570731298099" expanded="true" signature="4485:4492" ph="..." />
-                <marker date="1570731298099" expanded="true" signature="8009:8010" ph="..." />
+                <marker date="1570731457768" expanded="true" signature="2436:3415" ph="..." />
+                <marker date="1570731457768" expanded="true" signature="4485:4492" ph="..." />
+                <marker date="1570731457768" expanded="true" signature="8248:8249" ph="..." />
               </folding>
             </state>
           </provider>
@@ -968,13 +965,12 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/backend_test_curl.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="335">
-          <caret line="119" selection-start-line="119" selection-end-line="119" />
+        <state relative-caret-position="255">
+          <caret line="17" column="24" selection-start-line="17" selection-start-column="24" selection-end-line="17" selection-end-column="24" />
           <folding>
-            <element signature="e#22#31#0" expanded="true" />
-            <marker date="1570731298099" expanded="true" signature="2436:3415" ph="..." />
-            <marker date="1570731298099" expanded="true" signature="4485:4492" ph="..." />
-            <marker date="1570731298099" expanded="true" signature="8009:8010" ph="..." />
+            <marker date="1570731457768" expanded="true" signature="2436:3415" ph="..." />
+            <marker date="1570731457768" expanded="true" signature="4485:4492" ph="..." />
+            <marker date="1570731457768" expanded="true" signature="8248:8249" ph="..." />
           </folding>
         </state>
       </provider>

@@ -17,6 +17,8 @@ from hadoop import cluster
 
 from hue_curl import Curl
 
+command_logger = logging.getLogger('command_log')
+
 current_milli_time = lambda: int(round(time.time() * 1000))
 
 NOW = current_milli_time()
