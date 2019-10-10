@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8e164a0d-d95e-4980-bca7-863b8efae3da" name="Default" comment="Final change, renamed the command to &quot;rename_duplicate_users&quot;">
-      <change beforePath="$PROJECT_DIR$/lib/cm_environment.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/cm_environment.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/custom_commands/management/commands/backend_test_curl.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/custom_commands/management/commands/backend_test_curl.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/hue_curl.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/hue_curl.py" afterDir="false" />
     </list>
     <ignored path="hue_scripts.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -37,7 +35,7 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="dummy" value="25" />
-          <entry key="py" value="17971" />
+          <entry key="py" value="18249" />
           <entry key="script_runner" value="346" />
           <entry key="sh" value="2979" />
           <entry key="txt" value="169" />
@@ -47,7 +45,7 @@
         <counts>
           <entry key="Bash" value="2979" />
           <entry key="PLAIN_TEXT" value="194" />
-          <entry key="Python" value="18317" />
+          <entry key="Python" value="18595" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -73,8 +71,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/cm_environment.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="105">
-              <caret line="7" selection-start-line="7" selection-end-line="7" />
+            <state relative-caret-position="660">
+              <caret line="49" column="16" selection-start-line="49" selection-start-column="16" selection-end-line="49" selection-end-column="16" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
@@ -82,11 +80,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lib/hue_curl.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="542">
-              <caret line="47" column="49" selection-start-line="47" selection-start-column="49" selection-end-line="47" selection-end-column="49" />
+            <state relative-caret-position="182">
+              <caret line="23" column="12" selection-start-line="23" selection-start-column="12" selection-end-line="23" selection-end-column="12" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
                 <marker date="1570732000305" expanded="true" signature="237:821" ph="..." />
@@ -98,16 +96,15 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/backend_test_curl.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="594">
-              <caret line="181" column="22" selection-start-line="181" selection-start-column="22" selection-end-line="181" selection-end-column="22" />
+            <state>
               <folding>
                 <element signature="e#22#31#0" expanded="true" />
-                <marker date="1570732500882" expanded="true" signature="2536:3515" ph="..." />
-                <marker date="1570732500882" expanded="true" signature="4585:4592" ph="..." />
-                <marker date="1570732500882" expanded="true" signature="8769:8770" ph="..." />
+                <marker date="1570732772459" expanded="true" signature="2536:3515" ph="..." />
+                <marker date="1570732772459" expanded="true" signature="4585:4592" ph="..." />
+                <marker date="1570732772459" expanded="true" signature="9108:9109" ph="..." />
               </folding>
             </state>
           </provider>
@@ -944,39 +941,38 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/hue_curl.py">
+    <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/backend_test_curl.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="542">
-          <caret line="47" column="49" selection-start-line="47" selection-start-column="49" selection-end-line="47" selection-end-column="49" />
+        <state>
           <folding>
-            <element signature="e#0#9#0" expanded="true" />
-            <marker date="1570732000305" expanded="true" signature="237:821" ph="..." />
-            <marker date="1570732000305" expanded="true" signature="237:822" ph="..." />
-            <marker date="1570732000305" expanded="true" signature="1059:1063" ph="..." />
-            <marker date="1570732000305" expanded="true" signature="1385:1575" ph="..." />
+            <element signature="e#22#31#0" expanded="true" />
+            <marker date="1570732772459" expanded="true" signature="2536:3515" ph="..." />
+            <marker date="1570732772459" expanded="true" signature="4585:4592" ph="..." />
+            <marker date="1570732772459" expanded="true" signature="9108:9109" ph="..." />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/cm_environment.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="7" selection-start-line="7" selection-end-line="7" />
+        <state relative-caret-position="660">
+          <caret line="49" column="16" selection-start-line="49" selection-start-column="16" selection-end-line="49" selection-end-column="16" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/custom_commands/management/commands/backend_test_curl.py">
+    <entry file="file://$PROJECT_DIR$/lib/hue_curl.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="594">
-          <caret line="181" column="22" selection-start-line="181" selection-start-column="22" selection-end-line="181" selection-end-column="22" />
+        <state relative-caret-position="182">
+          <caret line="23" column="12" selection-start-line="23" selection-start-column="12" selection-end-line="23" selection-end-column="12" />
           <folding>
-            <element signature="e#22#31#0" expanded="true" />
-            <marker date="1570732500882" expanded="true" signature="2536:3515" ph="..." />
-            <marker date="1570732500882" expanded="true" signature="4585:4592" ph="..." />
-            <marker date="1570732500882" expanded="true" signature="8769:8770" ph="..." />
+            <element signature="e#0#9#0" expanded="true" />
+            <marker date="1570732000305" expanded="true" signature="237:821" ph="..." />
+            <marker date="1570732000305" expanded="true" signature="237:822" ph="..." />
+            <marker date="1570732000305" expanded="true" signature="1059:1063" ph="..." />
+            <marker date="1570732000305" expanded="true" signature="1385:1575" ph="..." />
           </folding>
         </state>
       </provider>
