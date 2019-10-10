@@ -139,7 +139,7 @@ class Command(BaseCommand):
       logging.exception("Spark History Server not supported yet")
       sys.exit(1)
 
-    logging.info("OSRUN: %s" % str(NOW))
+    logging.info("%s" % str(NOW))
     logging.info("Running REST API Tests on Services: %s" % options['service'])
     curl = Curl(verbose=options['verbose'])
 
@@ -170,9 +170,9 @@ class Command(BaseCommand):
         logging.info("Running %s %s Test:" % (service, service_test))
         response = curl.do_curl_available_services(available_services[service]['tests'][service_test])
         if available_services[service]['tests'][service_test]['test'] in response:
-          logging.info("%s %s TEST: Passed: %s found in response" % (service, service_test, available_services[service]['tests'][service_test]['test']))
+          logging.info("TEST: %s %s: Passed: %s found in response" % (service, service_test, available_services[service]['tests'][service_test]['test']))
         if options['entireresponse']:
-          logging.info("%s %s TEST: Response: %s" % (service, service_test, response))
+          logging.info("TEST: %s %s: Response: %s" % (service, service_test, response))
 
 
 
@@ -180,13 +180,13 @@ class Command(BaseCommand):
     print ""
     print "Tests completed, view logs here: %s" % log_file
     print "Report:"
-    cmd = 'grep -A1000 "%s" %s | grep "TEST:" | sed "s/.*INFO//g"' % (str(NOW), log_file)
+    cmd = 'grep -A1000 "%s" %s | grep "TEST:" | sed "s/.*INFO.*TEST:/  TEST:/g"' % (str(NOW), log_file)
     grep_process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
     grep_response = grep_process.communicate()[0]
     print "%s" % grep_response
     print ""
     print "OS Repro Commands are:"
-    cmd = 'grep -A1000 "%s" %s | grep "OSRUN:" | sed "s/.*INFO//g"' % (str(NOW), log_file)
+    cmd = 'grep -A1000 "%s" %s | grep "OSRUN:" | sed "s/.*INFO.*OSRUN:/  /g"' % (str(NOW), log_file)
     grep_process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
     grep_response = grep_process.communicate()[0]
     print "%s" % grep_response
