@@ -131,7 +131,7 @@ class Command(BaseCommand):
   def handle(self, *args, **options):
     test_options = {}
     test_options['TIME_ZONE'] = TIME_ZONE.get()
-    test_options['DOAS'] = options[username]
+    test_options['DOAS'] = options['username']
     test_options['NOW'] = current_milli_time()
     test_options['NOWLESSMIN'] = test_options['NOW'] - 60000
     if options['testoptions'] is not None:
