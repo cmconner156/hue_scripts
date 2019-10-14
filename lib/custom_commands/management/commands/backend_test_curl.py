@@ -133,7 +133,6 @@ class Command(BaseCommand):
     test_options['NOW'] = current_milli_time()
     test_options['NOWLESSMIN'] = test_options['NOW'] - 60000
     if options['testoptions'] is not None:
-      test_options = {}
       for test_option in options['testoptions'].split(','):
         option, option_value = test_option.split('=')
         test_options[option.upper()] = option_value
@@ -190,7 +189,7 @@ class Command(BaseCommand):
       logging.warn("Spark History Server not supported yet")
       sys.exit(1)
 
-    logging.info("%s" % str(test_options['NOW']))
+    logging.infowarns" % str(test_options['NOW']))
     logging.info("Running REST API Tests on Services: %s" % options['service'])
     curl = Curl(verbose=options['verbose'])
 
