@@ -123,7 +123,7 @@ class Command(BaseCommand):
         parser.add_argument("--verbose", help=_t("Verbose."),
                     action="store_true", default=False, dest='verbose')
     else:
-      logging.exception(str(e))
+      logging.warn(str(e))
       sys.exit(1)
 
   def handle(self, *args, **options):
@@ -159,35 +159,35 @@ class Command(BaseCommand):
 
     if options['testname'] is not None:
       if len(test_services) > 1 or "all" in test_services:
-        logging.exception("When using --testname you must only submit one service name and you must not use all")
+        logging.warn("When using --testname you must only submit one service name and you must not use all")
         sys.exit(1)
 
       if options['testname'] not in allowed_tests[options['service'].lower()].keys():
-        logging.exception("--testname %s not found in allowed_tests for service %s" % (options['testname'], options['service']))
-        logging.exception("Allowed tests for service:")
+        logging.warn("--testname %s not found in allowed_tests for service %s" % (options['testname'], options['service']))
+        logging.warn("Allowed tests for service:")
         for test in allowed_tests[options['service'].lower()].keys():
           if allowed_tests[options['service'].lower()][test] is None:
             testoptions = "NONE"
           else:
             testoptions = allowed_tests[options['service'].lower()][test]
-          logging.exception("testname: %s : testoptions: %s" % (test, testoptions))
+          logging.warn("testname: %s : testoptions: %s" % (test, testoptions))
         sys.exit(1)
 
 
     if not any(elem in test_services for elem in supported_services):
-      logging.exception("Your service list does not contain a supported service: %s" % options['service'])
-      logging.exception("Supported services: all, httpfs, solr, oozie, rm, jhs, sparkhs")
-      logging.exception("Format: httpfs,solr,oozie")
+      logging.warn("Your service list does not contain a supported service: %s" % options['service'])
+      logging.warn("Supported services: all, httpfs, solr, oozie, rm, jhs, sparkhs")
+      logging.warn("Format: httpfs,solr,oozie")
       sys.exit(1)
 
     if not all(elem in supported_services for elem in test_services):
-      logging.exception("Your service list contains an unsupported service: %s" % options['service'])
-      logging.exception("Supported services: all, httpfs, solr, oozie, rm, jhs, sparkhs")
-      logging.exception("Format: httpfs,solr,oozie")
+      logging.warn("Your service list contains an unsupported service: %s" % options['service'])
+      logging.warn("Supported services: all, httpfs, solr, oozie, rm, jhs, sparkhs")
+      logging.warn("Format: httpfs,solr,oozie")
       sys.exit(1)
 
     if options['service'] == 'sparkhs':
-      logging.exception("Spark History Server not supported yet")
+      logging.warn("Spark History Server not supported yet")
       sys.exit(1)
 
     logging.info("%s" % str(test_options['NOW']))
