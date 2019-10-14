@@ -144,20 +144,16 @@ class Command(BaseCommand):
     allowed_tests['httpfs'] = {}
     allowed_tests['httpfs']['USERHOME'] = None
 
-    allowed_tests = {}
     allowed_tests['jhs'] = {}
     allowed_tests['jhs']['FINISHED'] = None
 
-    allowed_tests = {}
     allowed_tests['oozie'] = {}
     allowed_tests['oozie']['STATUS'] = None
     allowed_tests['oozie']['JOBLOG'] = "oozie_id=0000001-190820133637006-oozie-oozi-C"
 
-    allowed_tests = {}
     allowed_tests['rm'] = {}
     allowed_tests['rm']['CLUSTERINFO'] = None
 
-    allowed_tests = {}
     allowed_tests['solr'] = {}
     allowed_tests['solr']['JMX'] = None
 
