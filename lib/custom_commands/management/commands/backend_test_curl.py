@@ -162,7 +162,7 @@ class Command(BaseCommand):
     allowed_tests['solr']['JMX'] = None
 
     if options['testname'] is not None:
-      if len(supported_services) > 1 or "all" in supported_services:
+      if len(test_services) > 1 or "all" in test_services:
         logging.exception("When using --testname you must only submit one service name and you must not use all")
         sys.exit(1)
 
