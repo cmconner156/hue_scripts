@@ -23,9 +23,6 @@ log_dir = os.getenv("DESKTOP_LOG_DIR", DEFAULT_LOG_DIR)
 
 current_milli_time = lambda: int(round(time.time() * 1000))
 
-NOW = current_milli_time()
-NOWLESSMIN = NOW - 60000
-
 def get_service_info(service):
   service_info = {}
   if service.lower() == 'solr':
@@ -62,7 +59,7 @@ def get_service_info(service):
   return service_info
 
 
-def add_service_test(available_services, options=None, service_name=None, testname=None, suburl=None, method='GET', teststring=None):
+def add_service_test(available_services, options=None, service_name=None, testname=None, suburl=None, method='GET', teststring=None, test_options=None):
   if options['service'] == "all" or options['service'] == service_name.lower():
     if not service_name in available_services:
       service_info = get_service_info(service_name)
@@ -75,6 +72,10 @@ def add_service_test(available_services, options=None, service_name=None, testna
     if not 'tests' in available_services[service_name]:
       available_services[service_name]['tests'] = {}
     if not testname in available_services[service_name]['tests']:
+      str.replace("TIMEZONE", TIME_ZONE.get())
+      str.replace("DOAS", options['username'])
+      for test_option in test_options.keys():
+        str.replace(test_option, test_options[test_option])
       available_services[service_name]['tests'][testname] = {}
       available_services[service_name]['tests'][testname]['url'] = '%s/%s' % (available_services[service_name]['url'], suburl)
       available_services[service_name]['tests'][testname]['method'] = method
@@ -91,6 +92,10 @@ class Command(BaseCommand):
     option_list = BaseCommand.option_list + (
       make_option("--service", help=_t("Comma separated services to test, all, httpfs, solr, oozie, rm, jhs, sparkhs."),
                   action="store", default='all', dest='service'),
+      make_option("--testname", help=_t("Test for a given service, must only include one service name."),
+                  action="store", default=None, dest='testname'),
+      make_option("--testoptions", help=_t("Comma separated list of options for test. IE: oozie_job=0000778-190820133637006-oozie-oozi-C,getlogs=true"),
+                  action="store", default=None, dest='testoptions'),
       make_option("--showcurl", help=_t("Show curl commands."),
                   action="store_true", default=False, dest='showcurl'),
       make_option("--response", help=_t("Show entire REST response."),
@@ -107,6 +112,10 @@ class Command(BaseCommand):
       def add_arguments(self, parser):
         parser.add_argument("--service", help=_t("Comma separated services to test, all, httpfs, solr, oozie, rm, jhs, sparkhs."),
                     action="store", default='all', dest='service'),
+        parser.add_argument("--testname", help=_t("Test for a given service, must only include one service name."),
+                    action="store", default=None, dest='testname'),
+        parser.add_argument("--testoptions", help=_t("Comma separated list of options for test. IE: oozie_job=0000778-190820133637006-oozie-oozi-C,getlogs=true"),
+                    action="store", default=None, dest='testoptions'),
         parser.add_argument("--showcurl", help=_t("Show curl commands."),
                     action="store_true", default=False, dest='showcurl'),
         parser.add_argument("--response", help=_t("Show entire REST response."),
@@ -120,8 +129,49 @@ class Command(BaseCommand):
       sys.exit(1)
 
   def handle(self, *args, **options):
+    test_options = {}
+    test_options['TIME_ZONE'] = TIME_ZONE.get()
+    test_options['DOAS'] = options[username]
+    test_options['NOW'] = current_milli_time()
+    test_options['NOWLESSMIN'] = test_options['NOW'] - 60000
+    if options['testoptions'] is not None:
+      test_options = {}
+      for test_option in options['testoptions'].split(','):
+        option, option_value = test_option.split('=')
+        test_options[option.upper()] = option_value
+
     test_services = options['service'].split(',')
     supported_services = ['all', 'httpfs', 'solr', 'oozie', 'rm', 'jhs', 'sparkhs']
+    allowed_tests = {}
+    allowed_tests['httpfs'] = []
+    allowed_tests['httpfs']['USERHOME'] = None
+
+    allowed_tests = {}
+    allowed_tests['jhs'] = []
+    allowed_tests['jhs']['FINISHED'] = None
+
+    allowed_tests = {}
+    allowed_tests['oozie'] = []
+    allowed_tests['oozie']['STATUS'] = None
+    allowed_tests['oozie']['JOBLOG'] = "oozie_id=0000001-190820133637006-oozie-oozi-C"
+
+    allowed_tests = {}
+    allowed_tests['rm'] = []
+    allowed_tests['rm']['CLUSTERINFO'] = None
+
+    allowed_tests = {}
+    allowed_tests['solr'] = []
+    allowed_tests['solr']['JMX'] = None
+
+    if options['testname'] is not None:
+      if len(supported_services) > 1 or "all" in supported_services:
+        logging.exception("When using --testname you must only submit one service name and you must not use all")
+        sys.exit(1)
+
+      if options['testname'] not in allowed_tests[options['service'].lower()]:
+        logging.exception("--testname %s not found in allowed_tests for service %s" % (options['testname'], options['service']))
+        logging.exception("Allowed tests for service %s: %s" % (options['service'], allowed_tests[options['service'].lower()]))
+
 
     if not any(elem in test_services for elem in supported_services):
       logging.exception("Your service list does not contain a supported service: %s" % options['service'])
@@ -147,23 +197,30 @@ class Command(BaseCommand):
 
     #Add Solr
     add_service_test(available_services, options=options, service_name="Solr", testname="JMX",
-                     suburl='jmx', method='GET', teststring='solr.solrxml.location')
+                     suburl='jmx', method='GET', teststring='solr.solrxml.location', test_options=test_options)
 
     #Add Oozie
     add_service_test(available_services, options=options, service_name="Oozie", testname="STATUS",
-                     suburl='v1/admin/status?timezone=%s&user.name=hue&doAs=%s' % (TIME_ZONE.get(), options['username']), teststring='{"systemMode":"NORMAL"}')
+                     suburl='v1/admin/status?timezone=TIME_ZONE&user.name=hue&doAs=DOAS', method='GET',
+                     teststring='{"systemMode":"NORMAL"}', test_options=test_options)
+
+    add_service_test(available_services, options=options, service_name="Oozie", testname="JOBLOG",
+                     suburl='v2/job/OOZIE_ID?timezone=TIME_ZONE&show=log&user.name=hue&logfilter=&doAs=DOAS', method='GET',
+                     teststring='{"systemMode":"NORMAL"}', test_options=test_options)
 
     #Add HTTPFS
     add_service_test(available_services, options=options, service_name="Httpfs", testname="USERHOME",
-                     suburl='user/%s?op=GETFILESTATUS&user.name=hue&doas=%s' % (options['username'], options['username']), method='GET', teststring='"type":"DIRECTORY"')
+                     suburl='user/DOAS?op=GETFILESTATUS&user.name=hue&DOAS=%s', method='GET',
+                     teststring='"type":"DIRECTORY"', test_options=test_options)
 
     #Add RM
     add_service_test(available_services, options=options, service_name="RM", testname="CLUSTERINFO",
-                     suburl='ws/v1/cluster/info', method='GET', teststring='"clusterInfo"')
+                     suburl='ws/v1/cluster/info', method='GET', teststring='"clusterInfo"', test_options=test_options)
 
     #Add JHS
     add_service_test(available_services, options=options, service_name="JHS", testname="FINISHED",
-                     suburl='ws/v1/history/mapreduce/jobs?finishedTimeBegin=%s&finishedTimeEnd=%s' % (NOWLESSMIN, NOW), method='GET', teststring='"{"jobs":"')
+                     suburl='ws/v1/history/mapreduce/jobs?finishedTimeBegin=NOWLESSMIN&finishedTimeEnd=NOW', method='GET',
+                     teststring='"{"jobs":"', test_options=test_options)
 
     for service in available_services:
       for service_test in available_services[service]['tests']:
@@ -173,8 +230,6 @@ class Command(BaseCommand):
           logging.info("TEST: %s %s: Passed: %s found in response" % (service, service_test, available_services[service]['tests'][service_test]['test']))
         if options['entireresponse']:
           logging.info("TEST: %s %s: Response: %s" % (service, service_test, response))
-
-
 
     log_file = log_dir + '/backend_test_curl.log'
     print ""
