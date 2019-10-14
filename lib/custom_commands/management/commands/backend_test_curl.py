@@ -164,7 +164,13 @@ class Command(BaseCommand):
 
       if options['testname'] not in allowed_tests[options['service'].lower()].keys():
         logging.exception("--testname %s not found in allowed_tests for service %s" % (options['testname'], options['service']))
-        logging.exception("Allowed tests for service %s: %s" % (options['service'], allowed_tests[options['service'].lower()]))
+        logging.exception("Allowed tests for service:")
+        for test in allowed_tests[options['service'].lower()].keys():
+          if allowed_tests[options['service'].lower()][test] is None:
+            testoptions = "NONE"
+          else:
+            testoptions = allowed_tests[options['service'].lower()][test]
+          logging.exception("testname: %s : testoptions: %s" % (test, testoptions))
         sys.exit(1)
 
 
