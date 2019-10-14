@@ -166,9 +166,10 @@ class Command(BaseCommand):
         logging.exception("When using --testname you must only submit one service name and you must not use all")
         sys.exit(1)
 
-      if options['testname'] not in allowed_tests[options['service'].lower()]:
+      if options['testname'] not in allowed_tests[options['service'].lower()].keys():
         logging.exception("--testname %s not found in allowed_tests for service %s" % (options['testname'], options['service']))
         logging.exception("Allowed tests for service %s: %s" % (options['service'], allowed_tests[options['service'].lower()]))
+        sys.exit(1)
 
 
     if not any(elem in test_services for elem in supported_services):
