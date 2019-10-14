@@ -189,7 +189,7 @@ class Command(BaseCommand):
       logging.exception("Spark History Server not supported yet")
       sys.exit(1)
 
-    logging.info("%s" % str(NOW))
+    logging.info("%s" % str(test_options['NOW']))
     logging.info("Running REST API Tests on Services: %s" % options['service'])
     curl = Curl(verbose=options['verbose'])
 
