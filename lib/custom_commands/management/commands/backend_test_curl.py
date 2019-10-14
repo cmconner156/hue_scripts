@@ -219,7 +219,7 @@ class Command(BaseCommand):
     #Add JHS
     add_service_test(available_services, options=options, service_name="JHS", testname="FINISHED",
                      suburl='ws/v1/history/mapreduce/jobs?finishedTimeBegin=NOWLESSMIN&finishedTimeEnd=NOW', method='GET',
-                     teststring='"{"jobs":"', test_options=test_options)
+                     teststring='{"jobs"', test_options=test_options)
 
     for service in available_services:
       for service_test in available_services[service]['tests']:
