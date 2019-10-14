@@ -73,7 +73,7 @@ def add_service_test(available_services, options=None, service_name=None, testna
       available_services[service_name]['tests'] = {}
     if not testname in available_services[service_name]['tests']:
       for test_option in test_options.keys():
-        suburl.replace(test_option, test_options[test_option])
+        suburl = suburl.replace(test_option, test_options[test_option])
       available_services[service_name]['tests'][testname] = {}
       available_services[service_name]['tests'][testname]['url'] = '%s/%s' % (available_services[service_name]['url'], suburl)
       available_services[service_name]['tests'][testname]['method'] = method
