@@ -207,7 +207,7 @@ class Command(BaseCommand):
     if options['testname'] is not None and options['testname'].upper() == 'JOBLOG':
         add_service_test(available_services, options=options, service_name="Oozie", testname="JOBLOG",
                        suburl='v2/job/OOZIE_ID?timezone=TIME_ZONE&show=log&user.name=hue&logfilter=&doAs=DOAS', method='GET',
-                       teststring='{"systemMode":"NORMAL"}', test_options=test_options)
+                       teststring='org.apache.oozie.service.JPAService: SERVER', test_options=test_options)
 
     #Add HTTPFS
     add_service_test(available_services, options=options, service_name="Httpfs", testname="USERHOME",
