@@ -143,24 +143,24 @@ class Command(BaseCommand):
     test_services = options['service'].split(',')
     supported_services = ['all', 'httpfs', 'solr', 'oozie', 'rm', 'jhs', 'sparkhs']
     allowed_tests = {}
-    allowed_tests['httpfs'] = []
+    allowed_tests['httpfs'] = {}
     allowed_tests['httpfs']['USERHOME'] = None
 
     allowed_tests = {}
-    allowed_tests['jhs'] = []
+    allowed_tests['jhs'] = {}
     allowed_tests['jhs']['FINISHED'] = None
 
     allowed_tests = {}
-    allowed_tests['oozie'] = []
+    allowed_tests['oozie'] = {}
     allowed_tests['oozie']['STATUS'] = None
     allowed_tests['oozie']['JOBLOG'] = "oozie_id=0000001-190820133637006-oozie-oozi-C"
 
     allowed_tests = {}
-    allowed_tests['rm'] = []
+    allowed_tests['rm'] = {}
     allowed_tests['rm']['CLUSTERINFO'] = None
 
     allowed_tests = {}
-    allowed_tests['solr'] = []
+    allowed_tests['solr'] = {}
     allowed_tests['solr']['JMX'] = None
 
     if options['testname'] is not None:
@@ -204,9 +204,10 @@ class Command(BaseCommand):
                      suburl='v1/admin/status?timezone=TIME_ZONE&user.name=hue&doAs=DOAS', method='GET',
                      teststring='{"systemMode":"NORMAL"}', test_options=test_options)
 
-    add_service_test(available_services, options=options, service_name="Oozie", testname="JOBLOG",
-                     suburl='v2/job/OOZIE_ID?timezone=TIME_ZONE&show=log&user.name=hue&logfilter=&doAs=DOAS', method='GET',
-                     teststring='{"systemMode":"NORMAL"}', test_options=test_options)
+    if options['testname'].upper() = 'JOBLOG':
+      add_service_test(available_services, options=options, service_name="Oozie", testname="JOBLOG",
+                       suburl='v2/job/OOZIE_ID?timezone=TIME_ZONE&show=log&user.name=hue&logfilter=&doAs=DOAS', method='GET',
+                       teststring='{"systemMode":"NORMAL"}', test_options=test_options)
 
     #Add HTTPFS
     add_service_test(available_services, options=options, service_name="Httpfs", testname="USERHOME",
