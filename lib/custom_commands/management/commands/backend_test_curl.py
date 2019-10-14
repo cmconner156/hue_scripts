@@ -202,8 +202,8 @@ class Command(BaseCommand):
                      suburl='v1/admin/status?timezone=TIME_ZONE&user.name=hue&doAs=DOAS', method='GET',
                      teststring='{"systemMode":"NORMAL"}', test_options=test_options)
 
-    if options['testname'].upper() == 'JOBLOG':
-      add_service_test(available_services, options=options, service_name="Oozie", testname="JOBLOG",
+    if options['testname'] is not None and options['testname'].upper() == 'JOBLOG':
+        add_service_test(available_services, options=options, service_name="Oozie", testname="JOBLOG",
                        suburl='v2/job/OOZIE_ID?timezone=TIME_ZONE&show=log&user.name=hue&logfilter=&doAs=DOAS', method='GET',
                        teststring='{"systemMode":"NORMAL"}', test_options=test_options)
 
