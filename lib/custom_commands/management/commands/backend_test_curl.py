@@ -148,6 +148,7 @@ class Command(BaseCommand):
 
     allowed_tests['oozie'] = {}
     allowed_tests['oozie']['STATUS'] = None
+    allowed_tests['oozie']['JOB'] = "oozie_id=0000001-190820133637006-oozie-oozi-C"
     allowed_tests['oozie']['JOBLOG'] = "oozie_id=0000001-190820133637006-oozie-oozi-C"
 
     allowed_tests['rm'] = {}
@@ -203,6 +204,11 @@ class Command(BaseCommand):
     add_service_test(available_services, options=options, service_name="Oozie", testname="STATUS",
                      suburl='v1/admin/status?timezone=TIME_ZONE&user.name=hue&doAs=DOAS', method='GET',
                      teststring='{"systemMode":"NORMAL"}', test_options=test_options)
+
+    if options['testname'] is not None and options['testname'].upper() == 'JOB':
+        add_service_test(available_services, options=options, service_name="Oozie", testname="JOB",
+                       suburl='v1/job/OOZIE_ID?timezone=TIME_ZONE&suser.name=hue&logfilter=&doAs=DOAS', method='GET',
+                       teststring='org.apache.oozie.service.JPAService: SERVER', test_options=test_options)
 
     if options['testname'] is not None and options['testname'].upper() == 'JOBLOG':
         add_service_test(available_services, options=options, service_name="Oozie", testname="JOBLOG",
