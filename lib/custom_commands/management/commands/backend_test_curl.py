@@ -153,6 +153,7 @@ class Command(BaseCommand):
     allowed_tests['oozie']['COORDS'] = None
     allowed_tests['oozie']['JOB'] = "oozie_id=0000001-190820133637006-oozie-oozi-C"
     allowed_tests['oozie']['JOBLOG'] = "oozie_id=0000001-190820133637006-oozie-oozi-C"
+    allowed_tests['oozie']['JOBDEF'] = "oozie_id=0000001-190820133637006-oozie-oozi-C"
 
     allowed_tests['rm'] = {}
     allowed_tests['rm']['CLUSTERINFO'] = None
@@ -222,7 +223,7 @@ class Command(BaseCommand):
     elif options['testname'].upper() == 'JOB':
         add_service_test(available_services, options=options, service_name="Oozie", testname="JOB",
                        suburl='v1/job/OOZIE_ID?timezone=TIME_ZONE&suser.name=hue&logfilter=&doAs=DOAS', method='GET',
-                       teststring='org.apache.oozie.service.JPAService: SERVER', test_options=test_options)
+                       teststring='{"appName":', test_options=test_options)
 
     elif options['testname'].upper() == 'JOBLOG':
         add_service_test(available_services, options=options, service_name="Oozie", testname="JOBLOG",
