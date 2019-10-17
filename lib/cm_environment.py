@@ -2,6 +2,7 @@ import os
 import sys
 import logging
 import subprocess
+import re
 
 from hue_shared import which
 from desktop.conf import DATABASE as desktop_database
@@ -101,8 +102,20 @@ def set_cm_environment():
       print "JAVA_HOME must be set and can't be found, please set JAVA_HOME environment variable"
       sys.exit(1)
 
+    dbengine = None
+    for line in open(os.environ["HUE_CONF_DIR"] + "/hue_safety_valve_server.ini"):
+      if re.search("engine=", line):
+        dbengine = line
+    if dbengine is None:
+      for line in open(os.environ["HUE_CONF_DIR"] + "/hue_safety_valve.ini"):
+        if re.search("engine=", line):
+          dbengine = line
+    if dbengine is None:
+      for line in open(os.environ["HUE_CONF_DIR"] + "/hue.ini"):
+        if re.search("engine=", line):
+          dbengine = line
 
-    if "mysql" in desktop_database.ENGINE.get().lower():
+    if dbengine is not None and "mysql" in dbengine.lower():
       print "CHRIS: mysql found"
       oracle_check_process = subprocess.Popen('grep -i oracle %s/hue*ini' % os.environ["HUE_CONF_DIR"], shell=True, stdout=subprocess.PIPE)
       oracle_check = oracle_check_process.communicate()[0]
