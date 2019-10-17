@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8e164a0d-d95e-4980-bca7-863b8efae3da" name="Default" comment="Final change, renamed the command to &quot;rename_duplicate_users&quot;">
-      <change beforePath="$PROJECT_DIR$/lib/custom_commands/management/commands/backend_test_curl.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/custom_commands/management/commands/backend_test_curl.py" afterDir="false" />
-    </list>
+    <list default="true" id="8e164a0d-d95e-4980-bca7-863b8efae3da" name="Default" comment="Final change, renamed the command to &quot;rename_duplicate_users&quot;" />
     <ignored path="hue_scripts.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path=".idea/dataSources.local.xml" />
