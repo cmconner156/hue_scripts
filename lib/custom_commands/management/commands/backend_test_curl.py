@@ -233,7 +233,6 @@ class Command(BaseCommand):
       for service_test in available_services[service]['tests']:
         logging.info("Running %s %s Test:" % (service, service_test))
         start_time = time.time()
-        self['duration'] = ' returned in %dms' % ((time.time() - start_time) * 1000) if start_time is not None else ''
         response = curl.do_curl_available_services(available_services[service]['tests'][service_test])
         returned_in = time.time() - start_time
         if available_services[service]['tests'][service_test]['test'] in response:
