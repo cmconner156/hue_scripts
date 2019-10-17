@@ -4,6 +4,7 @@ import logging
 import subprocess
 
 from hue_shared import which
+from desktop.conf import DATABASE as desktop_database
 
 #logging.basicConfig()
 #logging = logging.getLogger(__name__)
@@ -101,25 +102,26 @@ def set_cm_environment():
       sys.exit(1)
 
 
-    oracle_check_process = subprocess.Popen('grep -i oracle %s/hue*ini' % os.environ["HUE_CONF_DIR"], shell=True, stdout=subprocess.PIPE)
-    oracle_check = oracle_check_process.communicate()[0]
-    if not oracle_check == '':
-      #Make sure we set Oracle Client if configured
-      if "LD_LIBRARY_PATH" not in os.environ.keys():
-        if "SCM_DEFINES_SCRIPTS" in os.environ.keys():
-          for scm_script in os.environ["SCM_DEFINES_SCRIPTS"].split(":"):
-            if "ORACLE" in scm_script:
-              if os.path.isfile(scm_script):
-                oracle_source = subprocess.Popen(". %s; env" % scm_script, stdout=subprocess.PIPE, shell=True, executable="/bin/bash")
-                for line in oracle_source.communicate()[0].splitlines():
-                  if "LD_LIBRARY_PATH" in line:
-                    var, oracle_ld_path = line.split("=")
-                    os.environ["LD_LIBRARY_PATH"] = oracle_ld_path
+    if "mysql" in desktop_database.ENGINE.get().lower():
+      oracle_check_process = subprocess.Popen('grep -i oracle %s/hue*ini' % os.environ["HUE_CONF_DIR"], shell=True, stdout=subprocess.PIPE)
+      oracle_check = oracle_check_process.communicate()[0]
+      if not oracle_check == '':
+        #Make sure we set Oracle Client if configured
+        if "LD_LIBRARY_PATH" not in os.environ.keys():
+          if "SCM_DEFINES_SCRIPTS" in os.environ.keys():
+            for scm_script in os.environ["SCM_DEFINES_SCRIPTS"].split(":"):
+              if "ORACLE" in scm_script:
+                if os.path.isfile(scm_script):
+                  oracle_source = subprocess.Popen(". %s; env" % scm_script, stdout=subprocess.PIPE, shell=True, executable="/bin/bash")
+                  for line in oracle_source.communicate()[0].splitlines():
+                    if "LD_LIBRARY_PATH" in line:
+                      var, oracle_ld_path = line.split("=")
+                      os.environ["LD_LIBRARY_PATH"] = oracle_ld_path
 
-      if "LD_LIBRARY_PATH" not in os.environ.keys():
-        print "LD_LIBRARY_PATH can't be found, if you are using ORACLE for your Hue database"
-        print "then it must be set, if not, you can ignore"
-        print "  export LD_LIBRARY_PATH=/path/to/instantclient"
+        if "LD_LIBRARY_PATH" not in os.environ.keys():
+          print "LD_LIBRARY_PATH can't be found, if you are using ORACLE for your Hue database"
+          print "then it must be set, if not, you can ignore"
+          print "  export LD_LIBRARY_PATH=/path/to/instantclient"
 
   else:
     print "CM does not appear to be running on this server"
