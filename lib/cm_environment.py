@@ -5,7 +5,6 @@ import subprocess
 import re
 
 from hue_shared import which
-from desktop.conf import DATABASE as desktop_database
 
 #logging.basicConfig()
 #logging = logging.getLogger(__name__)
