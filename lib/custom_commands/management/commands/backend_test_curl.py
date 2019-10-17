@@ -215,7 +215,7 @@ class Command(BaseCommand):
 
     if options['testname'] is not None and options['testname'].upper() == 'JOBS':
       add_service_test(available_services, options=options, service_name="Oozie", testname="JOBS",
-                       suburl='v1/jobs?len=100&doAs=DOAS&filter=user=admin;startcreatedtime=-7d& user.name=hue&offset=1&timezone=TIME_ZONE&jobtype=wf', method='GET',
+                       suburl='v1/jobs?len=100&doAs=DOAS&filter=user=admin;startcreatedtime=-7d&user.name=hue&offset=1&timezone=TIME_ZONE&jobtype=wf', method='GET',
                        teststring='"workflows":[', test_options=test_options)
 
     if options['testname'] is not None and options['testname'].upper() == 'JOB':
@@ -235,7 +235,7 @@ class Command(BaseCommand):
 
     if options['testname'] is not None and options['testname'].upper() == 'COORDS':
       add_service_test(available_services, options=options, service_name="Oozie", testname="COORDS",
-                       suburl='v1/jobs?len=100&doAs=DOAS&filter=user=admin;startcreatedtime=-7d& user.name=hue&offset=1&timezone=TIME_ZONE&jobtype=coord', method='GET',
+                       suburl='v1/jobs?len=100&doAs=DOAS&filter=user=admin;startcreatedtime=-7d&user.name=hue&offset=1&timezone=TIME_ZONE&jobtype=coord', method='GET',
                        teststring='"workflows":[', test_options=test_options)
 
     #Add HTTPFS
