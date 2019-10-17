@@ -103,6 +103,7 @@ def set_cm_environment():
 
 
     if "mysql" in desktop_database.ENGINE.get().lower():
+      print "CHRIS: mysql found"
       oracle_check_process = subprocess.Popen('grep -i oracle %s/hue*ini' % os.environ["HUE_CONF_DIR"], shell=True, stdout=subprocess.PIPE)
       oracle_check = oracle_check_process.communicate()[0]
       if not oracle_check == '':
