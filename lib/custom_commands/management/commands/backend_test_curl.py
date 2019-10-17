@@ -149,11 +149,12 @@ class Command(BaseCommand):
     allowed_tests['oozie'] = {}
     allowed_tests['oozie']['STATUS'] = None
     allowed_tests['oozie']['CONFIGURATION'] = None
-    allowed_tests['oozie']['JOBS'] = None
+    allowed_tests['oozie']['WORKFLOWSS'] = None
     allowed_tests['oozie']['COORDS'] = None
-    allowed_tests['oozie']['JOB'] = "oozie_id=0000001-190820133637006-oozie-oozi-C"
-    allowed_tests['oozie']['JOBLOG'] = "oozie_id=0000001-190820133637006-oozie-oozi-C"
-    allowed_tests['oozie']['JOBDEF'] = "oozie_id=0000001-190820133637006-oozie-oozi-C"
+    allowed_tests['oozie']['WORKFLOW'] = "oozie_id=0000001-190820133637006-oozie-oozi-W"
+    allowed_tests['oozie']['WORKFLOWLOG'] = "oozie_id=0000001-190820133637006-oozie-oozi-W"
+    allowed_tests['oozie']['WORKFLOWDEF'] = "oozie_id=0000001-190820133637006-oozie-oozi-W"
+    allowed_tests['oozie']['COORD'] = "oozie_id=0000001-190820133637006-oozie-oozi-C"
 
     allowed_tests['rm'] = {}
     allowed_tests['rm']['CLUSTERINFO'] = None
@@ -215,30 +216,35 @@ class Command(BaseCommand):
                        suburl='v2/admin/configuration?timezone=TIME_ZONE&user.name=hue&doAs=DOAS', method='GET',
                        teststring='{"oozie.email.smtp.auth', test_options=test_options)
 
-    elif options['testname'].upper() == 'JOBS':
-        add_service_test(available_services, options=options, service_name="Oozie", testname="JOBS",
+    elif options['testname'].upper() == 'WORKFLOWSS':
+        add_service_test(available_services, options=options, service_name="Oozie", testname="WORKFLOWS",
                        suburl='v1/jobs?len=100&doAs=DOAS&filter=user=admin;startcreatedtime=-7d&user.name=hue&offset=1&timezone=TIME_ZONE&jobtype=wf', method='GET',
                        teststring='"workflows":[', test_options=test_options)
 
-    elif options['testname'].upper() == 'JOB':
-        add_service_test(available_services, options=options, service_name="Oozie", testname="JOB",
+    elif options['testname'].upper() == 'WORKFLOW':
+        add_service_test(available_services, options=options, service_name="Oozie", testname="WORKFLOW",
                        suburl='v1/job/OOZIE_ID?timezone=TIME_ZONE&suser.name=hue&logfilter=&doAs=DOAS', method='GET',
                        teststring='{"appName":', test_options=test_options)
 
-    elif options['testname'].upper() == 'JOBLOG':
-        add_service_test(available_services, options=options, service_name="Oozie", testname="JOBLOG",
+    elif options['testname'].upper() == 'WORKFLOWLOG':
+        add_service_test(available_services, options=options, service_name="Oozie", testname="WORKFLOWLOG",
                        suburl='v2/job/OOZIE_ID?timezone=TIME_ZONE&show=log&user.name=hue&logfilter=&doAs=DOAS', method='GET',
                        teststring='org.apache.oozie.service.JPAService: SERVER', test_options=test_options)
 
-    elif options['testname'].upper() == 'JOBDEF':
-        add_service_test(available_services, options=options, service_name="Oozie", testname="JOBDEF",
+    elif options['testname'].upper() == 'WORKFLOWDEF':
+        add_service_test(available_services, options=options, service_name="Oozie", testname="WORKFLOWDEF",
                        suburl='v2/job/OOZIE_ID?timezone=TIME_ZONE&show=definition&user.name=hue&logfilter=&doAs=DOAS', method='GET',
-                       teststring='org.apache.oozie.service.JPAService: SERVER', test_options=test_options)
+                       teststring='xmlns="uri', test_options=test_options)
 
     elif options['testname'].upper() == 'COORDS':
         add_service_test(available_services, options=options, service_name="Oozie", testname="COORDS",
                        suburl='v1/jobs?len=100&doAs=DOAS&filter=user=admin;startcreatedtime=-7d&user.name=hue&offset=1&timezone=TIME_ZONE&jobtype=coord', method='GET',
                        teststring='"coordinatorjobs":[', test_options=test_options)
+
+    elif options['testname'].upper() == 'COORD':
+      add_service_test(available_services, options=options, service_name="Oozie", testname="COORD",
+                       suburl='v1/job/OOZIE_ID?timezone=TIME_ZONE&suser.name=hue&logfilter=&doAs=DOAS', method='GET',
+                       teststring='{"appName":', test_options=test_options)
 
     #Add HTTPFS
     add_service_test(available_services, options=options, service_name="Httpfs", testname="USERHOME",
