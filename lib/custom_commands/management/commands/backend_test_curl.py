@@ -204,7 +204,7 @@ class Command(BaseCommand):
                      suburl='jmx', method='GET', teststring='solr.solrxml.location', test_options=test_options)
 
     #Add Oozie
-    if options['testname'] is None:
+    if options['testname'] is None or options['testname'].upper() == "STATUS":
         add_service_test(available_services, options=options, service_name="Oozie", testname="STATUS",
                        suburl='v1/admin/status?timezone=TIME_ZONE&user.name=hue&doAs=DOAS', method='GET',
                        teststring='{"systemMode":"NORMAL"}', test_options=test_options)
@@ -237,7 +237,7 @@ class Command(BaseCommand):
     elif options['testname'].upper() == 'COORDS':
         add_service_test(available_services, options=options, service_name="Oozie", testname="COORDS",
                        suburl='v1/jobs?len=100&doAs=DOAS&filter=user=admin;startcreatedtime=-7d&user.name=hue&offset=1&timezone=TIME_ZONE&jobtype=coord', method='GET',
-                       teststring='"workflows":[', test_options=test_options)
+                       teststring='"coordinatorjobs":[', test_options=test_options)
 
     #Add HTTPFS
     add_service_test(available_services, options=options, service_name="Httpfs", testname="USERHOME",
