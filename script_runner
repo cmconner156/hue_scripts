@@ -46,13 +46,10 @@ import sys
 from pkg_resources import load_entry_point
 from django.conf import settings
 
-print "RIGHT AFTER DJANGO.conf import settings"
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'desktop.settings')
 
-print "RIGHT after os.environ set default"
 from custom_commands.settings import *
 settings.INSTALLED_APPS.append('custom_commands')
-print "RIGHT after custome_commands"
 
 from desktop.conf import DATABASE as desktop_database
 logging.info("Using the following config make sure it looks correct")
@@ -74,8 +71,7 @@ logging.info("DB Host: %s" % desktop_database.HOST.get())
 logging.info("DB Port: %s" % str(desktop_database.PORT.get()))
 
 if __name__ == '__main__':
-    print "RIGHT before remove --cm-managed"
-    sys.argv.remove("--cm-managed")
+#    sys.argv.remove("--cm-managed")
     try:
         sys.exit(
             load_entry_point('desktop', 'console_scripts', 'hue')()
