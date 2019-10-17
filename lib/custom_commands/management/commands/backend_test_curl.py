@@ -148,6 +148,9 @@ class Command(BaseCommand):
 
     allowed_tests['oozie'] = {}
     allowed_tests['oozie']['STATUS'] = None
+    allowed_tests['oozie']['CONFIGURATION'] = None
+    allowed_tests['oozie']['JOBS'] = None
+    allowed_tests['oozie']['COORDS'] = None
     allowed_tests['oozie']['JOB'] = "oozie_id=0000001-190820133637006-oozie-oozi-C"
     allowed_tests['oozie']['JOBLOG'] = "oozie_id=0000001-190820133637006-oozie-oozi-C"
 
@@ -205,6 +208,16 @@ class Command(BaseCommand):
                      suburl='v1/admin/status?timezone=TIME_ZONE&user.name=hue&doAs=DOAS', method='GET',
                      teststring='{"systemMode":"NORMAL"}', test_options=test_options)
 
+    if options['testname'] is not None and options['testname'].upper() == 'CONFIGURATION':
+        add_service_test(available_services, options=options, service_name="Oozie", testname="CONFIGURATION",
+                       suburl='v2/admin/configuration?timezone=TIME_ZONE&user.name=hue&doAs=DOAS', method='GET',
+                       teststring='{"oozie.email.smtp.auth', test_options=test_options)
+
+    if options['testname'] is not None and options['testname'].upper() == 'JOBS':
+      add_service_test(available_services, options=options, service_name="Oozie", testname="JOBS",
+                       suburl='v1/jobs?len=100&doAs=DOAS&filter=user=admin;startcreatedtime=-7d& user.name=hue&offset=1&timezone=TIME_ZONE&jobtype=wf', method='GET',
+                       teststring='"workflows":[', test_options=test_options)
+
     if options['testname'] is not None and options['testname'].upper() == 'JOB':
         add_service_test(available_services, options=options, service_name="Oozie", testname="JOB",
                        suburl='v1/job/OOZIE_ID?timezone=TIME_ZONE&suser.name=hue&logfilter=&doAs=DOAS', method='GET',
@@ -214,6 +227,16 @@ class Command(BaseCommand):
         add_service_test(available_services, options=options, service_name="Oozie", testname="JOBLOG",
                        suburl='v2/job/OOZIE_ID?timezone=TIME_ZONE&show=log&user.name=hue&logfilter=&doAs=DOAS', method='GET',
                        teststring='org.apache.oozie.service.JPAService: SERVER', test_options=test_options)
+
+    if options['testname'] is not None and options['testname'].upper() == 'JOBDEF':
+      add_service_test(available_services, options=options, service_name="Oozie", testname="JOBDEF",
+                       suburl='v2/job/OOZIE_ID?timezone=TIME_ZONE&show=definition&user.name=hue&logfilter=&doAs=DOAS', method='GET',
+                       teststring='org.apache.oozie.service.JPAService: SERVER', test_options=test_options)
+
+    if options['testname'] is not None and options['testname'].upper() == 'COORDS':
+      add_service_test(available_services, options=options, service_name="Oozie", testname="COORDS",
+                       suburl='v1/jobs?len=100&doAs=DOAS&filter=user=admin;startcreatedtime=-7d& user.name=hue&offset=1&timezone=TIME_ZONE&jobtype=coord', method='GET',
+                       teststring='"workflows":[', test_options=test_options)
 
     #Add HTTPFS
     add_service_test(available_services, options=options, service_name="Httpfs", testname="USERHOME",
