@@ -236,11 +236,11 @@ class Command(BaseCommand):
         response = curl.do_curl_available_services(available_services[service]['tests'][service_test])
         returned_in = time.time() - start_time
         if available_services[service]['tests'][service_test]['test'] in response:
-          logging.info("TEST: %s %s: Passed in %ss: %s found in response" % (service, service_test, returned_in, available_services[service]['tests'][service_test]['test']))
+          logging.info("TEST: %s %s: Passed in %ds: %s found in response" % (service, service_test, returned_in, available_services[service]['tests'][service_test]['test']))
           if options['entireresponse']:
             logging.info("TEST: %s %s: Response: %s" % (service, service_test, response))
         else:
-          logging.info("TEST: %s %s: Failed in %ss: Response: %s" % (service, service_test, returned_in, response))
+          logging.info("TEST: %s %s: Failed in %ds: Response: %s" % (service, service_test, returned_in, response))
 
     log_file = log_dir + '/backend_test_curl.log'
     print ""
