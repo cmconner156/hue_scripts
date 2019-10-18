@@ -216,7 +216,7 @@ class Command(BaseCommand):
                        suburl='v2/admin/configuration?timezone=TIME_ZONE&user.name=hue&doAs=DOAS', method='GET',
                        teststring='{"oozie.email.smtp.auth', test_options=test_options)
 
-    elif options['testname'].upper() == 'WORKFLOWSS':
+    elif options['testname'].upper() == 'WORKFLOWS':
         add_service_test(available_services, options=options, service_name="Oozie", testname="WORKFLOWS",
                        suburl='v1/jobs?len=100&doAs=DOAS&filter=user=admin;startcreatedtime=-7d&user.name=hue&offset=1&timezone=TIME_ZONE&jobtype=wf', method='GET',
                        teststring='"workflows":[', test_options=test_options)
