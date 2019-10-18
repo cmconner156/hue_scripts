@@ -149,7 +149,7 @@ class Command(BaseCommand):
     allowed_tests['oozie'] = {}
     allowed_tests['oozie']['STATUS'] = None
     allowed_tests['oozie']['CONFIGURATION'] = None
-    allowed_tests['oozie']['WORKFLOWSS'] = None
+    allowed_tests['oozie']['WORKFLOWS'] = None
     allowed_tests['oozie']['COORDS'] = None
     allowed_tests['oozie']['WORKFLOW'] = "oozie_id=0000001-190820133637006-oozie-oozi-W"
     allowed_tests['oozie']['WORKFLOWLOG'] = "oozie_id=0000001-190820133637006-oozie-oozi-W"

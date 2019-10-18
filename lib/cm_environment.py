@@ -115,7 +115,6 @@ def set_cm_environment():
           dbengine = line
 
     if dbengine is not None and "oracle" in dbengine.lower():
-      print "CHRIS ORACLE"
       oracle_check_process = subprocess.Popen('grep -i oracle %s/hue*ini' % os.environ["HUE_CONF_DIR"], shell=True, stdout=subprocess.PIPE)
       oracle_check = oracle_check_process.communicate()[0]
       if not oracle_check == '':
