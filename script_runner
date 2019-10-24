@@ -7,7 +7,7 @@ import logging
 
 script_dir = os.path.dirname(os.path.realpath(__file__))
 lib_dir = '%s/lib' % script_dir
-sys.argv.append("--cm-managed")
+#sys.argv.append("--cm-managed")
 if not os.path.isdir(lib_dir):
   logging.exception("lib directory is missing.  You must download the entire git repo to run this script")
   logging.exception("https://github.com/cmconner156/hue_scripts")
