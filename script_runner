@@ -5,6 +5,8 @@ import os.path
 import subprocess
 import logging
 
+if "LD_LIBRARY_PATH" in os.environ.keys():
+    print os.environ["LD_LIBRARY_PATH"]
 script_dir = os.path.dirname(os.path.realpath(__file__))
 lib_dir = '%s/lib' % script_dir
 #sys.argv.append("--cm-managed")
