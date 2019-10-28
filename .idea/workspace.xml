@@ -36,8 +36,8 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="dummy" value="25" />
-          <entry key="py" value="23862" />
-          <entry key="script_runner" value="659" />
+          <entry key="py" value="24156" />
+          <entry key="script_runner" value="662" />
           <entry key="sh" value="2979" />
           <entry key="txt" value="169" />
         </counts>
@@ -46,7 +46,7 @@
         <counts>
           <entry key="Bash" value="2979" />
           <entry key="PLAIN_TEXT" value="194" />
-          <entry key="Python" value="24521" />
+          <entry key="Python" value="24818" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -72,8 +72,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lib/cm_environment.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="945">
-              <caret line="143" selection-start-line="143" selection-end-line="143" />
+            <state relative-caret-position="817">
+              <caret line="138" column="119" selection-start-line="138" selection-start-column="119" selection-end-line="138" selection-end-column="119" />
               <folding>
                 <element signature="e#0#10#0" expanded="true" />
               </folding>
@@ -98,8 +98,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/script_runner">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="744">
-              <caret line="64" selection-start-line="64" selection-end-line="64" />
+            <state relative-caret-position="864">
+              <caret line="72" column="12" selection-start-line="72" selection-start-column="12" selection-end-line="72" selection-end-column="12" />
             </state>
           </provider>
         </entry>
@@ -952,15 +952,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/script_runner">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="744">
-          <caret line="64" selection-start-line="64" selection-end-line="64" />
+        <state relative-caret-position="864">
+          <caret line="72" column="12" selection-start-line="72" selection-start-column="12" selection-end-line="72" selection-end-column="12" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/cm_environment.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="945">
-          <caret line="143" selection-start-line="143" selection-end-line="143" />
+        <state relative-caret-position="817">
+          <caret line="138" column="119" selection-start-line="138" selection-start-column="119" selection-end-line="138" selection-end-column="119" />
           <folding>
             <element signature="e#0#10#0" expanded="true" />
           </folding>

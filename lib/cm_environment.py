@@ -118,16 +118,25 @@ def set_cm_environment():
           dbengine = line
 
     if dbengine is not None and "oracle" in dbengine.lower():
+      print "Finding LD_LIBRARY_PATH"
       #Make sure we set Oracle Client if configured
       if "LD_LIBRARY_PATH" not in os.environ.keys():
+        print "LD_LIBRARY_PATH not in keys"
         if "SCM_DEFINES_SCRIPTS" in os.environ.keys():
+          print "Checking SCM_DEFINES_SCRIPTS"
           for scm_script in os.environ["SCM_DEFINES_SCRIPTS"].split(":"):
+            print "Checking SCM_DEFINES_SCRIPTS iterating"
             if "ORACLE_INSTANT_CLIENT" in scm_script:
+              print "ORACLE_INSTALL_CLIENT in scm_script"
               if os.path.isfile(scm_script):
+                print "ORACLE_INSTALL_CLIENT in scm_script checking if file"
                 oracle_source = subprocess.Popen(". %s; env" % scm_script, stdout=subprocess.PIPE, shell=True, executable="/bin/bash")
                 for line in oracle_source.communicate()[0].splitlines():
+                  print "ORACLE_INSTALL_CLIENT in scm_script iterating lines: %s" % line
                   if "LD_LIBRARY_PATH" in line:
+
                     var, oracle_ld_path = line.split("=")
+                    print "ORACLE_INSTALL_CLIENT in scm_script iterating lines set LD_LIBRARY_PATH: %s" % oracle_ld_path
                     os.environ["LD_LIBRARY_PATH"] = oracle_ld_path
 
       if "LD_LIBRARY_PATH" not in os.environ.keys() or os.path.isfile("%s/libclntsh.so.11.1" % os.environ["LD_LIBRARY_PATH"]):
