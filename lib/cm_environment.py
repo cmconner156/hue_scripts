@@ -18,6 +18,7 @@ def set_cm_environment():
   """
   Collect environment from CM supervisor
   """
+  hue_config = {}
   hue_bin_dir = "/usr/lib/hue"
   cm_agent_process = subprocess.Popen('ps -ef | grep "[c]m agent\|[c]mf-agent" | awk \'{print $2}\'', shell=True, stdout=subprocess.PIPE)
   cm_agent_pid = cm_agent_process.communicate()[0].split('\n')[0]
@@ -140,7 +141,6 @@ def set_cm_environment():
     print "Running with /etc/hue/conf as the HUE_CONF_DIR"
     os.environ["HUE_CONF_DIR"] = "/etc/hue/conf"
 
-  hue_config = {}
   hue_config['hue_path'] = hue_path
   hue_config['hue_bin_dir'] = hue_bin_dir
   hue_config['HUE_CONF_DIR'] = os.environ["HUE_CONF_DIR"]
