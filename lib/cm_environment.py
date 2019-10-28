@@ -20,6 +20,8 @@ def set_cm_environment():
   """
   hue_config = {}
   hue_bin_dir = "/usr/lib/hue"
+  if "LD_LIBRARY_PATH" in os.environ.keys():
+    print "cm1: %s" % os.environ["LD_LIBRARY_PATH"]
   cm_agent_process = subprocess.Popen('ps -ef | grep "[c]m agent\|[c]mf-agent" | awk \'{print $2}\'', shell=True, stdout=subprocess.PIPE)
   cm_agent_pid = cm_agent_process.communicate()[0].split('\n')[0]
   if cm_agent_pid != '':
@@ -35,6 +37,9 @@ def set_cm_environment():
       logging.exception("This appears to be a CM enabled cluster and supervisord is not running")
       logging.exception("Make sure you are running as root and CM supervisord is running")
       sys.exit(1)
+
+    if "LD_LIBRARY_PATH" in os.environ.keys():
+      print "cm2: %s" % os.environ["LD_LIBRARY_PATH"]
 
     #Parse CM supervisor include file for Hue and set env vars
     cm_supervisor_dir = cm_supervisor_dir + '/include'
@@ -80,6 +85,9 @@ def set_cm_environment():
     else:
       parcel_name = "CDH"
 
+    if "LD_LIBRARY_PATH" in os.environ.keys():
+      print "cm3: %s" % os.environ["LD_LIBRARY_PATH"]
+
     hue_path = "%s/%s/lib/hue" % (parcel_dir, parcel_name)
     hue_bin_dir = "%s/build/env/bin" % hue_path
 
@@ -103,6 +111,9 @@ def set_cm_environment():
       print "JAVA_HOME must be set and can't be found, please set JAVA_HOME environment variable"
       sys.exit(1)
 
+    if "LD_LIBRARY_PATH" in os.environ.keys():
+      print "cm3: %s" % os.environ["LD_LIBRARY_PATH"]
+        
     dbengine = None
     hue_config["LD_LIBRARY_PATH"] = None
     for line in open(os.environ["HUE_CONF_DIR"] + "/hue_safety_valve_server.ini"):
