@@ -142,7 +142,8 @@ def set_cm_environment():
       if "LD_LIBRARY_PATH" not in os.environ.keys() or not os.path.isfile("%s/libclntsh.so.11.1" % os.environ["LD_LIBRARY_PATH"]):
         print "You are using Oracle for backend DB"
         if "LD_LIBRARY_PATH" in os.environ.keys():
-          print "LD_LIBRARY_PATH set, but does not contain libclntsh.so.11.1"
+          print "LD_LIBRARY_PATH set to %s" % os.environ["LD_LIBRARY_PATH"]
+          print "LD_LIBRARY_PATH does not contain libclntsh.so.11.1"
           print "Please set LD_LIBRARY_PATH correctly and rerun"
 
         else:
