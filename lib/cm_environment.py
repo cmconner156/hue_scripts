@@ -140,6 +140,7 @@ def set_cm_environment():
                     os.environ["LD_LIBRARY_PATH"] = oracle_ld_path
 
       if "LD_LIBRARY_PATH" not in os.environ.keys() or not os.path.isfile("%s/libclntsh.so.11.1" % os.environ["LD_LIBRARY_PATH"]):
+        print "You are using Oracle for backend DB"
         if "LD_LIBRARY_PATH" in os.environ.keys():
           print "LD_LIBRARY_PATH set, but does not contain libclntsh.so.11.1"
           print "Please set LD_LIBRARY_PATH correctly and rerun"
@@ -148,6 +149,7 @@ def set_cm_environment():
           print "LD_LIBRARY_PATH can't be found, if you are using ORACLE for your Hue database"
           print "then it must be set, if not, you can ignore"
           print "  export LD_LIBRARY_PATH=/path/to/instantclient"
+        sys.exit(1)
 
   else:
     print "CM does not appear to be running on this server"
