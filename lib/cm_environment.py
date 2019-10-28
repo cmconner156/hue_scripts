@@ -70,7 +70,10 @@ def set_cm_environment():
         if "HADOOP_C" in envvar or "PARCEL" in envvar or "DESKTOP" in envvar or "ORACLE" in envvar or "LIBRARY" in envvar or "CMF" in envvar:
           envkey, envval = envvar.split("=")
           envval = envval.replace("'", "").rstrip()
-          os.environ[envkey] = envval
+          if "LIBRARY" not in envkey:
+            os.environ[envkey] = envval
+          elif "LD_LIBRARY_PATH" not in os.environ.keys():
+            os.environ[envkey] = envval
 
     if "PARCELS_ROOT" in os.environ:
       parcel_dir = os.environ["PARCELS_ROOT"]
@@ -113,7 +116,7 @@ def set_cm_environment():
 
     if "LD_LIBRARY_PATH" in os.environ.keys():
       print "cm3: %s" % os.environ["LD_LIBRARY_PATH"]
-        
+
     dbengine = None
     hue_config["LD_LIBRARY_PATH"] = None
     for line in open(os.environ["HUE_CONF_DIR"] + "/hue_safety_valve_server.ini"):
