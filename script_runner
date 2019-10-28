@@ -69,6 +69,8 @@ logging.info("DB Name: %s" % desktop_database.NAME.get())
 logging.info("DB User: %s" % desktop_database.USER.get())
 logging.info("DB Host: %s" % desktop_database.HOST.get())
 logging.info("DB Port: %s" % str(desktop_database.PORT.get()))
+if hue_config['LD_LIBRARY_PATH'] is not None:
+  logging.inro("LD_LIBRARY_PATH: %s" % hue_config["LD_LIBRARY_PATH"])
 
 if __name__ == '__main__':
 #    sys.argv.remove("--cm-managed")

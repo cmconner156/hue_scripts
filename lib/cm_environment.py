@@ -103,6 +103,7 @@ def set_cm_environment():
       sys.exit(1)
 
     dbengine = None
+    hue_config["LD_LIBRARY_PATH"] = None
     for line in open(os.environ["HUE_CONF_DIR"] + "/hue_safety_valve_server.ini"):
       if re.search("engine=", line):
         dbengine = line
@@ -145,6 +146,8 @@ def set_cm_environment():
   hue_config['HUE_CONF_DIR'] = os.environ["HUE_CONF_DIR"]
   hue_config['parcel_name'] = parcel_name
   hue_config['parcel_dir'] = parcel_dir
+  if dbengine is not None and "oracle" in dbengine.lower():
+    hue_config['LD_LIBRARY_PATH'] = os.environ["LD_LIBRARY_PATH"]
 
   return hue_config
 
