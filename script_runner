@@ -6,7 +6,7 @@ import subprocess
 import logging
 
 if "LD_LIBRARY_PATH" in os.environ.keys():
-    print os.environ["LD_LIBRARY_PATH"]
+    print "1: %s" % os.environ["LD_LIBRARY_PATH"]
 script_dir = os.path.dirname(os.path.realpath(__file__))
 lib_dir = '%s/lib' % script_dir
 #sys.argv.append("--cm-managed")
@@ -20,6 +20,8 @@ if not os.environ["USER"] == "root":
   sys.exit(1)
 
 sys.path.insert(0, lib_dir)
+if "LD_LIBRARY_PATH" in os.environ.keys():
+    print "2: %s" % os.environ["LD_LIBRARY_PATH"]
 
 from cm_environment import set_cm_environment, reload_with_cm_env
 hue_config = set_cm_environment()
@@ -36,6 +38,8 @@ activate_file = hue_bin_dir + "/activate_this.py"
 hue_bin = hue_bin_dir + "/hue"
 
 import os; activate_this=os.path.join(os.path.dirname(os.path.realpath(activate_file)), 'activate_this.py'); exec(compile(open(activate_this).read(), activate_this, 'exec'), dict(__file__=activate_this)); del activate_this
+if "LD_LIBRARY_PATH" in os.environ.keys():
+    print "3: %s" % os.environ["LD_LIBRARY_PATH"]
 
 with open(hue_bin, 'rU') as f:
   for line in f:
