@@ -27,16 +27,6 @@ class Command(BaseCommand):
   Handler for renaming duplicate User objects
   """
 
-  parser.add_option('--includejb',
-                    help='Include jobbrowser entries.',
-                    action='store_true',
-                    default=False)
-  parser.add_option('--increment',
-                    help='Increments to count users, hour, min10, day',
-                    dest='increment',
-                    default='day')
-
-
   try:
     from optparse import make_option
     option_list = BaseCommand.option_list + (
