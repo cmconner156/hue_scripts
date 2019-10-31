@@ -104,11 +104,11 @@ class Command(BaseCommand):
       r'(?P<url>\S+) '
     )
 
-    for filename in sorted(os.listdir(options['log_dir']), reverse=True):
+    for filename in sorted(os.listdir(options['logdir']), reverse=True):
       if not filename.startswith("access"):
         continue  # Only process access log files
 
-      for line in open(options['log_dir'] + "/" + filename).xreadlines():
+      for line in open(options['logdir'] + "/" + filename).xreadlines():
         if not line.startswith("["):
           continue  # Only process lines that start with a date
 
