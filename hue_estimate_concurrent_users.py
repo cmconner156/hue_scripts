@@ -25,6 +25,10 @@ parser.add_option('--last10',
     help='process logs for last 10 minutes.',
     action='store_true',
     default=False)
+parser.add_option('--last1h',
+    help='process logs for last 10 minutes.',
+    action='store_true',
+    default=False)
 parser.add_option('--includejb',
     help='Include jobbrowser entries.',
     action='store_true',
@@ -41,6 +45,7 @@ if options.date:
 else:
   now = datetime.datetime.now()
   minus10 = now - datetime.timedelta(minutes=10)
+  minus1h = now - datetime.timedelta(minutes=60)
 
 date = now - datetime.timedelta(days=1999)
 previous_date = now - datetime.timedelta(days=2000)
@@ -95,6 +100,11 @@ for filename in sorted(os.listdir(options.log_dir), reverse=True):
           #Skip anything older than 10 mins ago
           if date < minus10:
             continue
+
+        if options.last1h:
+          #Skip anything older than 1 hour ago
+          if date < minus1h:
+            continue
         
         user = m.group('user')
 
@@ -114,4 +124,5 @@ numlist.append(totalconcurrent)
 numlist = sorted(set(numlist))
 #Print the top 10 most concurrent counts
 print "largest: %s" % heapq.nlargest(10, numlist)
-
+#print "newuserlist: %s" % newuserlist
+#print "userlist: %s" % userlist
