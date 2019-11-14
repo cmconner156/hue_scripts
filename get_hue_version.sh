@@ -12,17 +12,22 @@ then
 fi
 
 HUE_MAJOR=$(echo ${HUE_VERSION} | cut -f1 -d.)
+OS_CDH_VERSION=$(basename $(hadoop version | grep "\.jar" | awk '{print $6}') | awk -Fcdh '{print $2}' | awk -F\. '{print $1}')
+OS_EL_VERSION="el$(lsb_release -rs | cut -f1 -d.)"
 
 HUE_VERSION_TEST=
 if [[ ${HUE_MAJOR} -eq 5 ]]
 then
   HUE_VERSION_TEST=$(echo ${HUE_VERSION} | grep "^[0-9]\.[0-9][0-9]\.[0-9]$")
+  ARCHIVE_BASE_URL=https://archive.cloudera.com/cdh${HUE_MAJOR}/parcels/${HUE_VERSION}/
 elif [[ ${HUE_MAJOR} -eq 6 ]]
 then
   HUE_VERSION_TEST=$(echo ${HUE_VERSION} | grep "^[0-9]\.[0-9]\.[0-9]$")
+  ARCHIVE_BASE_URL=https://archive.cloudera.com/cdh${HUE_MAJOR}/${HUE_VERSION}/parcels/
 elif [[ ${HUE_MAJOR} -eq 7 ]]
 then
   HUE_VERSION_TEST=$(echo ${HUE_VERSION} | grep "^[0-9]\.[0-9]\.[0-9]$")
+  ARCHIVE_BASE_URL=https://archive.cloudera.com/cdh${HUE_MAJOR}/${HUE_VERSION}/parcels/
 else
   echo "Major version was ${HUE_MAJOR} this script only works on major version 5, 6, 7"
   exit 1
@@ -40,9 +45,6 @@ then
   exit 1
 fi
 
-OS_CDH_VERSION=$(basename $(hadoop version | grep "\.jar" | awk '{print $6}') | awk -Fcdh '{print $2}' | awk -F\. '{print $1}')
-OS_EL_VERSION="el$(lsb_release -rs | cut -f1 -d.)"
-ARCHIVE_BASE_URL=https://archive.cloudera.com/cdh${HUE_MAJOR}/parcels/${HUE_VERSION}/
 PARCEL_NAME=$(curl -s ${ARCHIVE_BASE_URL} | grep "${OS_EL_VERSION}.parcel<" | sed "s/.*href=\"//g" | sed "s/\">.*//g")
 if [[ ! -z ${PARCEL_NAME} ]]
 then
