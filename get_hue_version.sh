@@ -44,13 +44,18 @@ OS_CDH_VERSION=$(basename $(hadoop version | grep "\.jar" | awk '{print $6}') | 
 OS_EL_VERSION="el$(lsb_release -rs | cut -f1 -d.)"
 ARCHIVE_BASE_URL=https://archive.cloudera.com/cdh${HUE_MAJOR}/parcels/${HUE_VERSION}/
 PARCEL_NAME=$(curl -s ${ARCHIVE_BASE_URL} | grep "${OS_EL_VERSION}.parcel<" | sed "s/.*href=\"//g" | sed "s/\">.*//g")
-PARCEL_DIR_NAME=$(echo ${PARCEL_NAME} | sed "s/\-${OS_EL_VERSION}.*//g")
-
-mkdir -p ${TMP_DIR}
-cd ${TMP_DIR} && wget ${ARCHIVE_BASE_URL}/${PARCEL_NAME}
-cd ${TMP_DIR} && tar xvf ${PARCEL_NAME}
-if [[ ! -d /opt/cloudera/parcels/CDH/lib/hue-${HUE_VERSION} ]]
+if [[ ! -z ${PARCEL_NAME} ]]
 then
-  cd ${TMP_DIR} && mv ${PARCEL_DIR_NAME}/lib/hue /opt/cloudera/parcels/CDH/lib/hue-${HUE_VERSION}
+  PARCEL_DIR_NAME=$(echo ${PARCEL_NAME} | sed "s/\-${OS_EL_VERSION}.*//g")
+
+  mkdir -p ${TMP_DIR}
+  cd ${TMP_DIR} && wget ${ARCHIVE_BASE_URL}/${PARCEL_NAME}
+  cd ${TMP_DIR} && tar xvf ${PARCEL_NAME}
+  if [[ ! -d /opt/cloudera/parcels/CDH/lib/hue-${HUE_VERSION} ]]
+  then
+    cd ${TMP_DIR} && mv ${PARCEL_DIR_NAME}/lib/hue /opt/cloudera/parcels/CDH/lib/hue-${HUE_VERSION}
+  fi
+else
+  echo "${HUE_VERSION} does not exist"
 fi
 cd && rm -Rf ${TMP_DIR}
