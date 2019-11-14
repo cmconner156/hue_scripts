@@ -5,6 +5,12 @@ TMP_DIR=/tmp/$(basename "$0" | awk -F\. '{print $1}')
 
 HUE_VERSION=$1
 
+if [[ -d /opt/cloudera/parcels/CDH/lib/hue-${HUE_VERSION} ]]
+then
+  echo "This version already downloaded"
+  exit 1
+fi
+
 HUE_MAJOR=$(echo ${HUE_VERSION} | cut -f1 -d.)
 
 HUE_VERSION_TEST=
