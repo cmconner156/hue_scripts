@@ -9,12 +9,14 @@ script_dir = os.path.dirname(os.path.realpath(__file__))
 lib_dir = '%s/lib' % script_dir
 #sys.argv.append("--cm-managed")
 if not os.path.isdir(lib_dir):
-  logging.exception("lib directory is missing.  You must download the entire git repo to run this script")
-  logging.exception("https://github.com/cmconner156/hue_scripts")
-  sys.exit(1)
+  print("The lib directory is missing.  Please download the entire package and not just the script_runner file")
+  print("git clone https://github.com/cmconner156/hue_scripts.git /opt/hue_scripts")
+  print("or")
+  print("cd /opt && wget https://github.com/cmconner156/hue_scripts/archive/master.zip && unzip master.zip && mv hue_scripts-master hue_scripts")
+  exit(1)
 
 if not os.environ["USER"] == "root":
-  logging.exception("This script must be run as root")
+  print("This script must be run as root")
   sys.exit(1)
 
 sys.path.insert(0, lib_dir)
@@ -22,10 +24,8 @@ sys.path.insert(0, lib_dir)
 try:
   from cm_environment import set_cm_environment, reload_with_cm_env
 except ImportError as e:
-  print("The lib directory is missing.  Please download the entire package and not just the script_runner file")
-  print("git clone https://github.com/cmconner156/hue_scripts.git /opt/hue_scripts")
-  print("or")
-  print("cd /opt && wget https://github.com/cmconner156/hue_scripts/archive/master.zip && unzip master.zip && mv hue_scripts-master hue_scripts")
+  print("Unable to load cm_environment - PYTHONPATH: %s" % os.environ.get("PYTHONPATH"))
+  print("Please send this script output and \"ls -lartR hue_scripts/\" to support")
   exit(1)
 
 hue_config = set_cm_environment()
