@@ -13,7 +13,7 @@ if not os.path.isdir(lib_dir):
   print("The lib directory is missing.  Please download the entire package and not just the script_runner file")
   print("git clone https://github.com/cmconner156/hue_scripts.git /opt/hue_scripts")
   print("or")
-  print("cd /opt && wget https://github.com/cmconner156/hue_scripts/archive/master.zip && unzip master.zip && mv hue_scripts-master hue_scripts")
+  print("cd /opt && rm -Rf hue_scripts && wget https://github.com/cmconner156/hue_scripts/archive/master.zip && unzip master.zip && mv hue_scripts-master hue_scripts && rm -f master.zip")
   exit(1)
 
 if not os.environ["USER"] == "root":
