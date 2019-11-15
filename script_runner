@@ -19,7 +19,15 @@ if not os.environ["USER"] == "root":
 
 sys.path.insert(0, lib_dir)
 
-from cm_environment import set_cm_environment, reload_with_cm_env
+try:
+  from cm_environment import set_cm_environment, reload_with_cm_env
+except ImportError as e:
+  print("The lib directory is missing.  Please download the entire package and not just the script_runner file")
+  print("git clone https://github.com/cmconner156/hue_scripts.git /opt/hue_scripts")
+  print("or")
+  print("cd /opt && wget https://github.com/cmconner156/hue_scripts/archive/master.zip && unzip master.zip && mv hue_scripts-master hue_scripts")
+  exit(1)
+
 hue_config = set_cm_environment()
 hue_path = hue_config['hue_path']
 hue_bin_dir = hue_config['hue_bin_dir']
