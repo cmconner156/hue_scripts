@@ -9,6 +9,11 @@ import logging
 script_dir = os.path.dirname(os.path.realpath(__file__))
 lib_dir = '%s/lib' % script_dir
 #sys.argv.append("--cm-managed")
+if 'NO_CM' in os.environ.keys():
+  if 'HUE_CONF_DIR' in os.environ.keys():
+    if not 'HUE_CONF_DIR_ORIG' in os.environ.keys():
+      os.environ['HUE_CONF_DIR_ORIG'] = os.environ.get('HUE_CONF_DIR')
+
 if not os.path.isdir(lib_dir):
   print("The lib directory is missing.  Please download the entire package and not just the script_runner file")
   print("git clone https://github.com/cmconner156/hue_scripts.git /opt/hue_scripts")
@@ -46,6 +51,11 @@ parcel_name = hue_config['parcel_name']
 
 if not "SKIP_RELOAD" in os.environ.keys():
   reload_with_cm_env()
+
+if 'NO_CM' in os.environ.keys():
+  if 'HUE_CONF_DIR_ORIG' in os.environ.keys():
+    HUE_CONF_DIR = os.environ.get('HUE_CONF_DIR_ORIG')
+    os.environ['HUE_CONF_DIR'] = HUE_CONF_DIR
 
 activate_file = hue_bin_dir + "/activate_this.py"
 hue_bin = hue_bin_dir + "/hue"
