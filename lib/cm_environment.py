@@ -20,6 +20,7 @@ def set_cm_environment():
   """
   hue_config = {}
   hue_bin_dir = "/usr/lib/hue"
+  hue_path = "/usr/lib/hue"
   cm_agent_process = subprocess.Popen('ps -ef | grep "[c]m agent\|[c]mf-agent" | awk \'{print $2}\'', shell=True, stdout=subprocess.PIPE)
   cm_agent_pid = cm_agent_process.communicate()[0].split('\n')[0]
   if cm_agent_pid != '':
