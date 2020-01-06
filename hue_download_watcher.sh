@@ -129,7 +129,7 @@ main() {
   
   if [[ ! -z ${SPAWN_WATCHER} ]]
   then   
-    tail -F ${RUNCPSERVER} | egrep --line-buffered "\/download|downloaded|TExecuteStatementResp\(" >> ${LOG_FILE} &
+    tail -F ${RUNCPSERVER} | egrep --line-buffered "\/download|downloaded|TExecuteStatementResp\(|[[:digit:]]{5,9}ms" >> ${LOG_FILE} &
     PID=$!
     while [[ -f ${ENDFILE} ]]
     do
