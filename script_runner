@@ -108,7 +108,7 @@ if __name__ == '__main__':
     except UnboundLocalError, e:
         logging.info("Command failed because of bug in older versions of CDH: %s" % e)
         logging.info("Patching and re-running")
-        patch_file = "%s/fix_cm_config_file.patch" % script_dir
+        patch_file = "%s/patches/fix_cm_config_file.patch" % script_dir
         patch_cmd = ["patch", "-p1"]
         patch_file_in = open(patch_file)
         os.chdir(hue_path)
