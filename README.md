@@ -101,3 +101,15 @@ script_runner run_hive_impala_query --impala --user cconner --query "select * fr
 script_runner share_all_workflows --owner cconner --sharegroups test1,test2 --permissioins read,write
 
 - This will share workflows from --owner to a comma separated list of shareusers or sharegroups and a list of permissionis specified by --permissions.
+
+hue_download_watcher.sh
+
+- This script can be used to capture info surrounding downloads from Hue.
+
+hue_clean_duplicate_permissions.sh
+
+- This script is old, but it would have cleaned up duplicate entries for HuePermission objects
+
+extract_archive_in_hdfs.sh
+
+- Debug version of the same extraction script in Hue source.
