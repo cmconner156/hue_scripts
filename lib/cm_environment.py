@@ -83,7 +83,9 @@ def set_cm_environment():
         if parcel_name_temp.startswith("CDH"):
           parcel_name = parcel_name_temp
 
-    hue_path = "%s/%s/lib/hue" % (parcel_dir, parcel_name)
+
+    if os.path.isdir("%s/%s/lib/hue" % (parcel_dir, parcel_name)):
+      hue_path = "%s/%s/lib/hue" % (parcel_dir, parcel_name)
     hue_bin_dir = "%s/build/env/bin" % hue_path
 
     cloudera_config_script = None
