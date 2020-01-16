@@ -68,7 +68,7 @@ class Command(BaseCommand):
       
     else:
       for user in User.objects.filter():
-        LOG.info("Setting default interpreter to %s for user %s" % (set_props['interpreter'], options['username']))
+        LOG.info("Setting default interpreter to %s for user %s" % (editor, options['username']))
         set_user_preferences(user, key, set_props)
         
 
