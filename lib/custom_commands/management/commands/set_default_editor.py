@@ -53,13 +53,16 @@ class Command(BaseCommand):
     set_props = None
     if options['sethive']:
       set_props = '{"app":"editor","interpreter":"hive"}'
+      editor = "hive"
     if options['setimpala']:
       set_props = '{"app":"editor","interpreter":"impala"}'
+      editor = "impala"
     if set_props is None:
       set_props = '{"app":"editor","interpreter":"impala"}'
+      editor = "impala"
 
     if options['username'] != "all":
-      LOG.info("Setting default interpreter to %s for user %s" % (set_props['interpreter'], options['username']))
+      LOG.info("Setting default interpreter to %s for user %s" % (editor, options['username']))
       user = User.objects.filter(username__in=options['username'])
       set_user_preferences(user, key, set_props)
       
