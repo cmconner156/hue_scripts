@@ -63,7 +63,7 @@ class Command(BaseCommand):
 
     if options['username'] != "all":
       LOG.info("Setting default interpreter to %s for user %s" % (editor, options['username']))
-      user = User.objects.filter(username__in=options['username'])
+      user = User.objects.get(username = options['username'])
       set_user_preferences(user, key, set_props)
       
     else:
