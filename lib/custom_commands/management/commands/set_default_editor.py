@@ -27,7 +27,7 @@ class Command(BaseCommand):
       make_option("--hive", help=_t("Set Hive as default."),
                   action="store_true", default=False, dest='sethive'),
       make_option("--impala", help=_t("Set Impala as default."),
-                  action="store_true", default=True, dest='setimpala'),
+                  action="store_true", default=False, dest='setimpala'),
       make_option("--username", help=_t("User to set."),
                   action="store", default="all", dest='username'),
     )
@@ -39,7 +39,7 @@ class Command(BaseCommand):
         parser.add_argument("--hive", help=_t("Set Hive as default."),
                     action="store_true", default=False, dest='sethive'),
         parser.add_argument("--impala", help=_t("Set Impala as default."),
-                    action="store_true", default=True, dest='setimpala'),
+                    action="store_true", default=False, dest='setimpala'),
         parser.add_argument("--username", help=_t("User to set."),
                     action="store", default="all", dest='username'),
 
